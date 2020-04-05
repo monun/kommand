@@ -1,5 +1,6 @@
 package com.github.noonmaru.kommand
 
+import com.github.noonmaru.kommand.argument.KommandArgument
 import org.bukkit.command.CommandSender
 
 class ArgumentKommand(

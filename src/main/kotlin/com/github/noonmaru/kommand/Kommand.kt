@@ -1,5 +1,6 @@
 package com.github.noonmaru.kommand
 
+import com.github.noonmaru.kommand.argument.KommandArgument
 import com.google.common.collect.ImmutableList
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
