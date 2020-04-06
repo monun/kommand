@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.github.noonmaru"
-version = "0.1.1"
+version = "0.1.2"
 
 repositories {
     mavenCentral()
@@ -12,9 +12,9 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8")) //kotlin
-    implementation("junit:junit:4.12") //junit
-    implementation("com.destroystokyo.paper:paper-api:1.13.2-R0.1-SNAPSHOT") //paper
+    compileOnly(kotlin("stdlib-jdk8")) //kotlin
+    compileOnly("junit:junit:4.12") //junit
+    compileOnly("com.destroystokyo.paper:paper-api:1.13.2-R0.1-SNAPSHOT") //paper
 }
 
 tasks {
