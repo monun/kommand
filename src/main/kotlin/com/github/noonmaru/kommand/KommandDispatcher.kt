@@ -22,7 +22,7 @@ class KommandDispatcher(children: Map<PluginCommand, LiteralKommandBuilder>) {
         for ((command, builder) in children) {
             if (builder.executor == null) {
                 builder.executes {
-                    it.sender.sendMessage(getAllUsages())
+                    it.sender.sendMessage(getUsage(it.command))
                 }
             }
 
@@ -149,14 +149,12 @@ class KommandDispatcher(children: Map<PluginCommand, LiteralKommandBuilder>) {
         } ?: emptyList()
     }
 
-    private fun getAllUsages(): String {
-        val builder = UsageBuilder()
-
-        for (kommand in children.values) {
+    private fun getUsage(command: Command): String {
+        return children[command]!!.let { kommand ->
+            val builder = UsageBuilder()
             builder.present(kommand)
+            builder.toString()
         }
-
-        return builder.toString()
     }
 }
 
