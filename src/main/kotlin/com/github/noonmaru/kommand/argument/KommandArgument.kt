@@ -1,7 +1,6 @@
 package com.github.noonmaru.kommand.argument
 
 import com.github.noonmaru.kommand.KommandContext
-import com.github.noonmaru.kommand.SuggestionBuilder
 import com.github.noonmaru.kommand.argument.KommandArgument.Companion.TOKEN
 import com.google.common.collect.ImmutableSet
 import org.bukkit.Bukkit
@@ -18,7 +17,30 @@ interface KommandArgument<T> {
 
     fun parse(context: KommandContext, param: String): T?
 
-    fun listSuggestion(context: KommandContext, builder: SuggestionBuilder) {}
+    fun listSuggestion(context: KommandContext, target: String): Collection<String> = emptyList()
+}
+
+fun Collection<String>.suggestions(target: String): Collection<String> {
+    if (isEmpty()) return emptyList()
+    if (target.isEmpty()) return this
+
+    return filter { it.startsWith(target, true) }
+}
+
+fun <T> Collection<T>.suggestions(target: String, transform: (T) -> String = { it.toString() }): Collection<String> {
+    if (isEmpty()) return emptyList()
+    if (target.isEmpty()) return map(transform)
+
+    val list = ArrayList<String>()
+
+    for (element in this) {
+        transform(element).let { name ->
+            if (name.startsWith(target, true))
+                list += name
+        }
+    }
+
+    return list
 }
 
 class StringArgument internal constructor(
@@ -28,10 +50,8 @@ class StringArgument internal constructor(
         return param.takeIf { set.isEmpty() || param in set }
     }
 
-    override fun listSuggestion(context: KommandContext, builder: SuggestionBuilder) {
-        if (set.isEmpty()) return
-
-        builder.addMatches(set)
+    override fun listSuggestion(context: KommandContext, target: String): Collection<String> {
+        return set.suggestions(target)
     }
 
     companion object {
@@ -120,10 +140,8 @@ class PlayerArgument internal constructor() : KommandArgument<Player> {
         return Bukkit.getPlayerExact(param)
     }
 
-    override fun listSuggestion(context: KommandContext, builder: SuggestionBuilder) {
-        builder.addMatches(Bukkit.getOnlinePlayers()) { player ->
-            player.name
-        }
+    override fun listSuggestion(context: KommandContext, target: String): Collection<String> {
+        return Bukkit.getOnlinePlayers().suggestions(target) { it.name }
     }
 
     companion object {

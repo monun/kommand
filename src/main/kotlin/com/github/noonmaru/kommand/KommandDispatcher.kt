@@ -105,7 +105,7 @@ class KommandDispatcher(children: Map<PluginCommand, LiteralKommandBuilder>) {
         }
     }
 
-    internal fun listSuggestion(
+    internal fun computeSuggestion(
         sender: CommandSender,
         command: Command,
         alias: String,
@@ -132,20 +132,20 @@ class KommandDispatcher(children: Map<PluginCommand, LiteralKommandBuilder>) {
                 this.alias = alias
             }
             val target = args.last()
-            val builder = SuggestionBuilder(target)
+            val list = ArrayList<String>()
 
             for (child in last.children) {
                 if (child is ArgumentKommand)
-                    child.argument.listSuggestion(context, builder)
+                    list += child.argument.listSuggestion(context, target)
                 else {
                     val name = child.name
 
                     if (name.startsWith(target, true))
-                        builder += name
+                        list += name
                 }
             }
 
-            builder.list
+            list
         } ?: emptyList()
     }
 
@@ -244,6 +244,6 @@ internal class KommandAdapter(private val dispatcher: KommandDispatcher) : TabEx
         alias: String,
         args: Array<out String>
     ): List<String> {
-        return dispatcher.listSuggestion(sender, command, alias, args)
+        return dispatcher.computeSuggestion(sender, command, alias, args)
     }
 }
