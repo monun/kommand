@@ -13,18 +13,8 @@ class SuggestionBuilder(
         add(suggestion)
     }
 
-    fun <T> addAll(
-        source: Collection<T>,
-        transform: (T) -> String = { it.toString() },
-        filter: (arg: String) -> Boolean
-    ) {
-        for (element in source) {
-            val arg = transform(element)
-
-            if (filter(arg)) {
-                add(arg)
-            }
-        }
+    fun <T> addAll(source: Collection<String>) {
+        list.addAll(source)
     }
 
     fun <T> addMatches(source: Collection<T>, transform: (T) -> String = { it.toString() }) {

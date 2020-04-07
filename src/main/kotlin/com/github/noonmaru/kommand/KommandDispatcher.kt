@@ -211,37 +211,6 @@ class UsageNode(
     }
 }
 
-class KommandContext(
-    val command: Command,
-    val rawArguments: Array<out String>,
-    val nodes: List<Kommand>
-) {
-    internal lateinit var executor: (KommandContext) -> Unit
-
-    lateinit var sender: CommandSender
-        internal set
-    lateinit var alias: String
-        internal set
-
-    private val argumentsByName: Map<String, String>
-
-    init {
-        val arguments = HashMap<String, String>()
-
-        nodes.forEachIndexed { index, kommand ->
-            if (kommand is ArgumentKommand) {
-                arguments[kommand.name] = rawArguments[index - 1]
-            }
-        }
-
-        this.argumentsByName = arguments
-    }
-
-    fun getArgument(name: String): String {
-        return argumentsByName[name] ?: throw IllegalArgumentException("[$name] is unknown argument name")
-    }
-}
-
 class KommandDispatcherBuilder(
     private val plugin: JavaPlugin
 ) {
