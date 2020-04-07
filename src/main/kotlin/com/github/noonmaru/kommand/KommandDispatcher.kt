@@ -22,7 +22,8 @@ class KommandDispatcher(children: Map<PluginCommand, LiteralKommandBuilder>) {
         for ((command, builder) in children) {
             if (builder.executor == null) {
                 builder.executes {
-                    it.sender.sendMessage(getUsage(it.command))
+                    val sender = it.sender
+                    sender.sendMessage(getUsage(sender, it.command).toTypedArray())
                 }
             }
 
@@ -149,65 +150,52 @@ class KommandDispatcher(children: Map<PluginCommand, LiteralKommandBuilder>) {
         } ?: emptyList()
     }
 
-    private fun getUsage(command: Command): String {
+    private fun getUsage(sender: CommandSender, command: Command): List<String> {
         return children[command]!!.let { kommand ->
-            val builder = UsageBuilder()
-            builder.present(kommand)
-            builder.toString()
+            kommand.usages(sender)
         }
     }
 }
 
-class UsageBuilder {
-    private val builder = StringBuilder()
+fun LiteralKommand.usages(sender: CommandSender): List<String> {
+    val list = ArrayList<String>()
+    val prefix = "/$name"
 
-    fun present(kommand: Kommand) {
-        UsageNode(this).compute(kommand)
+    for (child in children) {
+        val requirement = child.requirement
+
+        if (requirement == null || sender.requirement())
+            child.computeUsages(sender, this, list, StringBuilder(prefix))
     }
 
-    fun paste(node: UsageNode) {
-        builder.apply {
-            if (length > 0)
-                builder.append("\n")
-            builder.append(node.builder)
-        }
+    return list
+}
+
+fun Kommand.computeUsages(sender: CommandSender, parent: Kommand, list: MutableList<String>, builder: StringBuilder) {
+    builder.append(' ')
+    if (this is ArgumentKommand) {
+        val brace = if (executor != null && parent.executor != null && children.isEmpty()) "[]" else "<>"
+        builder.append(brace[0]).append(name).append(brace[1])
+    } else {
+        builder.append(name)
     }
 
-    override fun toString(): String {
-        return builder.toString()
+    for (child in children) {
+        val requirement = child.requirement
+
+        if (requirement == null || sender.requirement())
+            child.computeUsages(sender, this, list, StringBuilder(builder))
+    }
+
+    if (executor != null && children.isEmpty()) {
+        list += builder.toString()
     }
 }
 
-class UsageNode(
-    private val root: UsageBuilder,
-    private val parent: UsageNode? = null
-) {
-    val builder: StringBuilder
-
-    init {
-        builder = if (parent == null) StringBuilder("/") else StringBuilder(parent.builder).append(' ')
-    }
-
-    fun compute(kommand: Kommand) {
-        if (kommand is ArgumentKommand) {
-            val brace = if (kommand.executor == null) "[]" else "<>"
-
-            builder.apply {
-                append(brace[0]).append(kommand.name).append(brace[1])
-            }
-        } else {
-            builder.append(kommand.name)
-        }
-
-        if (kommand.executor != null && parent != null) {
-            root.paste(this)
-        }
-
-        for (child in kommand.children) {
-            UsageNode(root, this).compute(child)
-        }
-    }
-}
+//인수명령어
+//현재 명령에 executor 존재
+//상위 명령에 executor가 존재
+//하위 명령어 없음
 
 class KommandDispatcherBuilder(
     private val plugin: JavaPlugin
