@@ -8,11 +8,11 @@ class ArgumentKommand(
     requirement: (CommandSender.() -> Boolean)?,
     executor: ((KommandContext) -> Unit)?,
     children: Collection<Kommand>,
-    internal val argument: KommandArgument<Any>
+    internal val argument: KommandArgument<*>
 ) : Kommand(name, requirement, executor, children)
 
 internal class ArgumentKommandBuilder(
-    name: String, val argument: KommandArgument<Any>
+    name: String, val argument: KommandArgument<*>
 ) : KommandBuilder(name) {
     override fun build(): Kommand {
         return ArgumentKommand(name, requirement, executor, children.map { it.build() }, argument)

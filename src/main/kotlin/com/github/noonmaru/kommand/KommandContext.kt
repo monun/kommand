@@ -16,10 +16,10 @@ class KommandContext(
     lateinit var alias: String
         internal set
 
-    private val argumentsByName: Map<String, Pair<String, KommandArgument<Any>>>
+    private val argumentsByName: Map<String, Pair<String, KommandArgument<*>>>
 
     init {
-        val arguments = HashMap<String, Pair<String, KommandArgument<Any>>>()
+        val arguments = HashMap<String, Pair<String, KommandArgument<*>>>()
 
         nodes.forEachIndexed { index, kommand ->
             if (kommand is ArgumentKommand) {
@@ -30,7 +30,7 @@ class KommandContext(
         this.argumentsByName = arguments
     }
 
-    private fun argumentBy(name: String): Pair<String, KommandArgument<Any>> {
+    private fun argumentBy(name: String): Pair<String, KommandArgument<*>> {
         return argumentsByName[name] ?: throw IllegalArgumentException("[$name] is unknown argument name")
     }
 
