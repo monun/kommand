@@ -44,8 +44,8 @@ abstract class KommandBuilder(val name: String) {
         children += LiteralKommandBuilder(name).apply(init)
     }
 
-    fun then(argument: Pair<String, KommandArgument<*>>, optional: Boolean = false, init: KommandBuilder.() -> Unit) {
-        children += ArgumentKommandBuilder(argument.first, argument.second, optional).apply(init)
+    fun then(argument: Pair<String, KommandArgument<*>>, init: KommandBuilder.() -> Unit) {
+        children += ArgumentKommandBuilder(argument.first, argument.second).apply(init)
     }
 
     internal abstract fun build(): Kommand

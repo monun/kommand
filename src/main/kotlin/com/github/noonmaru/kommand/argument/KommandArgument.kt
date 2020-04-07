@@ -11,7 +11,6 @@ interface KommandArgument<T> {
         const val TOKEN = "<argument>"
     }
 
-
     val parseFailMessage: String
         get() = "$TOKEN <-- 알 수 없는 인수입니다."
 
