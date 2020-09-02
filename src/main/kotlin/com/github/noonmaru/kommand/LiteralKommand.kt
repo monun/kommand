@@ -17,7 +17,7 @@ class LiteralKommandBuilder(name: String) : KommandBuilder(name) {
     override fun hashCode() = name.hashCode()
 
     override fun equals(other: Any?): Boolean {
-        if (other == this) return true
+        if (other === this) return true
 
         if (other is LiteralKommandBuilder) {
             if (name == other.name) return true

@@ -7,7 +7,7 @@ import org.bukkit.entity.Player
 fun CommandSender.sendFeedback(message: String) {
     if (this is Player) {
         world.getGameRuleValue(GameRule.SEND_COMMAND_FEEDBACK)?.let { r ->
-            if (r.not())
+            if (!r)
                 return
         }
     }

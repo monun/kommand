@@ -153,3 +153,19 @@ class PlayerArgument internal constructor() : KommandArgument<Player> {
 fun player(): PlayerArgument {
     return PlayerArgument.instance
 }
+
+class MapArgument<T> internal constructor(
+    private val map: Map<String, T>
+) : KommandArgument<T> {
+    override fun parse(context: KommandContext, param: String): T? {
+        return map[param]
+    }
+
+    override fun listSuggestion(context: KommandContext, target: String): Collection<String> {
+        return map.keys.suggestions(target)
+    }
+}
+
+fun <T> map(map: Map<String, T>): KommandArgument<T> {
+    return MapArgument(map)
+}
