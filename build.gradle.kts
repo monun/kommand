@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.github.noonmaru"
-version = "0.3"
+version = "0.3.1"
 
 repositories {
     mavenCentral()
