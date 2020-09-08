@@ -2,7 +2,7 @@ package com.github.noonmaru.kommand.argument
 
 import com.github.noonmaru.kommand.KommandContext
 import com.github.noonmaru.kommand.argument.KommandArgument.Companion.TOKEN
-import com.google.common.collect.ImmutableSet
+import com.google.common.collect.ImmutableList
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
@@ -43,18 +43,20 @@ fun <T> Collection<T>.suggestions(target: String, transform: (T) -> String = { i
 }
 
 class StringArgument internal constructor(
-    private val set: Set<String> = emptySet()
+    private val values: () -> Collection<String>
 ) : KommandArgument<String> {
     override fun parse(context: KommandContext, param: String): String? {
-        return param.takeIf { set.isEmpty() || param in set }
+        val values = values()
+
+        return param.takeIf { values.isEmpty() || param in values }
     }
 
     override fun listSuggestion(context: KommandContext, target: String): Collection<String> {
-        return set.suggestions(target)
+        return values().suggestions(target)
     }
 
     companion object {
-        internal val emptyStringArgument = StringArgument(ImmutableSet.of())
+        internal val emptyStringArgument = StringArgument { ImmutableList.of() }
     }
 }
 
@@ -63,11 +65,16 @@ fun string(): StringArgument {
 }
 
 fun string(vararg names: String): StringArgument {
-    return StringArgument(ImmutableSet.copyOf(names))
+    val list = ImmutableList.copyOf(names)
+    return string { list }
 }
 
 fun string(names: Collection<String>): StringArgument {
-    return StringArgument(ImmutableSet.copyOf(names))
+    return string { names }
+}
+
+fun string(supplier: () -> Collection<String>): StringArgument {
+    return StringArgument(supplier)
 }
 
 class IntegerArgument internal constructor() : KommandArgument<Int> {
