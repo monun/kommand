@@ -65,7 +65,7 @@ kommand {
           then("newName" to string()) {
             executes { //블록 내에서 실행
               val user = it.parseArgument("user") //User 인스턴스를 user()를 통해 생성했던 Custom유저 인수를 통해 가져옵니다.
-              val newName = it.getArgument("name")
+              val newName = it.getArgument("newName")
               setUserName(user, newName)
             }
           }
@@ -110,5 +110,5 @@ dependencies {
 * 라이센스는 GPL-3.0이며 변경 혹은 삭제를 금합니다.
 * 등록되어있는 명령어, 인수를 통해 자동으로 TabComplete를 지원합니다.
 * 인수의 TabComplete를 지원하기 위해선 PlayerArgument.kt 코드를 참고하세요
-* Mojang 에서공개한 [**Brigadier**](https://github.com/Mojang/brigadier)코드를 참고하여 작성했습니다.
-* **Kommand**는 플러그인이 아니므로 FatJar를 만들어서 사용하세요
+* Mojang 에서공개한 [**Brigadier**](https://github.com/Mojang/brigadier) 코드를 참고하여 작성했습니다.
+* **Kommand**는 플러그인이 아니므로 FatJar를 만들어서 사용하세요 (참고: [ShadowJar](https://github.com/johnrengelman/shadow))
