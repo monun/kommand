@@ -4,17 +4,17 @@ plugins {
 }
 
 group = "com.github.noonmaru"
-version = "0.3.1"
+version = "0.3.2"
 
 repositories {
     mavenCentral()
-    maven(url = "https://papermc.io/repo/repository/maven-public/") //paper
+    maven(url = "https://papermc.io/repo/repository/maven-public/")
 }
 
 dependencies {
-    compileOnly(kotlin("stdlib-jdk8")) //kotlin
-    compileOnly("junit:junit:4.12") //junit
-    compileOnly("com.destroystokyo.paper:paper-api:1.13.2-R0.1-SNAPSHOT") //paper
+    compileOnly(kotlin("stdlib-jdk8"))
+    compileOnly("junit:junit:4.12")
+    compileOnly("com.destroystokyo.paper:paper-api:1.13.2-R0.1-SNAPSHOT")
 }
 
 tasks {
