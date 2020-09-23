@@ -60,8 +60,21 @@ abstract class KommandBuilder(val name: String) {
         children += LiteralKommandBuilder(name).apply(init)
     }
 
-    fun then(argument: Pair<String, KommandArgument<*>>, init: KommandBuilder.() -> Unit) {
-        children += ArgumentKommandBuilder(argument.first, argument.second).apply(init)
+    fun then(
+        argument: Pair<String, KommandArgument<*>>,
+        vararg subArguments: Pair<String, KommandArgument<*>>,
+        init: KommandBuilder.() -> Unit
+    ) {
+        var child = ArgumentKommandBuilder(argument.first, argument.second)
+        this.children += child
+
+        for ((name, arg) in subArguments) {
+            val grandChild = ArgumentKommandBuilder(name, arg)
+            child.children += grandChild
+            child = grandChild
+        }
+
+        child.apply(init)
     }
 
     internal abstract fun build(): Kommand
