@@ -49,6 +49,10 @@ fun string(supplier: () -> Collection<String>): StringArgument {
     return StringArgument(supplier)
 }
 
+fun bool(): BooleanArgument {
+    return BooleanArgument
+}
+
 fun integer(): IntegerArgument {
     return IntegerArgument()
 }
@@ -58,10 +62,10 @@ fun double(): DoubleArgument {
 }
 
 fun player(): PlayerArgument {
-    return PlayerArgument.instance
+    return PlayerArgument
 }
 
-fun <T> map(map: Map<String, T>): KommandArgument<T> {
+fun <T> map(map: Map<String, T>): MapArgument<T> {
     return MapArgument(map)
 }
 
