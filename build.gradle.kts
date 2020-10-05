@@ -3,9 +3,6 @@ plugins {
     `maven-publish`
 }
 
-group = "com.github.noonmaru"
-version = "0.4.0"
-
 repositories {
     mavenCentral()
     maven(url = "https://papermc.io/repo/repository/maven-public/")
