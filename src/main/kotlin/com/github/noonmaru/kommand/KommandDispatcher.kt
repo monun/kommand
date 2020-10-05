@@ -28,6 +28,18 @@ import org.bukkit.plugin.java.JavaPlugin
 class KommandDispatcher(children: Map<PluginCommand, LiteralKommandBuilder>) {
     companion object {
         private const val unknownCommandErrorMessage = "알 수 없는 명령입니다."
+        private const val permissionDenied = "권한이 없습니다."
+
+        private fun Kommand.ensure(sender: CommandSender) {
+            permission?.let { if (!sender.hasPermission(it())) throw KommandSyntaxException(permissionDenied) }
+            requirement?.let { if (!sender.it()) throw KommandSyntaxException(unknownCommandErrorMessage) }
+        }
+
+        private fun Kommand.test(sender: CommandSender): Boolean {
+            permission?.let { if (!sender.hasPermission(it())) return false }
+            requirement?.let { if (!sender.it()) return false }
+            return true
+        }
     }
 
     private val children: Map<PluginCommand, LiteralKommand>
@@ -56,13 +68,10 @@ class KommandDispatcher(children: Map<PluginCommand, LiteralKommandBuilder>) {
         }
     }
 
+
     private fun parse(sender: CommandSender, command: Command, args: Array<out String>): KommandContext {
         return children[command]?.let { root ->
-            root.requirement?.let { requirement ->
-                if (!sender.requirement()) {
-                    throw KommandSyntaxException(unknownCommandErrorMessage)
-                }
-            }
+            root.ensure(sender)
 
             val nodes = ArrayList<Kommand>()
             nodes.add(root)
@@ -73,12 +82,7 @@ class KommandDispatcher(children: Map<PluginCommand, LiteralKommandBuilder>) {
 
                 val arg = args[i]
                 val child = last.getChild(arg) ?: throw KommandSyntaxException(unknownCommandErrorMessage)
-
-                child.requirement?.let { requirement ->
-                    if (!sender.requirement()) {
-                        throw KommandSyntaxException(unknownCommandErrorMessage)
-                    }
-                }
+                child.ensure(sender)
 
                 nodes += child
                 last = child
@@ -129,6 +133,7 @@ class KommandDispatcher(children: Map<PluginCommand, LiteralKommandBuilder>) {
         args: Array<out String>
     ): List<String> {
         return this.children[command]?.let { root ->
+            if (!root.test(sender)) return emptyList()
             val nodes = ArrayList<Kommand>()
             nodes.add(root)
             var last: Kommand = root
@@ -139,6 +144,7 @@ class KommandDispatcher(children: Map<PluginCommand, LiteralKommandBuilder>) {
 
                 val arg = args[i]
                 val child = last.getChild(arg) ?: return emptyList()
+                if (!child.test(sender)) return emptyList()
 
                 nodes += child
                 last = child
@@ -152,6 +158,8 @@ class KommandDispatcher(children: Map<PluginCommand, LiteralKommandBuilder>) {
             val list = ArrayList<String>()
 
             for (child in last.children) {
+                if (!child.test(sender)) continue
+
                 if (child is ArgumentKommand)
                     list += child.argument.listSuggestion(context, target)
                 else {
@@ -171,7 +179,7 @@ class KommandDispatcher(children: Map<PluginCommand, LiteralKommandBuilder>) {
     }
 }
 
-fun LiteralKommand.usages(sender: CommandSender): List<String> {
+internal fun LiteralKommand.usages(sender: CommandSender): List<String> {
     val list = ArrayList<String>()
     val prefix = "/$name"
 
@@ -185,7 +193,12 @@ fun LiteralKommand.usages(sender: CommandSender): List<String> {
     return list
 }
 
-fun Kommand.computeUsages(sender: CommandSender, parent: Kommand, list: MutableList<String>, builder: StringBuilder) {
+internal fun Kommand.computeUsages(
+    sender: CommandSender,
+    parent: Kommand,
+    list: MutableList<String>,
+    builder: StringBuilder
+) {
     builder.append(' ')
     if (this is ArgumentKommand) {
         val brace = if (executor != null && parent.executor != null && children.isEmpty()) "[]" else "<>"

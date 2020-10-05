@@ -24,11 +24,12 @@ import org.bukkit.plugin.java.JavaPlugin
 
 abstract class Kommand(
     val name: String,
-    var requirement: (CommandSender.() -> Boolean)?,
-    var executor: ((KommandContext) -> Unit)?,
+    val permission: (() -> String)?,
+    val requirement: (CommandSender.() -> Boolean)?,
+    val executor: ((KommandContext) -> Unit)?,
     children: Collection<Kommand>
 ) {
-    val children: List<Kommand> = ImmutableList.copyOf(children)
+    internal val children: List<Kommand> = ImmutableList.copyOf(children)
 
     fun getChild(arg: String): Kommand? {
         for (child in children) {
@@ -44,9 +45,14 @@ abstract class Kommand(
 }
 
 abstract class KommandBuilder(val name: String) {
-    var requirement: (CommandSender.() -> Boolean)? = null
-    var executor: ((KommandContext) -> Unit)? = null
-    val children = LinkedHashSet<KommandBuilder>()
+    internal var permission: (() -> String)? = null
+    internal var requirement: (CommandSender.() -> Boolean)? = null
+    internal var executor: ((KommandContext) -> Unit)? = null
+    internal val children = LinkedHashSet<KommandBuilder>()
+
+    fun permission(permission: (() -> String)?) {
+        this.permission = permission
+    }
 
     fun require(requirement: CommandSender.() -> Boolean) {
         this.requirement = requirement

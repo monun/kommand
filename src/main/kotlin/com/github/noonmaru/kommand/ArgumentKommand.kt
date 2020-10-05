@@ -21,11 +21,12 @@ import org.bukkit.command.CommandSender
 
 class ArgumentKommand(
     name: String,
+    permission: (() -> String)?,
     requirement: (CommandSender.() -> Boolean)?,
     executor: ((KommandContext) -> Unit)?,
     children: Collection<Kommand>,
     internal val argument: KommandArgument<*>
-) : Kommand(name, requirement, executor, children)
+) : Kommand(name, permission, requirement, executor, children)
 
 internal class ArgumentKommandBuilder(
     name: String,
@@ -33,7 +34,7 @@ internal class ArgumentKommandBuilder(
 ) : KommandBuilder(name) {
 
     override fun build(): Kommand {
-        return ArgumentKommand(name, requirement, executor, children.map { it.build() }, argument)
+        return ArgumentKommand(name, permission, requirement, executor, children.map { it.build() }, argument)
     }
 
     override fun hashCode() = name.hashCode().inv()

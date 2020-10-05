@@ -20,14 +20,15 @@ import org.bukkit.command.CommandSender
 
 class LiteralKommand(
     name: String,
+    permission: (() -> String)?,
     requirement: (CommandSender.() -> Boolean)?,
     executor: ((KommandContext) -> Unit)?,
     children: Collection<Kommand>
-) : Kommand(name, requirement, executor, children)
+) : Kommand(name, permission, requirement, executor, children)
 
 class LiteralKommandBuilder(name: String) : KommandBuilder(name) {
     override fun build(): LiteralKommand {
-        return LiteralKommand(name, requirement, executor, children.map { it.build() }.toSet())
+        return LiteralKommand(name, permission, requirement, executor, children.map { it.build() }.toSet())
     }
 
     override fun hashCode() = name.hashCode()
