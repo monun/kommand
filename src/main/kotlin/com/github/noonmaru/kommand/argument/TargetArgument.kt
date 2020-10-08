@@ -50,6 +50,6 @@ class TargetArgument(
     }
 
     override fun listSuggestion(context: KommandContext, target: String): Collection<String> {
-        return targetSelectors + Bukkit.getOnlinePlayers().map { it.name }
+        return (targetSelectors + Bukkit.getOnlinePlayers().map { it.name }).suggestions(target)
     }
 }
