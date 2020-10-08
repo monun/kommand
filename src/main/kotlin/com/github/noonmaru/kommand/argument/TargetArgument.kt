@@ -43,7 +43,7 @@ class TargetArgument(
             selectEntities(context.sender, param)
         }.onSuccess { list ->
             filter?.let { list.removeIf(it) }
-            return list.takeIf { it.isNotEmpty() }
+            return list
         }
 
         return null
