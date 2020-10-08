@@ -18,6 +18,9 @@ package com.github.noonmaru.kommand.argument
 
 import com.github.noonmaru.kommand.KommandContext
 import com.google.common.collect.ImmutableList
+import org.bukkit.entity.Entity
+import org.bukkit.entity.Player
+import java.util.function.Predicate
 
 interface KommandArgument<T> {
     companion object {
@@ -63,6 +66,14 @@ fun double(): DoubleArgument {
 
 fun player(): PlayerArgument {
     return PlayerArgument
+}
+
+fun target(filter: Predicate<Entity>? = null): TargetArgument {
+    return if (filter == null) TargetArgument.instance else TargetArgument(filter)
+}
+
+fun targetPlayer(filter: Predicate<Player>? = null): TargetArgument {
+    return if (filter == null) TargetArgument.player else TargetArgument { it is Player && filter.test(it) }
 }
 
 fun <T> map(map: Map<String, T>): MapArgument<T> {
