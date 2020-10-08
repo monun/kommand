@@ -72,7 +72,7 @@ fun target(filter: Predicate<Entity>? = null): TargetArgument {
     return if (filter == null) TargetArgument.instance else TargetArgument(filter)
 }
 
-fun targetPlayer(filter: Predicate<Player>? = null): TargetArgument {
+fun playerTarget(filter: Predicate<Player>? = null): TargetArgument {
     return if (filter == null) TargetArgument.player else TargetArgument { it is Player && filter.test(it) }
 }
 
