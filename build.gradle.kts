@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.4.0"
+    kotlin("jvm") version "1.4.21"
     `maven-publish`
 }
 
@@ -9,21 +9,17 @@ repositories {
 }
 
 dependencies {
-    compileOnly(kotlin("stdlib-jdk8"))
-    compileOnly("junit:junit:4.12")
+    compileOnly(kotlin("stdlib"))
     compileOnly("com.destroystokyo.paper:paper-api:1.13.2-R0.1-SNAPSHOT")
 }
 
 tasks {
-    compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = "1.8"
+    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions.jvmTarget = "11"
     }
     create<Jar>("sourcesJar") {
-        archiveClassifier.set("sources")
         from(sourceSets["main"].allSource)
+        archiveClassifier.set("sources")
     }
 }
 
