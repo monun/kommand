@@ -101,7 +101,7 @@ allprojects {
   
 ```groovy
 dependencies {
-  implementation 'com.github.noonmaru:kommand:<version>'
+  implementation 'com.github.monun:kommand:<version>'
 }
 ```
   
