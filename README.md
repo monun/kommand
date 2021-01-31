@@ -1,6 +1,6 @@
 # Kommand
 
-[![](https://jitpack.io/v/noonmaru/kommand.svg)](https://jitpack.io/#noonmaru/kommand)
+[![](https://jitpack.io/v/monun/kommand.svg)](https://jitpack.io/#monun/kommand)
 
 
 ### Kotlin으로 작성된 spigot command library
