@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Noonmaru
+ * Copyright (c) 2021 Noonmaru
  *
  *  Licensed under the General Public License, Version 3.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.noonmaru.kommand
+package com.github.monun.kommand
 
 import org.bukkit.command.CommandSender
 

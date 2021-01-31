@@ -14,18 +14,6 @@
  * limitations under the License.
  */
 
-package com.github.noonmaru.kommand.argument
+package com.github.monun.kommand
 
-import com.github.noonmaru.kommand.KommandContext
-
-class MapArgument<T> internal constructor(
-    private val map: Map<String, T>
-) : KommandArgument<T> {
-    override fun parse(context: KommandContext, param: String): T? {
-        return map[param]
-    }
-
-    override fun listSuggestion(context: KommandContext, target: String): Collection<String> {
-        return map.keys.suggestions(target)
-    }
-}
+class KommandSyntaxException(val syntaxMessage: String) : Exception(syntaxMessage)

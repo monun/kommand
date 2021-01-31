@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Noonmaru
+ * Copyright (c) 2021 Noonmaru
  *
  *  Licensed under the General Public License, Version 3.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,19 +14,25 @@
  * limitations under the License.
  */
 
-package com.github.noonmaru.kommand.argument
+package com.github.monun.kommand.argument
 
-import com.github.noonmaru.kommand.KommandContext
+import com.github.monun.kommand.KommandContext
+import com.google.common.collect.ImmutableList
 
-object BooleanArgument : KommandArgument<Boolean> {
-    override val parseFailMessage: String
-        get() = "${KommandArgument.TOKEN} <-- true 혹은 false를 입력하세요."
+class StringArgument internal constructor(
+    private val values: () -> Collection<String>
+) : KommandArgument<String> {
+    override fun parse(context: KommandContext, param: String): String? {
+        val values = values()
 
-    override fun parse(context: KommandContext, param: String): Boolean {
-        return param.toBoolean()
+        return param.takeIf { values.isEmpty() || param in values }
     }
 
     override fun listSuggestion(context: KommandContext, target: String): Collection<String> {
-        return listOf("true", "false")
+        return values().suggestions(target)
+    }
+
+    companion object {
+        internal val emptyStringArgument = StringArgument { ImmutableList.of() }
     }
 }

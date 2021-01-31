@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Noonmaru
+ * Copyright (c) 2021 Noonmaru
  *
  *  Licensed under the General Public License, Version 3.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package com.github.noonmaru.kommand
+package com.github.monun.kommand.argument
 
-import org.bukkit.GameRule
-import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
+import com.github.monun.kommand.KommandContext
 
-fun CommandSender.sendFeedback(message: String) {
-    if (this is Player) {
-        world.getGameRuleValue(GameRule.SEND_COMMAND_FEEDBACK)?.let { r ->
-            if (!r)
-                return
-        }
+object BooleanArgument : KommandArgument<Boolean> {
+    override val parseFailMessage: String
+        get() = "${KommandArgument.TOKEN} <-- true 혹은 false를 입력하세요."
+
+    override fun parse(context: KommandContext, param: String): Boolean {
+        return param.toBoolean()
     }
 
-    sendMessage(message)
+    override fun listSuggestion(context: KommandContext, target: String): Collection<String> {
+        return listOf("true", "false")
+    }
 }

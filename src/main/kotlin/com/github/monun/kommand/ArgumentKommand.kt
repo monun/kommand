@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Noonmaru
+ * Copyright (c) 2021 Noonmaru
  *
  *  Licensed under the General Public License, Version 3.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.github.noonmaru.kommand
+package com.github.monun.kommand
 
-import com.github.noonmaru.kommand.argument.KommandArgument
+import com.github.monun.kommand.argument.KommandArgument
 import org.bukkit.command.CommandSender
 
 class ArgumentKommand(

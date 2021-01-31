@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Noonmaru
+ * Copyright (c) 2021 Noonmaru
  *
  *  Licensed under the General Public License, Version 3.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,25 +14,21 @@
  * limitations under the License.
  */
 
-package com.github.noonmaru.kommand.argument
+package com.github.monun.kommand.argument
 
-import com.github.noonmaru.kommand.KommandContext
-import com.google.common.collect.ImmutableList
+import com.github.monun.kommand.KommandContext
+import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 
-class StringArgument internal constructor(
-    private val values: () -> Collection<String>
-) : KommandArgument<String> {
-    override fun parse(context: KommandContext, param: String): String? {
-        val values = values()
+object PlayerArgument : KommandArgument<Player> {
+    override val parseFailMessage: String
+        get() = "${KommandArgument.TOKEN} 플레이어를 찾지 못했습니다."
 
-        return param.takeIf { values.isEmpty() || param in values }
+    override fun parse(context: KommandContext, param: String): Player? {
+        return Bukkit.getPlayerExact(param)
     }
 
     override fun listSuggestion(context: KommandContext, target: String): Collection<String> {
-        return values().suggestions(target)
-    }
-
-    companion object {
-        internal val emptyStringArgument = StringArgument { ImmutableList.of() }
+        return Bukkit.getOnlinePlayers().suggestions(target) { it.name }
     }
 }

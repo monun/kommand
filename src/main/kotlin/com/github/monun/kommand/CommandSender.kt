@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package com.github.noonmaru.kommand.argument
+package com.github.monun.kommand
 
-import com.github.noonmaru.kommand.KommandContext
-import org.bukkit.Bukkit
+import org.bukkit.GameRule
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-object PlayerArgument : KommandArgument<Player> {
-    override val parseFailMessage: String
-        get() = "${KommandArgument.TOKEN} 플레이어를 찾지 못했습니다."
-
-    override fun parse(context: KommandContext, param: String): Player? {
-        return Bukkit.getPlayerExact(param)
+fun CommandSender.sendFeedback(message: String) {
+    if (this is Player) {
+        world.getGameRuleValue(GameRule.SEND_COMMAND_FEEDBACK)?.let { r ->
+            if (!r)
+                return
+        }
     }
 
-    override fun listSuggestion(context: KommandContext, target: String): Collection<String> {
-        return Bukkit.getOnlinePlayers().suggestions(target) { it.name }
-    }
+    sendMessage(message)
 }

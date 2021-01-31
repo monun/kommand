@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Noonmaru
+ * Copyright (c) 2021 Noonmaru
  *
  *  Licensed under the General Public License, Version 3.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.github.noonmaru.kommand.argument
+package com.github.monun.kommand.argument
 
-import com.github.noonmaru.kommand.KommandContext
+import com.github.monun.kommand.KommandContext
 import com.google.common.collect.ImmutableList
 import org.bukkit.Bukkit
 import org.bukkit.entity.Entity

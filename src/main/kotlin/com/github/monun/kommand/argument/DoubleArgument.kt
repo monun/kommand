@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Noonmaru
+ * Copyright (c) 2021 Noonmaru
  *
  *  Licensed under the General Public License, Version 3.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,31 +14,34 @@
  * limitations under the License.
  */
 
-package com.github.noonmaru.kommand.argument
+package com.github.monun.kommand.argument
 
-import com.github.noonmaru.kommand.KommandContext
+import com.github.monun.kommand.KommandContext
 
-class IntegerArgument internal constructor() : KommandArgument<Int> {
+class DoubleArgument internal constructor() : KommandArgument<Double> {
     override val parseFailMessage: String
-        get() = "${KommandArgument.TOKEN} <-- $minimum ~ $maximum 사이의 정수(${radix}진수)가 아닙니다."
-    var maximum = Int.MAX_VALUE
+        get() = "${KommandArgument.TOKEN} <-- $minimum ~ $maximum 사이의 실수가 아닙니다."
+
+    var maximum = Double.MAX_VALUE
         set(value) {
             require(value >= minimum) { "maximum $value was not more than minimum $minimum." }
             field = value
         }
-
-    var minimum = Int.MIN_VALUE
+    var minimum = -Double.MIN_VALUE
         set(value) {
             require(value <= maximum) { "minimum $value was not less than maximum $maximum." }
             field = value
         }
-    var radix = 10
-        set(value) {
-            require(value in 2..36) { "radix $value was not in valid range 2..36" }
-            field = value
-        }
+    var allowInfinite = false
+    var allowNaN = false
 
-    override fun parse(context: KommandContext, param: String): Int? {
-        return param.toIntOrNull(radix)?.coerceIn(minimum, maximum)
+    override fun parse(context: KommandContext, param: String): Double? {
+        return param.toDoubleOrNull()?.coerceIn(minimum, maximum)?.takeIf {
+            when {
+                it.isInfinite() -> allowInfinite
+                it.isNaN() -> allowNaN
+                else -> true
+            }
+        }
     }
 }
