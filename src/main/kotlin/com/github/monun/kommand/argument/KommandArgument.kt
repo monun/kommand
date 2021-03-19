@@ -80,6 +80,12 @@ fun <T> map(map: Map<String, T>): MapArgument<T> {
     return MapArgument(map)
 }
 
+fun <T : Enum<*>> enum(values: List<T>): EnumArgument<T> {
+    return EnumArgument(values)
+}
+
+fun <T : Enum<*>> enum(values: Array<T>): EnumArgument<T> = enum(values.asList())
+
 fun Collection<String>.suggestions(target: String): Collection<String> {
     if (isEmpty()) return emptyList()
     if (target.isEmpty()) return this
