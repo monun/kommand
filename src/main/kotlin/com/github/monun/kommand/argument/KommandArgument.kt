@@ -76,6 +76,8 @@ fun playerTarget(filter: Predicate<Player>? = null): TargetArgument {
     return if (filter == null) TargetArgument.player else TargetArgument { it is Player && filter.test(it) }
 }
 
+fun world(): WorldArgument = WorldArgument
+
 fun <T> map(map: Map<String, T>): MapArgument<T> {
     return MapArgument(map)
 }
