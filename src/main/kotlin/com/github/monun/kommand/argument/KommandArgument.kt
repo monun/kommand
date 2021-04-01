@@ -35,38 +35,21 @@ interface KommandArgument<T> {
     fun listSuggestion(context: KommandContext, target: String): Collection<String> = emptyList()
 }
 
-fun string(): StringArgument {
-    return StringArgument.emptyStringArgument
-}
+fun string() = StringArgument.emptyStringArgument
 
-fun string(vararg names: String): StringArgument {
-    val list = ImmutableList.copyOf(names)
-    return string { list }
-}
+fun string(vararg names: String) = string { ImmutableList.copyOf(names) }
 
-fun string(names: Collection<String>): StringArgument {
-    return string { names }
-}
+fun string(names: Collection<String>) = string { names }
 
-fun string(supplier: () -> Collection<String>): StringArgument {
-    return StringArgument(supplier)
-}
+fun string(supplier: () -> Collection<String>) = StringArgument(supplier)
 
-fun bool(): BooleanArgument {
-    return BooleanArgument
-}
+fun bool() = BooleanArgument
 
-fun integer(): IntegerArgument {
-    return IntegerArgument()
-}
+fun integer() = IntegerArgument()
 
-fun double(): DoubleArgument {
-    return DoubleArgument()
-}
+fun double() = DoubleArgument()
 
-fun player(): PlayerArgument {
-    return PlayerArgument
-}
+fun player() = PlayerArgument
 
 fun target(filter: Predicate<Entity>? = null): TargetArgument {
     return if (filter == null) TargetArgument.instance else TargetArgument(filter)
@@ -76,7 +59,7 @@ fun playerTarget(filter: Predicate<Player>? = null): TargetArgument {
     return if (filter == null) TargetArgument.player else TargetArgument { it is Player && filter.test(it) }
 }
 
-fun world(): WorldArgument = WorldArgument
+fun world() = WorldArgument
 
 fun <T> map(map: Map<String, T>): MapArgument<T> {
     return MapArgument(map)
