@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.4.31"
+    kotlin("jvm") version "1.4.32"
     `maven-publish`
 }
 
@@ -10,7 +10,7 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
-    compileOnly("com.destroystokyo.paper:paper-api:1.13.2-R0.1-SNAPSHOT")
+    compileOnly("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.0")

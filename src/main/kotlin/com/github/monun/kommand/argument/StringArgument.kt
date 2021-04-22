@@ -19,7 +19,7 @@ package com.github.monun.kommand.argument
 import com.github.monun.kommand.KommandContext
 import com.google.common.collect.ImmutableList
 
-class StringArgument internal constructor(
+class StringArgument(
     private val values: () -> Collection<String>
 ) : KommandArgument<String> {
     override fun parse(context: KommandContext, param: String): String? {
@@ -28,8 +28,8 @@ class StringArgument internal constructor(
         return param.takeIf { values.isEmpty() || param in values }
     }
 
-    override fun listSuggestion(context: KommandContext, target: String): Collection<String> {
-        return values().suggestions(target)
+    override fun suggest(context: KommandContext, target: String): Collection<String> {
+        return values().suggest(target)
     }
 
     companion object {

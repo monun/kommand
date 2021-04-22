@@ -21,8 +21,11 @@ import org.bukkit.Bukkit
 import org.bukkit.World
 
 object WorldArgument : KommandArgument<World> {
+    override val parseFailMessage: String
+        get() = "${KommandArgument.TOKEN} <-- 월드를 찾지 못했습니다."
+
     override fun parse(context: KommandContext, param: String) = Bukkit.getWorld(param)
 
-    override fun listSuggestion(context: KommandContext, target: String) =
-        Bukkit.getWorlds().suggestions(target) { it.name }
+    override fun suggest(context: KommandContext, target: String) =
+        Bukkit.getWorlds().suggest(target) { it.name }
 }

@@ -17,12 +17,12 @@
 package com.github.monun.kommand
 
 import com.google.common.collect.ImmutableMap
-import org.bukkit.ChatColor
+import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.PluginCommand
 import org.bukkit.command.TabExecutor
-import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 
 class KommandDispatcher(children: Map<PluginCommand, LiteralKommandBuilder>) {
@@ -111,16 +111,14 @@ class KommandDispatcher(children: Map<PluginCommand, LiteralKommandBuilder>) {
         }.onFailure { throwable ->
             if (throwable is KommandSyntaxException) {
                 //Syntax 에러
-                sender.sendFeedback("${ChatColor.RED}${throwable.syntaxMessage}")
+                sender.sendFeedback { text().color(NamedTextColor.RED).content(throwable.syntaxMessage) }
             } else {
                 //예외 메시지 출력
                 throwable.printStackTrace()
-
-                if (sender is Player) {
-                    sender.sendMessage("${ChatColor.YELLOW}${throwable.javaClass.name}: ${throwable.message}")
-                    for (stackTraceElement in throwable.stackTrace) {
-                        sender.sendMessage("${ChatColor.YELLOW}  at $stackTraceElement")
-                    }
+                sender.sendFeedback {
+                    text().color(NamedTextColor.RED).content(
+                        "An exception occurred while executing the command."
+                    )
                 }
             }
         }
@@ -161,7 +159,7 @@ class KommandDispatcher(children: Map<PluginCommand, LiteralKommandBuilder>) {
                 if (!child.test(sender)) continue
 
                 if (child is ArgumentKommand)
-                    list += child.argument.listSuggestion(context, target)
+                    list += child.argument.suggest(context, target)
                 else {
                     val name = child.name
 

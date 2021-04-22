@@ -26,7 +26,7 @@ object BooleanArgument : KommandArgument<Boolean> {
         return param.toBoolean()
     }
 
-    override fun listSuggestion(context: KommandContext, target: String): Collection<String> {
+    override fun suggest(context: KommandContext, target: String): Collection<String> {
         return listOf("true", "false")
     }
 }

@@ -16,6 +16,7 @@
 
 package com.github.monun.kommand.argument
 
+import com.github.monun.kommand.KommandBuilder
 import com.github.monun.kommand.KommandContext
 import com.google.common.collect.ImmutableList
 import org.bukkit.entity.Entity
@@ -32,53 +33,80 @@ interface KommandArgument<T> {
 
     fun parse(context: KommandContext, param: String): T?
 
-    fun listSuggestion(context: KommandContext, target: String): Collection<String> = emptyList()
+    fun suggest(context: KommandContext, target: String): Collection<String> = emptyList()
 }
 
-fun string() = StringArgument.emptyStringArgument
+fun KommandBuilder.string() = StringArgument.emptyStringArgument
 
-fun string(vararg names: String) = string { ImmutableList.copyOf(names) }
+fun KommandBuilder.string(vararg names: String) = string { ImmutableList.copyOf(names) }
 
-fun string(names: Collection<String>) = string { names }
+fun KommandBuilder.string(names: Collection<String>) = string { names }
 
-fun string(supplier: () -> Collection<String>) = StringArgument(supplier)
+fun KommandBuilder.string(supplier: () -> Collection<String>) = StringArgument(supplier)
 
-fun bool() = BooleanArgument
+fun KommandBuilder.bool() = BooleanArgument
 
-fun integer() = IntegerArgument()
+fun KommandBuilder.integer(
+    min: Int = Int.MIN_VALUE,
+    max: Int = Int.MAX_VALUE,
+    radix: Int = 10
+) = IntegerArgument().apply {
+    this.minimum = min
+    this.maximum = max
+    this.radix = radix
+}
 
-fun double() = DoubleArgument()
+fun KommandBuilder.long(
+    min: Long = Long.MIN_VALUE,
+    max: Long = Long.MAX_VALUE,
+    radix: Int = 10
+) = LongArgument().apply {
+    this.minimum = min
+    this.maximum = max
+    this.radix = radix
+}
 
-fun player() = PlayerArgument
+fun KommandBuilder.double(
+    min: Double = Double.MIN_VALUE,
+    max: Double = Double.MAX_VALUE,
+    allowInfinite: Boolean = false,
+    allowNaN: Boolean = false
+) = DoubleArgument().apply {
+    this.minimum = min
+    this.maximum = max
+    this.allowInfinite = allowInfinite
+    this.allowNaN = allowNaN
+}
 
-fun target(filter: Predicate<Entity>? = null): TargetArgument {
+fun KommandBuilder.player() = PlayerArgument
+
+fun KommandBuilder.target(filter: Predicate<Entity>? = null): TargetArgument {
     return if (filter == null) TargetArgument.instance else TargetArgument(filter)
 }
 
-fun playerTarget(filter: Predicate<Player>? = null): TargetArgument {
+fun KommandBuilder.playerTarget(filter: Predicate<Player>? = null): TargetArgument {
     return if (filter == null) TargetArgument.player else TargetArgument { it is Player && filter.test(it) }
 }
 
-fun world() = WorldArgument
+fun KommandBuilder.world() = WorldArgument
 
-fun <T> map(map: Map<String, T>): MapArgument<T> {
-    return MapArgument(map)
-}
+fun <T> KommandBuilder.map(map: Map<String, T>): MapArgument<T> = MapArgument(map::get, map::keys)
 
-fun <T : Enum<*>> enum(values: List<T>): EnumArgument<T> {
-    return EnumArgument(values)
-}
+fun <T> KommandBuilder.map(parser: (String) -> T, names: () -> Collection<String> = ::emptyList) =
+    MapArgument(parser, names)
 
-fun <T : Enum<*>> enum(values: Array<T>): EnumArgument<T> = enum(values.asList())
+fun <T : Enum<*>> KommandBuilder.enum(values: List<T>) = EnumArgument(values)
 
-fun Collection<String>.suggestions(target: String): Collection<String> {
+fun <T : Enum<*>> KommandBuilder.enum(values: Array<T>): EnumArgument<T> = enum(values.asList())
+
+fun Collection<String>.suggest(target: String): Collection<String> {
     if (isEmpty()) return emptyList()
     if (target.isEmpty()) return this
 
     return filter { it.startsWith(target, true) }
 }
 
-fun <T> Collection<T>.suggestions(target: String, transform: (T) -> String = { it.toString() }): Collection<String> {
+fun <T> Collection<T>.suggest(target: String, transform: (T) -> String = { it.toString() }): Collection<String> {
     if (isEmpty()) return emptyList()
     if (target.isEmpty()) return map(transform)
 

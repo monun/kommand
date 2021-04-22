@@ -18,14 +18,15 @@ package com.github.monun.kommand.argument
 
 import com.github.monun.kommand.KommandContext
 
-class MapArgument<T> internal constructor(
-    private val map: Map<String, T>
+class MapArgument<T>(
+    private val parser: (String) -> T?,
+    private val names: () -> Collection<String> = ::emptyList
 ) : KommandArgument<T> {
     override fun parse(context: KommandContext, param: String): T? {
-        return map[param]
+        return parser(param)
     }
 
-    override fun listSuggestion(context: KommandContext, target: String): Collection<String> {
-        return map.keys.suggestions(target)
+    override fun suggest(context: KommandContext, target: String): Collection<String> {
+        return names().suggest(target)
     }
 }

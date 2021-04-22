@@ -26,16 +26,16 @@ class EnumArgumentTest {
     @Test
     fun test() {
         val mockContext = KommandContext(mock(Command::class.java), emptyArray(), emptyList())
-        val argument = enum(TestEnum.values())
+        val argument = EnumArgument(TestEnum.values().asList())
 
         for (value in TestEnum.values()) {
             val name = value.name
 
-            assertIterableEquals(listOf(name), argument.listSuggestion(mockContext, name))
+            assertIterableEquals(listOf(name), argument.suggest(mockContext, name))
             assertEquals(value, argument.parse(mockContext, name))
         }
 
-        assert(argument.listSuggestion(mockContext, "NONE").isEmpty())
+        assert(argument.suggest(mockContext, "NONE").isEmpty())
         assertNull(argument.parse(mockContext, "NONE"))
     }
 }

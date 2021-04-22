@@ -19,7 +19,7 @@ package com.github.monun.kommand.argument
 import com.github.monun.kommand.KommandContext
 import com.google.common.collect.ImmutableList
 
-class EnumArgument<T : Enum<*>> internal constructor(
+class EnumArgument<T : Enum<*>> constructor(
     values: List<T>
 ) : KommandArgument<T> {
     private val values: List<T> = ImmutableList.copyOf(values)
@@ -28,7 +28,7 @@ class EnumArgument<T : Enum<*>> internal constructor(
         return values.find { it.name.equals(param, true) }
     }
 
-    override fun listSuggestion(context: KommandContext, target: String): Collection<String> {
-        return values.suggestions(target) { it.name }
+    override fun suggest(context: KommandContext, target: String): Collection<String> {
+        return values.suggest(target) { it.name }
     }
 }

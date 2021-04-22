@@ -18,7 +18,7 @@ package com.github.monun.kommand.argument
 
 import com.github.monun.kommand.KommandContext
 
-class IntegerArgument internal constructor() : KommandArgument<Int> {
+class IntegerArgument : KommandArgument<Int> {
     override val parseFailMessage: String
         get() = "${KommandArgument.TOKEN} <-- $minimum ~ $maximum 사이의 정수(${radix}진수)가 아닙니다."
     var maximum = Int.MAX_VALUE

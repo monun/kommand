@@ -22,13 +22,13 @@ import org.bukkit.entity.Player
 
 object PlayerArgument : KommandArgument<Player> {
     override val parseFailMessage: String
-        get() = "${KommandArgument.TOKEN} 플레이어를 찾지 못했습니다."
+        get() = "${KommandArgument.TOKEN} <-- 플레이어를 찾지 못했습니다."
 
     override fun parse(context: KommandContext, param: String): Player? {
         return Bukkit.getPlayerExact(param)
     }
 
-    override fun listSuggestion(context: KommandContext, target: String): Collection<String> {
-        return Bukkit.getOnlinePlayers().suggestions(target) { it.name }
+    override fun suggest(context: KommandContext, target: String): Collection<String> {
+        return Bukkit.getOnlinePlayers().suggest(target) { it.name }
     }
 }
