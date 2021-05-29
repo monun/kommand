@@ -25,7 +25,7 @@ import org.bukkit.plugin.java.JavaPlugin
 abstract class Kommand(
     val name: String,
     val permission: (() -> String)?,
-    val requirement: (CommandSender.() -> Boolean)?,
+    val requirement: ((CommandSender) -> Boolean)?,
     val executor: ((KommandContext) -> Unit)?,
     children: Collection<Kommand>
 ) {
@@ -46,7 +46,7 @@ abstract class Kommand(
 
 abstract class KommandBuilder(val name: String) {
     internal var permission: (() -> String)? = null
-    internal var requirement: (CommandSender.() -> Boolean)? = null
+    internal var requirement: ((CommandSender) -> Boolean)? = null
     internal var executor: ((KommandContext) -> Unit)? = null
     internal val children = LinkedHashSet<KommandBuilder>()
 
@@ -54,11 +54,11 @@ abstract class KommandBuilder(val name: String) {
         this.permission = permission
     }
 
-    fun require(requirement: CommandSender.() -> Boolean) {
+    fun require(requirement: (sender: CommandSender) -> Boolean) {
         this.requirement = requirement
     }
 
-    fun executes(executor: (context: KommandContext) -> Unit) {
+    fun executes(executor: (ctxt: KommandContext) -> Unit) {
         this.executor = executor
     }
 

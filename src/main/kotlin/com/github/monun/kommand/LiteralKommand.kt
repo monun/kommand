@@ -21,7 +21,7 @@ import org.bukkit.command.CommandSender
 class LiteralKommand(
     name: String,
     permission: (() -> String)?,
-    requirement: (CommandSender.() -> Boolean)?,
+    requirement: ((CommandSender) -> Boolean)?,
     executor: ((KommandContext) -> Unit)?,
     children: Collection<Kommand>
 ) : Kommand(name, permission, requirement, executor, children)

@@ -32,12 +32,12 @@ class KommandDispatcher(children: Map<PluginCommand, LiteralKommandBuilder>) {
 
         private fun Kommand.ensure(sender: CommandSender) {
             permission?.let { if (!sender.hasPermission(it())) throw KommandSyntaxException(permissionDenied) }
-            requirement?.let { if (!sender.it()) throw KommandSyntaxException(unknownCommandErrorMessage) }
+            requirement?.let { if (!it(sender)) throw KommandSyntaxException(unknownCommandErrorMessage) }
         }
 
         private fun Kommand.test(sender: CommandSender): Boolean {
             permission?.let { if (!sender.hasPermission(it())) return false }
-            requirement?.let { if (!sender.it()) return false }
+            requirement?.let { if (!it(sender)) return false }
             return true
         }
     }
@@ -184,7 +184,7 @@ internal fun LiteralKommand.usages(sender: CommandSender): List<String> {
     for (child in children) {
         val requirement = child.requirement
 
-        if (requirement == null || sender.requirement())
+        if (requirement == null || requirement(sender))
             child.computeUsages(sender, this, list, StringBuilder(prefix))
     }
 
@@ -208,7 +208,7 @@ internal fun Kommand.computeUsages(
     for (child in children) {
         val requirement = child.requirement
 
-        if (requirement == null || sender.requirement())
+        if (requirement == null || requirement(sender))
             child.computeUsages(sender, this, list, StringBuilder(builder))
     }
 

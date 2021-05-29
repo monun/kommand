@@ -22,7 +22,7 @@ import org.bukkit.command.CommandSender
 class ArgumentKommand(
     name: String,
     permission: (() -> String)?,
-    requirement: (CommandSender.() -> Boolean)?,
+    requirement: ((CommandSender) -> Boolean)?,
     executor: ((KommandContext) -> Unit)?,
     children: Collection<Kommand>,
     internal val argument: KommandArgument<*>
