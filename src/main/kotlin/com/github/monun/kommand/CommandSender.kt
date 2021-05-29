@@ -31,14 +31,3 @@ fun CommandSender.sendFeedback(message: () -> ComponentLike) {
 
     sendMessage(message())
 }
-
-fun CommandSender.sendFeedback(message: String) {
-    if (this is Player) {
-        world.getGameRuleValue(GameRule.SEND_COMMAND_FEEDBACK)?.let { r ->
-            if (!r)
-                return
-        }
-    }
-
-    sendMessage(message)
-}
