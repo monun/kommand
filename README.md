@@ -10,8 +10,8 @@
   * 인수 분석(Parsing)
   * 명령어 제안 지원 (TabComplete)
 * #### 환경
-  * JDK 11
-  * Kotlin 1.4.32
+  * JDK 8
+  * Kotlin 1.5.10
 ---
 
 Spigot에는 명령어 실행을 위한 프레임워크가 없습니다.  
