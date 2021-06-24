@@ -222,6 +222,7 @@ internal fun Kommand.computeUsages(
 //상위 명령에 executor가 존재
 //하위 명령어 없음
 
+@KommandMarker
 class KommandDispatcherBuilder(
     private val plugin: JavaPlugin
 ) {

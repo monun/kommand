@@ -44,22 +44,26 @@ abstract class Kommand(
     }
 }
 
-abstract class KommandBuilder(val name: String) {
+// Hold values that should be provided under the context of register()
+interface IKommandBuilder
+
+@KommandMarker
+abstract class KommandBuilder(val name: String): IKommandBuilder {
     internal var permission: (() -> String)? = null
     internal var requirement: ((CommandSender) -> Boolean)? = null
     internal var executor: ((KommandContext) -> Unit)? = null
     internal val children = LinkedHashSet<KommandBuilder>()
 
-    fun permission(permission: (() -> String)?) {
-        this.permission = permission
+    fun permission(permission: (TerminalKommandBuilder.() -> String)?) {
+        this.permission = permission?.let { { TerminalKommandBuilder(this).permission() } }
     }
 
-    fun require(requirement: (sender: CommandSender) -> Boolean) {
-        this.requirement = requirement
+    fun require(requirement: TerminalKommandBuilder.(sender: CommandSender) -> Boolean) {
+        this.requirement = { TerminalKommandBuilder(this).requirement(it) }
     }
 
-    fun executes(executor: (ctxt: KommandContext) -> Unit) {
-        this.executor = executor
+    fun executes(executor: TerminalKommandBuilder.(ctxt: KommandContext) -> Unit) {
+        this.executor = { TerminalKommandBuilder(this).executor(it) }
     }
 
     fun then(name: String, init: KommandBuilder.() -> Unit) {
@@ -84,6 +88,13 @@ abstract class KommandBuilder(val name: String) {
     }
 
     internal abstract fun build(): Kommand
+}
+
+@KommandMarker
+class TerminalKommandBuilder(from: IKommandBuilder) : IKommandBuilder {
+    init {
+        // Copy values from given IKommandBuilder
+    }
 }
 
 fun JavaPlugin.kommand(init: KommandDispatcherBuilder.() -> Unit): KommandDispatcher {
