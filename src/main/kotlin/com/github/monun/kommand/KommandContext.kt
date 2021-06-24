@@ -20,7 +20,6 @@ import com.github.monun.kommand.argument.KommandArgument
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 
-@KommandMarker
 class KommandContext(
     val command: Command,
     val rawArguments: Array<out String>,
