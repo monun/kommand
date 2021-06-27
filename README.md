@@ -104,7 +104,7 @@ allprojects {
   
 ```groovy
 dependencies {
-  implementation 'com.github.monun:kommand:<version>'
+  implementation 'io.github.monun:kommand:<version>'
 }
 ```
   
