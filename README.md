@@ -136,7 +136,6 @@ dependencies {
 * 등록되어있는 명령어, 인수를 통해 자동으로 TabComplete를 지원합니다.
 * 인수의 TabComplete를 지원하기 위해선 PlayerArgument.kt 코드를 참고하세요
 * Mojang 에서공개한 [**Brigadier**](https://github.com/Mojang/brigadier) 코드를 참고하여 작성했습니다.
-* **Kommand**는 플러그인이 아니므로 FatJar를 만들어서 사용하세요 (참고: [ShadowJar](https://github.com/johnrengelman/shadow))
 
 ### 기여자
 
