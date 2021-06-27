@@ -1,6 +1,0 @@
-jdk:
-  - openjdk8
-before_install:
-  - chmod +x ./gradlew
-install:
-  - ./gradlew clean -Pgroup=$GROUP -Pversion=$VERSION -xtest publishToMavenLocal

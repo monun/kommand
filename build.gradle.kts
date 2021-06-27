@@ -14,6 +14,7 @@ java {
 repositories {
     mavenCentral()
     maven(url = "https://papermc.io/repo/repository/maven-public/")
+    mavenLocal()
 }
 
 dependencies {
@@ -23,7 +24,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.0")
     testImplementation("org.mockito:mockito-core:3.6.28")
-    testImplementation("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
+    testImplementation("org.spigotmc:spigot:1.16.5-R0.1-SNAPSHOT")
 }
 
 tasks {
@@ -63,11 +64,13 @@ publishing {
                 maven {
                     name = "central"
 
-                    credentials {
+                    credentials.runCatching {
                         val nexusUsername: String by project
                         val nexusPassword: String by project
                         username = nexusUsername
                         password = nexusPassword
+                    }.onFailure {
+                        logger.warn("Failed to load nexus credentials, Check the gradle.properties")
                     }
 
                     url = uri(

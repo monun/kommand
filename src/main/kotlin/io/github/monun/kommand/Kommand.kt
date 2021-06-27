@@ -33,7 +33,7 @@ abstract class Kommand(
 
     fun getChild(arg: String): Kommand? {
         for (child in children) {
-            if (child is io.github.monun.kommand.ArgumentKommand
+            if (child is ArgumentKommand
                 || (child is LiteralKommand && child.name == arg)
             ) {
                 return child
@@ -55,15 +55,15 @@ abstract class KommandBuilder(val name: String): IKommandBuilder {
     internal val children = LinkedHashSet<KommandBuilder>()
 
     fun permission(permission: (TerminalKommandBuilder.() -> String)?) {
-        this.permission = permission?.let { { TerminalKommandBuilder(this).permission() } }
+        this.permission = permission?.let { { TerminalKommandBuilder().permission() } }
     }
 
     fun require(requirement: TerminalKommandBuilder.(sender: CommandSender) -> Boolean) {
-        this.requirement = { TerminalKommandBuilder(this).requirement(it) }
+        this.requirement = { TerminalKommandBuilder().requirement(it) }
     }
 
     fun executes(executor: TerminalKommandBuilder.(ctxt: KommandContext) -> Unit) {
-        this.executor = { TerminalKommandBuilder(this).executor(it) }
+        this.executor = { TerminalKommandBuilder().executor(it) }
     }
 
     fun then(name: String, init: KommandBuilder.() -> Unit) {
@@ -75,11 +75,11 @@ abstract class KommandBuilder(val name: String): IKommandBuilder {
         vararg subArguments: Pair<String, KommandArgument<*>>,
         init: KommandBuilder.() -> Unit
     ) {
-        var child = io.github.monun.kommand.ArgumentKommandBuilder(argument.first, argument.second)
+        var child = ArgumentKommandBuilder(argument.first, argument.second)
         this.children += child
 
         for ((name, arg) in subArguments) {
-            val grandChild = io.github.monun.kommand.ArgumentKommandBuilder(name, arg)
+            val grandChild = ArgumentKommandBuilder(name, arg)
             child.children += grandChild
             child = grandChild
         }
@@ -91,11 +91,7 @@ abstract class KommandBuilder(val name: String): IKommandBuilder {
 }
 
 @KommandMarker
-class TerminalKommandBuilder(from: IKommandBuilder) : IKommandBuilder {
-    init {
-        // Copy values from given IKommandBuilder
-    }
-}
+class TerminalKommandBuilder : IKommandBuilder
 
 fun JavaPlugin.kommand(init: KommandDispatcherBuilder.() -> Unit): KommandDispatcher {
     return KommandDispatcherBuilder(this).apply(init).build()
