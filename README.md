@@ -1,8 +1,5 @@
 # Kommand
 
-[![](https://jitpack.io/v/monun/kommand.svg)](https://jitpack.io/#monun/kommand)
-
-
 ### Kotlin으로 작성된 spigot command library
 ---
 * #### Features
@@ -11,7 +8,7 @@
   * 명령어 제안 지원 (TabComplete)
 * #### 환경
   * JDK 8
-  * Kotlin 1.5.10
+  * Kotlin 1.5.20
 ---
 
 Spigot에는 명령어 실행을 위한 프레임워크가 없습니다.  
@@ -92,7 +89,8 @@ kommand {
 **Null**값을 반환하게 되는 경우 예외를 던져서 탈출합니다.  
   
 ---
-### Gradle
+### 적용방법
+#### Gradle
 ```groovy
 allprojects {
   repositories {
@@ -107,7 +105,21 @@ dependencies {
   implementation 'io.github.monun:kommand:<version>'
 }
 ```
-  
+#### 빌드
+> ##### 1.13+
+> * [ShadowJar](https://github.com/johnrengelman/shadow) 를 이용하여 fatjar로 빌드하세요
+> ##### 1.17+
+> * plugin.yml에 라이브러리 정보를 아래와 같이 입력하세요.
+> ```yaml
+> name: ...
+> main: ...
+> version: ...
+> ...
+> libraries:
+>   - io.github.monun:kommand:1.2.0
+> ```
+
+
 ---
 ### 추가정보  
 * 라이센스는 GPL-3.0이며 변경 혹은 삭제를 금합니다.
@@ -115,3 +127,7 @@ dependencies {
 * 인수의 TabComplete를 지원하기 위해선 PlayerArgument.kt 코드를 참고하세요
 * Mojang 에서공개한 [**Brigadier**](https://github.com/Mojang/brigadier) 코드를 참고하여 작성했습니다.
 * **Kommand**는 플러그인이 아니므로 FatJar를 만들어서 사용하세요 (참고: [ShadowJar](https://github.com/johnrengelman/shadow))
+
+### 기여자
+ * [Jhyub](https://github.com/Jhyub): DSL 향상
+ * [patrick-choe](https://github.com/patrick-choe): 메이븐 센트럴 배포
