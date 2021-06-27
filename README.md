@@ -94,7 +94,6 @@ kommand {
 ```groovy
 allprojects {
   repositories {
-		...
     mavenCentral()
   }
 }
