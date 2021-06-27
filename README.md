@@ -97,7 +97,7 @@ kommand {
 allprojects {
   repositories {
 		...
-    maven { url 'https://jitpack.io' }
+    mavenCentral()
   }
 }
 ```
