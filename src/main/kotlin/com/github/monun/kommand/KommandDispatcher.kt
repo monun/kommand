@@ -16,9 +16,8 @@
 
 package com.github.monun.kommand
 
+import com.github.monun.kommand.audience.sendFeedback
 import com.google.common.collect.ImmutableMap
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.PluginCommand
@@ -111,15 +110,11 @@ class KommandDispatcher(children: Map<PluginCommand, LiteralKommandBuilder>) {
         }.onFailure { throwable ->
             if (throwable is KommandSyntaxException) {
                 //Syntax 에러
-                sender.sendFeedback { text().color(NamedTextColor.RED).content(throwable.syntaxMessage) }
+                sender.sendFeedback { throwable.syntaxMessage }
             } else {
                 //예외 메시지 출력
                 throwable.printStackTrace()
-                sender.sendFeedback {
-                    text().color(NamedTextColor.RED).content(
-                        "An exception occurred while executing the command."
-                    )
-                }
+                sender.sendFeedback { "An exception occurred while executing the command." }
             }
         }
     }
