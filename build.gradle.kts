@@ -7,7 +7,7 @@ plugins {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
+        languageVersion.set(JavaLanguageVersion.of(16))
     }
 }
 
@@ -18,13 +18,13 @@ repositories {
 }
 
 dependencies {
-    compileOnly("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
-    implementation(kotlin("stdlib-jdk8"))
+    compileOnly("io.papermc.paper:paper-api:1.17-R0.1-SNAPSHOT")
+    implementation(kotlin("stdlib"))
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.0")
     testImplementation("org.mockito:mockito-core:3.6.28")
-    testImplementation("org.spigotmc:spigot:1.16.5-R0.1-SNAPSHOT")
+    testImplementation("org.spigotmc:spigot:1.17-R0.1-SNAPSHOT")
 }
 
 tasks {
