@@ -1,8 +1,6 @@
 #!/bin/bash
 
 ./gradlew clean debugJar
-# To Update Paper:
-# ./gradlew clean setupDebugServer -PupdatePaper
 
 plugins=(
 )
@@ -26,7 +24,7 @@ cd "$server_folder" || exit
 
 if [ ! -f "$server_config" ]; then
     cat << EOF > $server_config
-server="."
+server=$HOME/.m2/repository/org/spigotmc/spigot/1.17-R0.1-SNAPSHOT/spigot-1.17-R0.1-SNAPSHOT-remapped-mojang.jar
 debug=true
 debug_port=5005
 backup=false

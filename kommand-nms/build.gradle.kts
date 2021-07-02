@@ -7,4 +7,8 @@ subprojects {
     repositories {
         mavenLocal()
     }
+
+    dependencies {
+        implementation(project(":kommand-core"))
+    }
 }
