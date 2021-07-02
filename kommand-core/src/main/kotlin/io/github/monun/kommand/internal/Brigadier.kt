@@ -5,5 +5,5 @@ interface Brigadier {
         val nms = LibraryLoader.load(Brigadier::class.java)
     }
 
-    fun register(kommand: LiteralKommandImpl)
+    fun register(kommand: RootKommand)
 }
