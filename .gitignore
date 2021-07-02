@@ -8,3 +8,6 @@ build/
 
 # Debug
 .debug/
+
+# BuildTools
+.buildtools/

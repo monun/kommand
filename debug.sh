@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./gradlew clean paperJar
+./gradlew clean debugJar
 # To Update Paper:
 # ./gradlew clean setupDebugServer -PupdatePaper
 
@@ -22,7 +22,7 @@ if [ ! -f "$server_folder/$server_script" ]; then
   fi
 fi
 
-cd "$server_folder"
+cd "$server_folder" || exit
 
 if [ ! -f "$server_config" ]; then
     cat << EOF > $server_config
