@@ -38,6 +38,9 @@ done
 mkdir -p ".buildtools"
 cd ".buildtools" || exit
 
+# Download BuildTools.jar
+wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
+
 # Install sdkman for jdk switching
 curl -s "https://get.sdkman.io" | bash >> /dev/null
 source "$HOME/.sdkman/bin/sdkman-init.sh" >> /dev/null
