@@ -4,6 +4,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import io.github.monun.kommand.KommandContext
+import io.github.monun.kommand.KommandSource
 import io.github.monun.kommand.internal.AbstractKommand
 import io.github.monun.kommand.internal.Brigadier
 import io.github.monun.kommand.internal.LiteralKommand
@@ -24,7 +25,8 @@ private fun AbstractKommand.convert(): ArgumentBuilder<CommandSourceStack, *> {
         is LiteralKommand -> literal<CommandSourceStack>(name)
         else -> error("???")
     }.also { nms ->
-        executor?.run { nms.executes { invoke(KommandContext()); 1 } }
+        requires?.run { nms.requires { invoke(NMSKommandSource(it)) } }
+        executor?.run { nms.executes { invoke(NMSKommandContext(it)); 1 } }
         nodes.forEach { nms.then(it.convert()) }
     }
 }

@@ -11,9 +11,18 @@ interface Kommand {
         }
     }
 
-    fun then(name: String, init: Kommand.() -> Unit)
+    fun requires(requires: (KommandSource) -> Boolean)
 
     fun executes(executor: (KommandContext) -> Unit)
+
+    fun then(name: String, init: Kommand.() -> Unit)
 }
 
-class KommandContext
+interface KommandContext {
+    val source: KommandSource
+}
+
+interface KommandSource
+
+class KommandArgument
+
