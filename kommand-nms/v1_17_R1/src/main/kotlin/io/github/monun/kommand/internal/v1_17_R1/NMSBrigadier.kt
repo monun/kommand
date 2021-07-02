@@ -5,7 +5,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import io.github.monun.kommand.KommandContext
 import io.github.monun.kommand.internal.Brigadier
-import io.github.monun.kommand.internal.KommandDispatcherImpl
 import io.github.monun.kommand.internal.KommandImpl
 import io.github.monun.kommand.internal.LiteralKommandImpl
 import net.minecraft.commands.CommandSourceStack
@@ -13,9 +12,9 @@ import org.bukkit.Bukkit
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer
 
 class NMSBrigadier : Brigadier {
-    override fun register(dispatcher: KommandDispatcherImpl) {
+    override fun register(kommand: LiteralKommandImpl) {
         val nms = (Bukkit.getServer() as CraftServer).handle.server.commands.dispatcher
-        dispatcher.roots.forEach { nms.register(it.convert() as LiteralArgumentBuilder<CommandSourceStack>) }
+        nms.register(kommand.convert() as LiteralArgumentBuilder<CommandSourceStack>)
     }
 }
 

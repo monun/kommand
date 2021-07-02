@@ -1,15 +1,9 @@
 package io.github.monun.kommand.internal
 
-import io.github.monun.kommand.*
-
-
-class KommandDispatcherImpl : KommandDispatcher {
-    val roots = arrayListOf<LiteralKommandImpl>()
-
-    override fun register(name: String, vararg aliases: String, init: LiteralKommand.() -> Unit) {
-        roots.add(LiteralKommandImpl(name, aliases.toList()).apply(init))
-    }
-}
+import io.github.monun.kommand.Kommand
+import io.github.monun.kommand.KommandContext
+import io.github.monun.kommand.LiteralKommand
+import io.github.monun.kommand.TerminalKommand
 
 abstract class KommandImpl : Kommand {
     val nodes = arrayListOf<KommandImpl>()
