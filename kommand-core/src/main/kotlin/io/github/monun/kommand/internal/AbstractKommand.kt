@@ -9,7 +9,7 @@ abstract class AbstractKommand(
 ) : Kommand {
     var requires: ((KommandSource) -> Boolean)? = null
 
-    var executor: ((KommandContext) -> Unit)? = null
+    var executor: ((KommandContext) -> Int)? = null
 
     val nodes = arrayListOf<AbstractKommand>()
 
@@ -17,7 +17,7 @@ abstract class AbstractKommand(
         this.requires = requires
     }
 
-    override fun executes(executor: (KommandContext) -> Unit) {
+    override fun executes(executor: (KommandContext) -> Int) {
         this.executor = executor
     }
 
@@ -26,6 +26,3 @@ abstract class AbstractKommand(
     }
 }
 
-open class LiteralKommand(name: String) : AbstractKommand(name)
-
-class RootKommand(name: String, val aliases: Iterable<String>) : LiteralKommand(name)

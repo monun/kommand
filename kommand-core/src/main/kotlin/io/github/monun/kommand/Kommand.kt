@@ -13,16 +13,8 @@ interface Kommand {
 
     fun requires(requires: (KommandSource) -> Boolean)
 
-    fun executes(executor: (KommandContext) -> Unit)
+    fun executes(executor: (KommandContext) -> Int)
 
     fun then(name: String, init: Kommand.() -> Unit)
 }
-
-interface KommandContext {
-    val source: KommandSource
-}
-
-interface KommandSource
-
-class KommandArgument
 

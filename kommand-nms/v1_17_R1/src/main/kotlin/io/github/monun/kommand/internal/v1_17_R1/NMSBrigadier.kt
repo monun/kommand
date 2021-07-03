@@ -26,7 +26,7 @@ private fun AbstractKommand.convert(): ArgumentBuilder<CommandSourceStack, *> {
         else -> error("???")
     }.also { nms ->
         requires?.run { nms.requires { invoke(NMSKommandSource(it)) } }
-        executor?.run { nms.executes { invoke(NMSKommandContext(it)); 1 } }
+        executor?.run { nms.executes { invoke(NMSKommandContext(it)) } }
         nodes.forEach { nms.then(it.convert()) }
     }
 }

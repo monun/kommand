@@ -9,11 +9,13 @@ class KommandPlugin : JavaPlugin() {
             then("first") {
                 executes {
                     println("HELLO")
+                    1
                 }
             }
             then("second") {
                 executes {
                     println("WORLD")
+                    1
                 }
             }
         }
