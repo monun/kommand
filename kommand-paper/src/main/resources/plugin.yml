@@ -3,3 +3,4 @@ version: $version
 main: io.github.monun.kommand.plugin.KommandPlugin
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib:1.5.20
+  - org.jetbrains.kotlin:kotlin-reflect:1.5.20

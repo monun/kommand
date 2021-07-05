@@ -1,4 +1,4 @@
-package io.github.monun.kommand
+package io.github.monun.kommand.node
 
 // 인수 노드
 interface ArgumentNode : KommandNode

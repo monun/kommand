@@ -35,6 +35,8 @@ subprojects {
     }
 
     dependencies {
+        compileOnly("io.papermc.paper:paper-api:1.17-R0.1-SNAPSHOT")
+
         implementation(kotlin("stdlib"))
 
         testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")

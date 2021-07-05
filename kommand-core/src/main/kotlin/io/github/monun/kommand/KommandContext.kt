@@ -11,9 +11,8 @@ interface KommandContext {
 }
 
 operator fun <T> KommandContext.getValue(
-    name: String?,
+    thisRef: Any?,
     property: KProperty<*>
 ): T {
-    requireNotNull(name)
-    return this[name]
+    return this[property.name]
 }

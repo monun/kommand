@@ -5,7 +5,7 @@ val nms = "kommand-nms"
 include(
     "kommand-core",
     nms,
-    "kommand-spigot"
+    "kommand-paper"
 )
 
 file(nms).listFiles()?.filter {
