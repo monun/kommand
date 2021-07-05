@@ -19,5 +19,5 @@ interface Kommand {
         }.also { NMS.register(it, aliases.toList()) }
     }
 
-    fun register(dispatcher: KommandDispatcherImpl, aliases: List<String>);
+    fun register(dispatcher: KommandDispatcherImpl, aliases: List<String>)
 }
