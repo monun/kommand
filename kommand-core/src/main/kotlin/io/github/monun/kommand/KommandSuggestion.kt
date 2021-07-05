@@ -1,10 +1,8 @@
 package io.github.monun.kommand
 
+// 추천 빌더
 interface KommandSuggestion {
-    sealed interface Mode {
-        object include : Mode
-        object replace : Mode
-    }
-    fun suggest(value: Int, tooltip: String? = null)
-    fun suggest(text: String, tooltip: String? = null)
+    fun suggest(value: Int)
+
+    fun suggest(text: String)
 }

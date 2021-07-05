@@ -1,7 +1,7 @@
 val dependProjects = listOf(project(":kommand-core")) + project(":kommand-nms").subprojects
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.17-R0.1-SNAPSHOT")
     dependProjects.forEach { implementation(it) }
 }
 

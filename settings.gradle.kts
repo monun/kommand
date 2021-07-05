@@ -1,4 +1,3 @@
-
 rootProject.name = "kommand"
 
 val nms = "kommand-nms"

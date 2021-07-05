@@ -17,7 +17,7 @@ buildscript {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
+        languageVersion.set(JavaLanguageVersion.of(16))
     }
 }
 
@@ -31,8 +31,7 @@ subprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
 
     repositories {
-        maven("https://oss.sonatype.org/content/repositories/snapshots/")
-        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+        maven("https://papermc.io/repo/repository/maven-public/")
     }
 
     dependencies {
