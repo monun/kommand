@@ -11,6 +11,10 @@ class NMSKommandContext(
         get() = nms.input
 
     override val source by lazy { NMSKommandSource(nms.source) }
+
+    override fun <T> get(name: String?): T {
+
+    }
 }
 
 

@@ -16,5 +16,7 @@ interface Kommand {
     fun executes(executor: (KommandContext) -> Int)
 
     fun then(name: String, init: Kommand.() -> Unit)
+
+    fun then(argument: Pair<String, KommandArgument<*>>, init: Kommand.() -> Unit)
 }
 

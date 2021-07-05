@@ -1,3 +1,13 @@
 package io.github.monun.kommand
 
-class KommandArgument
+interface KommandArgument<T> {
+    companion object {
+
+    }
+
+    fun suggests(
+        mode: KommandSuggestion.Mode = KommandSuggestion.Mode.include,
+        provider: (context: KommandContext, suggestion: KommandSuggestion) -> Unit
+    )
+}
+
