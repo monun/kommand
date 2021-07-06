@@ -1,8 +1,13 @@
-val dependProjects = listOf(project(":kommand-core")) + project(":kommand-nms").subprojects
+repositories {
+    mavenLocal()
+//    maven("https://libraries.minecraft.net")
+}
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.17-R0.1-SNAPSHOT")
-    dependProjects.forEach { implementation(it) }
+
+//    dependProjects.forEach { implementation(it) }
+    implementation(project(":kommand-core"))
 }
 
 tasks {
@@ -16,8 +21,12 @@ tasks {
         archiveBaseName.set("Kommand")
         archiveVersion.set("")
         archiveClassifier.set("DEBUG")
-        (listOf(project) + dependProjects).forEach {
-            println(it.path)
+
+        val components = listOf(
+            project, project(":kommand-core")
+        ) + project(":kommand-nms").subprojects
+
+        components.forEach {
             from(it.sourceSets["main"].output)
         }
 

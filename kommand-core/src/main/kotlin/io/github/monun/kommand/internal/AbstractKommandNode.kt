@@ -5,11 +5,11 @@ import io.github.monun.kommand.node.ArgumentNode
 import io.github.monun.kommand.node.KommandNode
 import io.github.monun.kommand.node.LiteralNode
 
-abstract class KommandNodeImpl : KommandNode {
+abstract class AbstractKommandNode : KommandNode {
     lateinit var kommand: KommandDispatcherImpl
     lateinit var name: String
 
-    var parent: KommandNodeImpl? = null
+    var parent: AbstractKommandNode? = null
 
     var requires: ((KommandSource) -> Boolean)? = null
         private set
@@ -22,7 +22,7 @@ abstract class KommandNodeImpl : KommandNode {
         this.name = name
     }
 
-    val nodes = arrayListOf<KommandNodeImpl>()
+    val nodes = arrayListOf<AbstractKommandNode>()
 
     override fun requires(requires: (KommandSource) -> Boolean) {
         kommand.checkState()
@@ -38,8 +38,8 @@ abstract class KommandNodeImpl : KommandNode {
 
     override fun then(name: String, init: LiteralNode.() -> Unit) {
         nodes += LiteralNodeImpl().apply {
-            parent = this@KommandNodeImpl
-            initialize(this@KommandNodeImpl.kommand, name)
+            parent = this@AbstractKommandNode
+            initialize(this@AbstractKommandNode.kommand, name)
             init()
 
         }
@@ -48,8 +48,8 @@ abstract class KommandNodeImpl : KommandNode {
     override fun then(argument: Pair<String, KommandArgument<*>>, init: ArgumentNode.() -> Unit) {
         kommand.checkState()
         nodes += ArgumentNodeImpl().apply {
-            parent = this@KommandNodeImpl
-            initialize(this@KommandNodeImpl.kommand, argument.first, argument.second)
+            parent = this@AbstractKommandNode
+            initialize(this@AbstractKommandNode.kommand, argument.first, argument.second)
             init()
         }
     }

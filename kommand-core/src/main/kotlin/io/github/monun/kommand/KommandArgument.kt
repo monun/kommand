@@ -5,7 +5,9 @@ import io.github.monun.kommand.loader.LibraryLoader
 
 // 인수
 interface KommandArgument<T> {
-    companion object: KommandArgumentSupport by LibraryLoader.load(KommandArgumentSupport::class.java)
+    companion object : KommandArgumentSupport by LibraryLoader.load(KommandArgumentSupport::class.java)
+
+    fun suggests(provider: KommandSuggestion.(context: KommandContext) -> Unit)
 }
 
 interface KommandArgumentSupport {

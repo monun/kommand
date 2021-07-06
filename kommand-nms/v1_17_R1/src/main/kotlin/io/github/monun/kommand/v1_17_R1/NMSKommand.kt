@@ -2,16 +2,19 @@ package io.github.monun.kommand.v1_17_R1
 
 import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import com.mojang.brigadier.suggestion.Suggestions
 import io.github.monun.kommand.Kommand
+import io.github.monun.kommand.KommandSuggestion
 import io.github.monun.kommand.internal.ArgumentNodeImpl
 import io.github.monun.kommand.internal.KommandDispatcherImpl
-import io.github.monun.kommand.internal.KommandNodeImpl
+import io.github.monun.kommand.internal.AbstractKommandNode
 import io.github.monun.kommand.internal.LiteralNodeImpl
 import io.github.monun.kommand.v1_17_R1.argument.NMSKommandArgument
 import io.github.monun.kommand.v1_17_R1.internal.ArgumentSupport
 import io.github.monun.kommand.v1_17_R1.internal.NMSKommandContext
 import io.github.monun.kommand.v1_17_R1.internal.NMSKommandSource
 import net.minecraft.commands.CommandSourceStack
+import net.minecraft.commands.SharedSuggestionProvider
 import org.bukkit.Bukkit
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer
 
@@ -23,12 +26,29 @@ class NMSKommand : Kommand {
     }
 }
 
-private fun KommandNodeImpl.convert(): ArgumentBuilder<CommandSourceStack, *> {
+private fun AbstractKommandNode.convert(): ArgumentBuilder<CommandSourceStack, *> {
     return when (this) {
         is LiteralNodeImpl -> ArgumentSupport.literal(name)
         is ArgumentNodeImpl -> {
-            val argument = argument as NMSKommandArgument<*, *>
-            ArgumentSupport.argument(name, argument.type)
+            val kommandArgument = argument as NMSKommandArgument<*, *>
+            val type = kommandArgument.type
+            ArgumentSupport.argument(name, type).apply {
+                kommandArgument.suggestionProvider?.let { provider ->
+                    suggests { context, builder ->
+                        val suggestion = NMSKommandSuggestion(builder)
+                        provider(suggestion, NMSKommandContext(this@convert, context))
+
+                        if (suggestion.suggestsDefault && kommandArgument.hasDefaultSuggestion) {
+                            type.listSuggestions(
+                                context,
+                                builder
+                            )
+                        } else {
+                            builder.buildFuture()
+                        }
+                    }
+                }
+            }
         }
         else -> error("Unknown node type ${javaClass.name}")
     }.apply {
