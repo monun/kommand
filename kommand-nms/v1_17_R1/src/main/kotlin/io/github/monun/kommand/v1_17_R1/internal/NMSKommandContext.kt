@@ -5,7 +5,7 @@ import io.github.monun.kommand.KommandContext
 import io.github.monun.kommand.KommandSource
 import io.github.monun.kommand.internal.ArgumentNodeImpl
 import io.github.monun.kommand.internal.AbstractKommandNode
-import io.github.monun.kommand.v1_17_R1.argument.NMSKommandArgument
+import io.github.monun.kommand.v1_17_R1.NMSKommandArgument
 import net.minecraft.commands.CommandSourceStack
 
 class NMSKommandContext(

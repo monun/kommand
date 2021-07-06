@@ -10,21 +10,23 @@ import org.bukkit.plugin.java.JavaPlugin
 
 class KommandPlugin : JavaPlugin() {
     override fun onEnable() {
-        val ageArgument = KommandArgument.int().apply {
-
-            suggests {
-                suggest("A") { text("HELLO") }
-                suggest("B") { text("WORLD") }
-                suggest("C") { text("BRIGADIER") }
-            }
-        }
+        val bool = KommandArgument.bool()
+        val int = KommandArgument.int()
 
         Kommand.register("my") {
             then("age") {
-                then("age" to ageArgument) {
+                then("age" to int) {
                     executes {
                         val age: Int by it
                         Bukkit.broadcast(text("내 나이는 $age 살입니다."))
+                    }
+                }
+            }
+            then("flag") {
+                then("flag" to bool) {
+                    executes {
+                        val flag: Boolean by it
+                        Bukkit.broadcast(text("플래그 $flag"))
                     }
                 }
             }

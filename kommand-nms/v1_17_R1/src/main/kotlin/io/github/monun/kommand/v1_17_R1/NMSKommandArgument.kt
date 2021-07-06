@@ -1,4 +1,4 @@
-package io.github.monun.kommand.v1_17_R1.argument
+package io.github.monun.kommand.v1_17_R1
 
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.context.CommandContext
@@ -7,9 +7,11 @@ import io.github.monun.kommand.internal.AbstractKommandArgument
 import net.minecraft.commands.CommandSourceStack
 import java.lang.reflect.Method
 
-abstract class NMSKommandArgument<T, U : ArgumentType<*>>(
-    val type: U
-) : AbstractKommandArgument<T>() {
+open class NMSKommandArgument<T, U>(
+    val type: ArgumentType<T>,
+    private val provider: (CommandContext<CommandSourceStack>, name: String) -> T,
+    private val converter: (T) -> U
+) : AbstractKommandArgument<U>() {
     private companion object {
         private val originalMethod: Method = ArgumentType::class.java.declaredMethods.find { method ->
             val parameterTypes = method.parameterTypes
@@ -29,9 +31,15 @@ abstract class NMSKommandArgument<T, U : ArgumentType<*>>(
         }
     }
 
+    internal
+
     val hasDefaultSuggestion: Boolean by lazy(LazyThreadSafetyMode.NONE) {
         checkDefaultSuggestions(type.javaClass)
     }
 
-    abstract fun from(context: CommandContext<CommandSourceStack>, name: String): T
+    @Suppress("UNCHECKED_CAST")
+    fun from(context: CommandContext<CommandSourceStack>, name: String): U {
+        val value = provider(context, name)
+        return converter(value)
+    }
 }
