@@ -26,7 +26,7 @@ private fun AbstractKommandNode.convert(): ArgumentBuilder<CommandSourceStack, *
     return when (this) {
         is LiteralNodeImpl -> ArgumentSupport.literal(name)
         is ArgumentNodeImpl -> {
-            val kommandArgument = argument as NMSKommandArgument<*, *>
+            val kommandArgument = argument as NMSKommandArgument<*>
             val type = kommandArgument.type
             ArgumentSupport.argument(name, type).apply {
                 kommandArgument.suggestionProvider?.let { provider ->

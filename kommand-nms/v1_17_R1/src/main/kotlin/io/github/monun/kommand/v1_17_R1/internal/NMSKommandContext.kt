@@ -19,7 +19,7 @@ class NMSKommandContext(
     @Suppress("UNCHECKED_CAST")
     override fun <T> get(name: String): T {
         val argumentNode = node.findArgumentNode(name) ?: error("Not found argument node $name")
-        val argument = argumentNode.argument as NMSKommandArgument<*, *>
+        val argument = argumentNode.argument as NMSKommandArgument<*>
 
         return argument.from(nms, name) as T
     }
