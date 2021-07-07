@@ -221,7 +221,7 @@ class NMSKommandArgumentSupport : KommandArgumentSupport {
     override fun swizzle(): KommandArgument<EnumSet<Axis>> {
         return SwizzleArgument.swizzle() provide { context, name ->
             EnumSet.copyOf(SwizzleArgument.getSwizzle(context, name).map { axis ->
-                Axis.valueOf(axis.getName())
+                Axis.valueOf(axis.getName().uppercase())
             })
         }
     }
