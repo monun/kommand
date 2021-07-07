@@ -9,7 +9,7 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 
 class NMSKommandSource(
-    private val nms: CommandSourceStack
+    val nms: CommandSourceStack
 ) : KommandSource {
     override val sender: CommandSender
         get() = nms.bukkitSender

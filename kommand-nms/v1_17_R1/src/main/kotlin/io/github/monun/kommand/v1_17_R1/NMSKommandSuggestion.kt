@@ -2,7 +2,6 @@ package io.github.monun.kommand.v1_17_R1
 
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import io.github.monun.kommand.AbstractKommandSuggestion
-import io.github.monun.kommand.KommandSuggestion
 import io.papermc.paper.brigadier.PaperBrigadier
 import net.kyori.adventure.text.ComponentLike
 

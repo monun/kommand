@@ -1,6 +1,6 @@
 package io.github.monun.kommand.internal
 
-import io.github.monun.kommand.*
+import io.github.monun.kommand.KommandDispatcher
 
 class KommandDispatcherImpl : KommandDispatcher {
     internal var isMutable = true

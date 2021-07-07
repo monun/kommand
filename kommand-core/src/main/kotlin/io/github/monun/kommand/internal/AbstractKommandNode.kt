@@ -1,6 +1,8 @@
 package io.github.monun.kommand.internal
 
-import io.github.monun.kommand.*
+import io.github.monun.kommand.KommandArgument
+import io.github.monun.kommand.KommandContext
+import io.github.monun.kommand.KommandSource
 import io.github.monun.kommand.node.ArgumentNode
 import io.github.monun.kommand.node.KommandNode
 import io.github.monun.kommand.node.LiteralNode

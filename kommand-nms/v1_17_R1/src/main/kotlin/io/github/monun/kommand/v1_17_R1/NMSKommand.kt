@@ -30,20 +30,8 @@ private fun AbstractKommandNode.convert(): ArgumentBuilder<CommandSourceStack, *
             val kommandArgument = argument as NMSKommandArgument<*>
             val type = kommandArgument.type
             argument(name, type).apply {
-                kommandArgument.suggestionProvider?.let { provider ->
-                    suggests { context, builder ->
-                        val suggestion = NMSKommandSuggestion(builder)
-                        provider(suggestion, NMSKommandContext(this@convert, context))
-
-                        if (suggestion.suggestsDefault && kommandArgument.hasDefaultSuggestion) {
-                            type.listSuggestions(
-                                context,
-                                builder
-                            )
-                        } else {
-                            builder.buildFuture()
-                        }
-                    }
+                suggests { context, suggestionsBuilder ->
+                    kommandArgument.listSuggestions(this@convert, context, suggestionsBuilder)
                 }
             }
         }
