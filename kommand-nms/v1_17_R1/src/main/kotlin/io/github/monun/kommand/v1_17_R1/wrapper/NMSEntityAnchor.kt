@@ -3,7 +3,6 @@ package io.github.monun.kommand.v1_17_R1.wrapper
 import io.github.monun.kommand.KommandSource
 import io.github.monun.kommand.v1_17_R1.internal.NMSKommandSource
 import io.github.monun.kommand.wrapper.EntityAnchor
-import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.arguments.EntityAnchorArgument
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity
 import org.bukkit.entity.Entity

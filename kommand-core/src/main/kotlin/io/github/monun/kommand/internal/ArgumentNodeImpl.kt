@@ -1,7 +1,7 @@
 package io.github.monun.kommand.internal
 
-import io.github.monun.kommand.node.ArgumentNode
 import io.github.monun.kommand.KommandArgument
+import io.github.monun.kommand.node.ArgumentNode
 
 class ArgumentNodeImpl : AbstractKommandNode(), ArgumentNode {
     lateinit var argument: KommandArgument<*>
