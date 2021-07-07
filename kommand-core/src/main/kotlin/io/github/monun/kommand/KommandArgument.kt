@@ -28,6 +28,7 @@ import org.bukkit.scoreboard.DisplaySlot
 import org.bukkit.scoreboard.Objective
 import org.bukkit.scoreboard.Team
 import java.util.EnumSet
+import java.util.UUID
 
 // 인수
 interface KommandArgument<T> {
@@ -116,6 +117,8 @@ interface KommandArgumentSupport {
     fun team(): KommandArgument<Team>
 
     fun time(): KommandArgument<Int>
+
+    fun uuid(): KommandArgument<UUID>
 
     // net.minecraft.commands.arguments.blocks
 

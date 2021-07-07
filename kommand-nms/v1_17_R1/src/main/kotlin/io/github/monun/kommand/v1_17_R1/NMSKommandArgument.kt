@@ -388,7 +388,7 @@ class NMSKommandArgumentSupport : KommandArgumentSupport {
         }
     }
 
-    fun uuid(): KommandArgument<UUID> {
+    override fun uuid(): KommandArgument<UUID> {
         return UuidArgument.uuid() provide UuidArgument::getUuid
     }
 
