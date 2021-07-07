@@ -17,7 +17,7 @@ class KommandPlugin : JavaPlugin() {
         val bool = KommandArgument.bool()
         val int = KommandArgument.int()
         val word = KommandArgument.string(StringType.SINGLE_WORD)
-        val string = KommandArgument.string(StringType.QOUTABLE_PHRASE)
+        val string = KommandArgument.string(StringType.QUOTABLE_PHRASE)
         val greedy = KommandArgument.string(StringType.GREEDY_PHRASE)
 
         Kommand.register("my") {

@@ -48,6 +48,6 @@ interface KommandArgumentSupport {
 
 enum class StringType {
     SINGLE_WORD,
-    QOUTABLE_PHRASE,
+    QUOTABLE_PHRASE,
     GREEDY_PHRASE
 }

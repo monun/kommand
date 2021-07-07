@@ -78,7 +78,7 @@ class NMSKommandArgumentSupport : KommandArgumentSupport {
     override fun string(type: StringType): KommandArgument<String> {
         return when (type) {
             StringType.SINGLE_WORD -> StringArgumentType.word()
-            StringType.QOUTABLE_PHRASE -> StringArgumentType.string()
+            StringType.QUOTABLE_PHRASE -> StringArgumentType.string()
             StringType.GREEDY_PHRASE -> StringArgumentType.greedyString()
         } provide StringArgumentType::getString
     }
