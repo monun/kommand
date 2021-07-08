@@ -31,9 +31,7 @@ subprojects {
     }
 
     tasks {
-        create<Jar>("paperJar") {
-            from(sourceSets["main"].output)
-
+        jar {
             doLast {
                 fun remap(jarFile: File, outputFile: File, mappingFile: File, reversed: Boolean = false) {
                     val inputJar = SpecialJar.init(jarFile)
@@ -82,7 +80,7 @@ tasks {
         from(sourceSets["main"].output)
 
         subprojects.forEach {
-            val paperJar = it.tasks.named("paperJar").get() as Jar
+            val paperJar = it.tasks.jar.get()
             dependsOn(paperJar)
             from(zipTree(paperJar.archiveFile))
         }
