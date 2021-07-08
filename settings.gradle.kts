@@ -1,15 +1,17 @@
 rootProject.name = "kommand"
 
-val nms = "kommand-nms"
+val core = "kommand-core"
 
 include(
+    "kommand-api",
     "kommand-core",
-    nms,
+    "kommand-debug",
     "kommand-paper"
 )
 
-file(nms).listFiles()?.filter {
+// load nms
+file(core).listFiles()?.filter {
     it.isDirectory && it.name.startsWith("v")
 }?.forEach { file ->
-    include(":$nms:${file.name}")
+    include(":$core:${file.name}")
 }

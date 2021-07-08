@@ -6,6 +6,7 @@ checkLegacy() {
 memory=1G
 # List of versions to build
 versions=(
+  "1.17.1"
   "1.17"
   "1.16.5"
   "1.15.2"
