@@ -21,8 +21,8 @@ subprojects {
     }
 
     repositories {
-        mavenLocal()
         maven("https://libraries.minecraft.net")
+        mavenLocal()
     }
 
     dependencies {

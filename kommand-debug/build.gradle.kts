@@ -1,5 +1,3 @@
-
-
 repositories {
     mavenLocal()
 }
@@ -8,7 +6,6 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.17-R0.1-SNAPSHOT")
 
     implementation(project(":kommand-api"))
-    implementation(project(":kommand-core"))
 }
 
 tasks {
@@ -23,7 +20,7 @@ tasks {
         archiveVersion.set("")
         archiveClassifier.set("DEBUG")
 
-        listOf(project(":kommand-api")) + project(":kommand-core").let { listOf(it) + it.subprojects }.forEach {
+        (listOf(project(":kommand-api")) + project(":kommand-core").let { listOf(it) + it.subprojects }).forEach {
             from(it.sourceSets["main"].output)
         }
 

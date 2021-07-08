@@ -27,11 +27,6 @@ allprojects {
 subprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
 
-//    if (path == ":kommand-api" || path == ":kommand-core") {
-//        apply(plugin = "maven-publish")
-//        apply(plugin = "signing")
-//    }
-
     repositories {
         maven("https://papermc.io/repo/repository/maven-public/")
     }
