@@ -15,6 +15,7 @@ import io.github.monun.kommand.KommandArgumentSupport
 import io.github.monun.kommand.StringType
 import io.github.monun.kommand.internal.AbstractKommandArgument
 import io.github.monun.kommand.internal.ArgumentNodeImpl
+import io.github.monun.kommand.v1_17_R1.internal.NMSKommandContext
 import io.github.monun.kommand.wrapper.EntityAnchor
 import io.papermc.paper.brigadier.PaperBrigadier
 import net.kyori.adventure.text.Component
@@ -106,6 +107,8 @@ infix fun <T> Pair<ArgumentType<*>, SuggestionProvider<CommandSourceStack>>.prov
 }
 
 class NMSKommandArgumentSupport : KommandArgumentSupport {
+    // com.mojang.brigadier.arguments
+
     override fun bool(): KommandArgument<Boolean> {
         return BoolArgumentType.bool() provide BoolArgumentType::getBool
     }
@@ -129,10 +132,12 @@ class NMSKommandArgumentSupport : KommandArgumentSupport {
     override fun string(type: StringType): KommandArgument<String> {
         return when (type) {
             StringType.SINGLE_WORD -> StringArgumentType.word()
-            StringType.QOUTABLE_PHRASE -> StringArgumentType.string()
+            StringType.QUOTABLE_PHRASE -> StringArgumentType.string()
             StringType.GREEDY_PHRASE -> StringArgumentType.greedyString()
         } provide StringArgumentType::getString
     }
+
+    // net.minecraft.commands.arguments
 
     override fun angle(): KommandArgument<Float> {
         return AngleArgument.angle() provide AngleArgument::getAngle
@@ -140,8 +145,7 @@ class NMSKommandArgumentSupport : KommandArgumentSupport {
 
     override fun color(): KommandArgument<ChatColor> {
         return ColorArgument.color() provide { context, name ->
-            ColorArgument.getColor(context, name)
-                .let { ChatColor.of(it.getName()) ?: error("Not found color") }
+            CraftChatMessage.getColor(ColorArgument.getColor(context, name))
         }
     }
 
@@ -329,7 +333,98 @@ class NMSKommandArgumentSupport : KommandArgumentSupport {
         }
     }
 
-    fun uuid(): KommandArgument<UUID> {
+    override fun uuid(): KommandArgument<UUID> {
         return UuidArgument.uuid() provide UuidArgument::getUuid
+    }
+
+    // net.minecraft.commands.arguments.blocks
+
+    override fun blockPredicate(): KommandArgument<(Block) -> Boolean> {
+        return BlockPredicateArgument.blockPredicate() provide { context, name ->
+            { block ->
+                BlockPredicateArgument.getBlockPredicate(context, name)
+                    .test(BlockInWorld(context.source.level, (block as CraftBlock).position, true))
+            }
+        }
+    }
+
+    override fun blockState(): KommandArgument<BlockData> {
+        return BlockStateArgument.block() provide { context, name ->
+            CraftBlockData.fromData(BlockStateArgument.getBlock(context, name).state)
+        }
+    }
+
+    // net.minecraft.commands.arguments.coordinates
+
+    override fun blockPosition(type: PositionLoadType): KommandArgument<BlockPosition> {
+        return BlockPosArgument.blockPos() provide { context, name ->
+            val blockPosition = when (type) {
+                PositionLoadType.LOADED -> BlockPosArgument.getLoadedBlockPos(context, name)
+                PositionLoadType.SPAWNABLE -> BlockPosArgument.getSpawnablePos(context, name)
+            }
+            BlockPosition(blockPosition.x, blockPosition.y, blockPosition.z)
+        }
+    }
+
+    override fun blockPosition2D(): KommandArgument<BlockPosition2D> {
+        return ColumnPosArgument.columnPos() provide { context, name ->
+            val columnPosition = ColumnPosArgument.getColumnPos(context, name)
+            BlockPosition2D(columnPosition.x, columnPosition.z)
+        }
+    }
+
+    override fun position(): KommandArgument<Position> {
+        return Vec3Argument.vec3() provide { context, name ->
+            val vec3 = Vec3Argument.getVec3(context, name)
+            Position(vec3.x, vec3.y, vec3.z)
+        }
+    }
+
+    override fun position2D(): KommandArgument<Position2D> {
+        return Vec2Argument.vec2() provide { context, name ->
+            val vec2 = Vec2Argument.getVec2(context, name)
+            Position2D(vec2.x.toDouble(), vec2.y.toDouble())
+        }
+    }
+
+    override fun rotation(): KommandArgument<Rotation> {
+        return RotationArgument.rotation() provide { context, name ->
+            val rotation = RotationArgument.getRotation(context, name).getRotation(context.source)
+            Rotation(rotation.x, rotation.y)
+        }
+    }
+
+    override fun swizzle(): KommandArgument<EnumSet<Axis>> {
+        return SwizzleArgument.swizzle() provide { context, name ->
+            EnumSet.copyOf(SwizzleArgument.getSwizzle(context, name).map { axis ->
+                Axis.valueOf(axis.getName().uppercase())
+            })
+        }
+    }
+
+    // net.minecraft.commands.arguments.item
+
+    override fun function(): KommandArgument<() -> Unit> {
+        return FunctionArgument.functions() provide { context, name ->
+            {
+                FunctionArgument.getFunctions(context, name).map { function ->
+                    context.source.server.functions.execute(function, context.source)
+                }
+            }
+        }
+    }
+
+    override fun item(): KommandArgument<ItemStack> {
+        return ItemArgument.item() provide { context, name ->
+            CraftItemStack.asBukkitCopy(ItemArgument.getItem(context, name).createItemStack(1, false))
+        }
+    }
+
+    override fun itemPredicate(): KommandArgument<(ItemStack) -> Boolean> {
+        return ItemPredicateArgument.itemPredicate() provide { context, name ->
+            { itemStack ->
+                ItemPredicateArgument.getItemPredicate(context, name).test(CraftItemStack.asNMSCopy(itemStack))
+            }
+        }
     }
 }

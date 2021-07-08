@@ -4,7 +4,7 @@ import io.github.monun.kommand.wrapper.EntityAnchor
 import io.github.monun.kommand.wrapper.WrapperSupport
 import net.minecraft.commands.arguments.EntityAnchorArgument
 
-class NMSWrapperSupport: WrapperSupport {
+class NMSWrapperSupport : WrapperSupport {
     override fun entityAnchorFeet(): EntityAnchor {
         return NMSEntityAnchor(EntityAnchorArgument.Anchor.FEET)
     }
