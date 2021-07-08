@@ -64,9 +64,7 @@ subprojects {
                     obfOutput.delete()
                     spigotOutput.delete()
                 } else {
-                    logger.warn("Mojang and Spigot mapping should be specified for ${
-                        path.drop(1).takeWhile { it != ':' }
-                    }.")
+                    throw IllegalStateException("Mojang and Spigot mapping should be specified for ${project.path}")
                 }
             }
 
