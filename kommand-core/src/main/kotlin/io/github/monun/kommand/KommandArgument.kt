@@ -3,21 +3,32 @@ package io.github.monun.kommand
 import com.destroystokyo.paper.profile.PlayerProfile
 import com.google.gson.JsonObject
 import io.github.monun.kommand.loader.LibraryLoader
+import io.github.monun.kommand.util.BlockPosition
+import io.github.monun.kommand.util.BlockPosition2D
+import io.github.monun.kommand.util.Position
+import io.github.monun.kommand.util.Position2D
+import io.github.monun.kommand.util.Rotation
 import io.github.monun.kommand.wrapper.EntityAnchor
 import net.kyori.adventure.text.Component
-import net.md_5.bungee.api.ChatColor
+import org.bukkit.Axis
+import org.bukkit.ChatColor
 import org.bukkit.NamespacedKey
 import org.bukkit.Particle
 import org.bukkit.World
 import org.bukkit.advancement.Advancement
+import org.bukkit.block.Block
+import org.bukkit.block.data.BlockData
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.Recipe
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scoreboard.DisplaySlot
 import org.bukkit.scoreboard.Objective
 import org.bukkit.scoreboard.Team
+import java.util.EnumSet
+import java.util.UUID
 
 // 인수
 interface KommandArgument<T> {
@@ -28,6 +39,7 @@ interface KommandArgument<T> {
 
 interface KommandArgumentSupport {
     // com.mojang.brigadier.arguments
+
     fun bool(): KommandArgument<Boolean>
 
     fun int(minimum: Int = Int.MIN_VALUE, maximum: Int = Int.MAX_VALUE): KommandArgument<Int>
@@ -40,7 +52,7 @@ interface KommandArgumentSupport {
 
     fun string(type: StringType = StringType.SINGLE_WORD): KommandArgument<String>
 
-    // net.mincraft.commands.arguments
+    // net.minecraft.commands.arguments
 
     fun angle(): KommandArgument<Float>
 
@@ -106,15 +118,44 @@ interface KommandArgumentSupport {
 
     fun time(): KommandArgument<Int>
 
-    // net.mincraft.commands.arguments.blocks
+    fun uuid(): KommandArgument<UUID>
 
-    // net.mincraft.commands.arguments.coordinates
+    // net.minecraft.commands.arguments.blocks
 
-    // net.mincraft.commands.arguments.item
+    fun blockPredicate(): KommandArgument<(Block) -> Boolean>
+
+    fun blockState(): KommandArgument<BlockData>
+
+    // net.minecraft.commands.arguments.coordinates
+
+    fun blockPosition(type: PositionLoadType = PositionLoadType.LOADED): KommandArgument<BlockPosition>
+
+    fun blockPosition2D(): KommandArgument<BlockPosition2D>
+
+    fun position(): KommandArgument<Position>
+
+    fun position2D(): KommandArgument<Position2D>
+
+    fun rotation(): KommandArgument<Rotation>
+
+    fun swizzle(): KommandArgument<EnumSet<Axis>>
+
+    // net.minecraft.commands.arguments.item
+
+    fun function(): KommandArgument<() -> Unit>
+
+    fun item(): KommandArgument<ItemStack>
+
+    fun itemPredicate(): KommandArgument<(ItemStack) -> Boolean>
 }
 
 enum class StringType {
     SINGLE_WORD,
-    QOUTABLE_PHRASE,
+    QUOTABLE_PHRASE,
     GREEDY_PHRASE
+}
+
+enum class PositionLoadType {
+    LOADED,
+    SPAWNABLE
 }

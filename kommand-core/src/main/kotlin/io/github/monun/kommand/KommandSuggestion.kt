@@ -8,5 +8,5 @@ interface KommandSuggestion {
 
     fun suggest(value: Int, tooltip: (() -> ComponentLike)? = null)
 
-    fun suggest(text: String, tooltip: (() ->ComponentLike)? = null)
+    fun suggest(text: String, tooltip: (() -> ComponentLike)? = null)
 }
