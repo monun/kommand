@@ -29,38 +29,32 @@ subprojects {
         implementation(project(":kommand-api"))
         implementation(requireNotNull(parent)) // kommand-core
     }
-}
 
-tasks {
-    create<Jar>("paperJar") {
-        (listOf(project(":kommand-api")) + project(":kommand-core").let { listOf(it) + it.subprojects }).forEach {
-            from(it.sourceSets["main"].output)
-            println(it)
-        }
+    tasks {
+        create<Jar>("paperJar") {
+            from(sourceSets["main"].output)
 
-        doLast {
-            fun remap(jarFile: File, outputFile: File, mappingFile: File, reversed: Boolean = false) {
-                val inputJar = SpecialJar.init(jarFile)
+            doLast {
+                fun remap(jarFile: File, outputFile: File, mappingFile: File, reversed: Boolean = false) {
+                    val inputJar = SpecialJar.init(jarFile)
 
-                val mapping = JarMapping()
-                mapping.loadMappings(mappingFile.canonicalPath, reversed, false, null, null)
+                    val mapping = JarMapping()
+                    mapping.loadMappings(mappingFile.canonicalPath, reversed, false, null, null)
 
-                val provider = JointProvider()
-                provider.add(JarProvider(inputJar))
-                mapping.setFallbackInheritanceProvider(provider)
+                    val provider = JointProvider()
+                    provider.add(JarProvider(inputJar))
+                    mapping.setFallbackInheritanceProvider(provider)
 
-                val mapper = JarRemapper(mapping)
-                mapper.remapJar(inputJar, outputFile)
-                inputJar.close()
-            }
+                    val mapper = JarRemapper(mapping)
+                    mapper.remapJar(inputJar, outputFile)
+                    inputJar.close()
+                }
 
-            val archiveFile = archiveFile.get().asFile
+                val archiveFile = archiveFile.get().asFile
+                val obfOutput = File(archiveFile.parentFile, "remapped-obf.jar")
+                val spigotOutput = File(archiveFile.parentFile, "remapped-spigot.jar")
 
-            val obfOutput = File(archiveFile.parentFile, "remapped-obf.jar")
-            val spigotOutput = File(archiveFile.parentFile, "remapped-spigot.jar")
-
-            subprojects.forEach { nmsProject ->
-                val configurations = nmsProject.configurations
+                val configurations = project.configurations
                 val mojangMapping = configurations.named("mojangMapping").get().firstOrNull()
                 val spigotMapping = configurations.named("spigotMapping").get().firstOrNull()
 
@@ -77,6 +71,20 @@ tasks {
                     }.")
                 }
             }
+
+        }
+    }
+}
+
+tasks {
+    create<Jar>("paperJar") {
+        from(project(":kommand-api").sourceSets["main"].output)
+        from(sourceSets["main"].output)
+
+        subprojects.forEach {
+            val paperJar = it.tasks.named("paperJar").get() as Jar
+            dependsOn(paperJar)
+            from(zipTree(paperJar.archiveFile))
         }
     }
 
