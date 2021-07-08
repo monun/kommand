@@ -1,8 +1,12 @@
-package io.github.monun.kommand.v1_17_R1.internal
+package io.github.monun.kommand.v1_17_R1
 
 import io.github.monun.kommand.KommandSource
-import io.github.monun.kommand.util.Position
-import io.github.monun.kommand.util.Rotation
+import io.github.monun.kommand.v1_17_R1.wrapper.NMSEntityAnchor
+import io.github.monun.kommand.wrapper.EntityAnchor
+import io.github.monun.kommand.wrapper.Position3D
+import io.github.monun.kommand.wrapper.Rotation
+import io.papermc.paper.brigadier.PaperBrigadier
+import net.kyori.adventure.text.Component
 import net.minecraft.commands.CommandSourceStack
 import org.bukkit.Location
 import org.bukkit.World
@@ -31,8 +35,8 @@ class NMSKommandSource(
     override val playerOrNull: Player?
         get() = nms.entity?.bukkitEntity?.takeIf { it is Player } as Player?
 
-    override val position: Position
-        get() = nms.position.run { Position(x, y, z) }
+    override val position: Position3D
+        get() = nms.position.run { Position3D(x, y, z) }
 
     override val rotation: Rotation
         get() = nms.rotation.run { Rotation(x, y) }

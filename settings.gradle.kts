@@ -5,8 +5,7 @@ val core = "kommand-core"
 include(
     "kommand-api",
     "kommand-core",
-    "kommand-debug",
-    "kommand-paper"
+    "kommand-debug"
 )
 
 // load nms

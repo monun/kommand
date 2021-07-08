@@ -6,10 +6,10 @@ import io.github.monun.kommand.Kommand
 import io.github.monun.kommand.KommandArgument
 import io.github.monun.kommand.StringType
 import io.github.monun.kommand.getValue
-import io.github.monun.kommand.util.BlockPosition
-import io.github.monun.kommand.util.Position
-import io.github.monun.kommand.util.Rotation
+import io.github.monun.kommand.wrapper.BlockPosition3D
 import io.github.monun.kommand.wrapper.EntityAnchor
+import io.github.monun.kommand.wrapper.Position3D
+import io.github.monun.kommand.wrapper.Rotation
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import net.md_5.bungee.api.ChatColor
@@ -210,7 +210,7 @@ class KommandPlugin : JavaPlugin() {
 
                 then("position" to KommandArgument.blockPosition()) {
                     executes {
-                        val position: BlockPosition by it
+                        val position: BlockPosition3D by it
                         Bukkit.broadcast(text(position.toBlock(it.source.player.world).type.translationKey))
                     }
                 }
@@ -222,7 +222,7 @@ class KommandPlugin : JavaPlugin() {
 
                 then("position" to KommandArgument.position()) {
                     executes {
-                        val position: Position by it
+                        val position: Position3D by it
                         Bukkit.broadcast(text("${position.asVector.distance(it.source.player.location.toVector())} far"))
                     }
                 }

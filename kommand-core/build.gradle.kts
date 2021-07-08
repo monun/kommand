@@ -21,7 +21,7 @@ subprojects {
 
     dependencies {
         implementation(project(":kommand-api"))
-        implementation(requireNotNull(parent))
+        implementation(requireNotNull(parent)) // kommand-core
     }
 }
 

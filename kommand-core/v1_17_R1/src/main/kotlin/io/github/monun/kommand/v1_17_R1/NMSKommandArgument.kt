@@ -12,29 +12,40 @@ import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import io.github.monun.kommand.KommandArgument
 import io.github.monun.kommand.KommandArgumentSupport
+import io.github.monun.kommand.PositionLoadType
 import io.github.monun.kommand.StringType
 import io.github.monun.kommand.internal.AbstractKommandArgument
 import io.github.monun.kommand.internal.ArgumentNodeImpl
-import io.github.monun.kommand.v1_17_R1.internal.NMSKommandContext
-import io.github.monun.kommand.wrapper.EntityAnchor
+import io.github.monun.kommand.wrapper.*
+import io.github.monun.kommand.wrapper.Rotation
 import io.papermc.paper.brigadier.PaperBrigadier
 import net.kyori.adventure.text.Component
-import net.md_5.bungee.api.ChatColor
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.arguments.*
+import net.minecraft.commands.arguments.blocks.BlockPredicateArgument
+import net.minecraft.commands.arguments.blocks.BlockStateArgument
+import net.minecraft.commands.arguments.coordinates.*
+import net.minecraft.commands.arguments.item.FunctionArgument
+import net.minecraft.commands.arguments.item.ItemArgument
+import net.minecraft.commands.arguments.item.ItemPredicateArgument
 import net.minecraft.commands.synchronization.SuggestionProviders
-import org.bukkit.Bukkit
-import org.bukkit.NamespacedKey
-import org.bukkit.Particle
-import org.bukkit.World
+import net.minecraft.world.level.block.state.pattern.BlockInWorld
+import org.bukkit.*
 import org.bukkit.advancement.Advancement
+import org.bukkit.block.Block
+import org.bukkit.block.data.BlockData
 import org.bukkit.craftbukkit.v1_17_R1.CraftParticle
+import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlock
+import org.bukkit.craftbukkit.v1_17_R1.block.data.CraftBlockData
 import org.bukkit.craftbukkit.v1_17_R1.enchantments.CraftEnchantment
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack
 import org.bukkit.craftbukkit.v1_17_R1.potion.CraftPotionEffectType
+import org.bukkit.craftbukkit.v1_17_R1.util.CraftChatMessage
 import org.bukkit.craftbukkit.v1_17_R1.util.CraftNamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.Recipe
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scoreboard.DisplaySlot
@@ -356,13 +367,13 @@ class NMSKommandArgumentSupport : KommandArgumentSupport {
 
     // net.minecraft.commands.arguments.coordinates
 
-    override fun blockPosition(type: PositionLoadType): KommandArgument<BlockPosition> {
+    override fun blockPosition(type: PositionLoadType): KommandArgument<BlockPosition3D> {
         return BlockPosArgument.blockPos() provide { context, name ->
             val blockPosition = when (type) {
                 PositionLoadType.LOADED -> BlockPosArgument.getLoadedBlockPos(context, name)
                 PositionLoadType.SPAWNABLE -> BlockPosArgument.getSpawnablePos(context, name)
             }
-            BlockPosition(blockPosition.x, blockPosition.y, blockPosition.z)
+            BlockPosition3D(blockPosition.x, blockPosition.y, blockPosition.z)
         }
     }
 
@@ -373,10 +384,10 @@ class NMSKommandArgumentSupport : KommandArgumentSupport {
         }
     }
 
-    override fun position(): KommandArgument<Position> {
+    override fun position(): KommandArgument<Position3D> {
         return Vec3Argument.vec3() provide { context, name ->
             val vec3 = Vec3Argument.getVec3(context, name)
-            Position(vec3.x, vec3.y, vec3.z)
+            Position3D(vec3.x, vec3.y, vec3.z)
         }
     }
 

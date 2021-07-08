@@ -3,12 +3,7 @@ package io.github.monun.kommand
 import com.destroystokyo.paper.profile.PlayerProfile
 import com.google.gson.JsonObject
 import io.github.monun.kommand.loader.LibraryLoader
-import io.github.monun.kommand.util.BlockPosition
-import io.github.monun.kommand.util.BlockPosition2D
-import io.github.monun.kommand.util.Position
-import io.github.monun.kommand.util.Position2D
-import io.github.monun.kommand.util.Rotation
-import io.github.monun.kommand.wrapper.EntityAnchor
+import io.github.monun.kommand.wrapper.*
 import net.kyori.adventure.text.Component
 import org.bukkit.Axis
 import org.bukkit.ChatColor
@@ -128,11 +123,11 @@ interface KommandArgumentSupport {
 
     // net.minecraft.commands.arguments.coordinates
 
-    fun blockPosition(type: PositionLoadType = PositionLoadType.LOADED): KommandArgument<BlockPosition>
+    fun blockPosition(type: PositionLoadType = PositionLoadType.LOADED): KommandArgument<BlockPosition3D>
 
     fun blockPosition2D(): KommandArgument<BlockPosition2D>
 
-    fun position(): KommandArgument<Position>
+    fun position(): KommandArgument<Position3D>
 
     fun position2D(): KommandArgument<Position2D>
 
