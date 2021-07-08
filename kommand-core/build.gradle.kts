@@ -134,6 +134,7 @@ publishing {
             }
 
             pom {
+                name.set("kommand")
                 description.set("pom description")
                 url.set("https://github.com/monun/kommand")
 

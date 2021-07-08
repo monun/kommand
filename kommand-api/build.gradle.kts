@@ -54,6 +54,7 @@ publishing {
             }
 
             pom {
+                name.set("kommand-api")
                 description.set("Command dsl for paper server")
                 url.set("https://github.com/monun/kommand")
 
