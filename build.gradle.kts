@@ -1,8 +1,5 @@
 plugins {
     kotlin("jvm") version "1.5.20"
-    id("org.jetbrains.dokka") version "1.4.32"
-    `maven-publish`
-    signing
 }
 
 buildscript {
@@ -30,6 +27,11 @@ allprojects {
 subprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
 
+//    if (path == ":kommand-api" || path == ":kommand-core") {
+//        apply(plugin = "maven-publish")
+//        apply(plugin = "signing")
+//    }
+
     repositories {
         maven("https://papermc.io/repo/repository/maven-public/")
     }
@@ -39,8 +41,8 @@ subprojects {
 
         implementation(kotlin("stdlib"))
 
-        testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
-        testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.0")
+        testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
+        testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.2")
         testImplementation("org.mockito:mockito-core:3.6.28")
     }
 }
