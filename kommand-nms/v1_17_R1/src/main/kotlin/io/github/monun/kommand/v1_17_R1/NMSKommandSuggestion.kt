@@ -7,7 +7,7 @@ import net.kyori.adventure.text.ComponentLike
 
 class NMSKommandSuggestion(
     private val nms: SuggestionsBuilder
-): AbstractKommandSuggestion() {
+) : AbstractKommandSuggestion() {
     override fun suggest(value: Int, tooltip: (() -> ComponentLike)?) {
         if (tooltip == null) nms.suggest(value)
         else nms.suggest(value, PaperBrigadier.message(tooltip()))

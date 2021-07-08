@@ -11,7 +11,7 @@ import net.minecraft.commands.CommandSourceStack
 class NMSKommandContext(
     private val node: AbstractKommandNode,
     private val nms: CommandContext<CommandSourceStack>
-): KommandContext {
+) : KommandContext {
     override val source: KommandSource by lazy { NMSKommandSource(nms.source) }
     override val input: String
         get() = nms.input
