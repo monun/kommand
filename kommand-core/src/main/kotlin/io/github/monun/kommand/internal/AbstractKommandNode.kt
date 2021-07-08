@@ -1,13 +1,14 @@
 package io.github.monun.kommand.internal
 
 import io.github.monun.kommand.KommandArgument
+import io.github.monun.kommand.KommandArgumentSupport
 import io.github.monun.kommand.KommandContext
 import io.github.monun.kommand.KommandSource
 import io.github.monun.kommand.node.ArgumentNode
 import io.github.monun.kommand.node.KommandNode
 import io.github.monun.kommand.node.LiteralNode
 
-abstract class AbstractKommandNode : KommandNode {
+abstract class AbstractKommandNode : KommandNode, KommandArgumentSupport by KommandArgumentSupport.INSTANCE {
     lateinit var kommand: KommandDispatcherImpl
     lateinit var name: String
 

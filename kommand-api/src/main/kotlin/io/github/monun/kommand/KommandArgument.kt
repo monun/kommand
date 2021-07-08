@@ -27,12 +27,16 @@ import java.util.UUID
 
 // 인수
 interface KommandArgument<T> {
-    companion object : KommandArgumentSupport by LibraryLoader.loadNMS(KommandArgumentSupport::class.java)
+    companion object : KommandArgumentSupport by KommandArgumentSupport.INSTANCE
 
     fun suggests(provider: KommandSuggestion.(context: KommandContext) -> Unit)
 }
 
 interface KommandArgumentSupport {
+    companion object {
+        val INSTANCE = LibraryLoader.loadNMS(KommandArgumentSupport::class.java)
+    }
+
     // com.mojang.brigadier.arguments
 
     fun bool(): KommandArgument<Boolean>
