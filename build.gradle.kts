@@ -46,12 +46,17 @@ subprojects {
 
 tasks {
     create<DefaultTask>("setupWorkspace") {
-        // File: gradle.properties
+        // File: $HOME/.gradle/gradle.properties
+        // for DOS
         // java8="C:/Program Files/Zulu/zulu-8/bin/java.exe"
         // java16="C:/Program Files/Zulu/zulu-16/bin/java.exe"
 
         val buildToolsDir = File(rootDir, ".buildtools").also { it.mkdirs() }
-        val buildToolsJar = File(buildToolsDir, "BuildTools.jar")
+        val buildToolsJar = File(buildToolsDir, "BuildTools.jar").also { jar ->
+            buildToolsDir.listFiles()?.let { files ->
+                files.filter { it != jar }.forEach { it.deleteRecursively() }
+            }
+        }
         val memory = "1G"
         val versions = linkedSetOf(
             "1.17"
