@@ -45,7 +45,7 @@ subprojects {
 }
 
 tasks {
-    create<DefaultTask>("setupWorkspace") {
+    register<Task>("setupWorkspace") {
         // File: $HOME/.gradle/gradle.properties
         // for DOS
         // java8="C:/Program Files/Zulu/zulu-8/bin/java.exe"
