@@ -113,6 +113,7 @@ dependencies {
 ```
 
 ### plugins.yml
+
 ```yaml
 name: ...
 version: ...
@@ -120,8 +121,19 @@ main: ...
 libraries:
   - io.github.monun:kommand:<version>
 ```
+
 ---
 
 ### 추가정보
 
 * 라이센스는 GPL-3.0이며 변경 혹은 삭제를 금합니다.
+
+### 기여자
+
+* **[patrick-choe](https://github.com/patrick-choe)**
+    * maven central 배포
+    * 기본 Argument 일부 작성
+    * mojang map 이용 환경 구축
+* **[Jhyub](https://github.com/Jhyub)**
+    * DslMarker를 이용한 DSL 규칙 향상
+    
