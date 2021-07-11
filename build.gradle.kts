@@ -1,7 +1,15 @@
 import java.io.FileFilter
+import de.undercouch.gradle.tasks.download.Download
 
 plugins {
     kotlin("jvm") version "1.5.20"
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+        languageVersion.set(JavaLanguageVersion.of(16))
+    }
 }
 
 buildscript {
@@ -11,12 +19,6 @@ buildscript {
 
     dependencies {
         classpath("net.md-5:SpecialSource:1.10.0")
-    }
-}
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(16))
     }
 }
 
@@ -45,66 +47,76 @@ subprojects {
 }
 
 tasks {
-    register<DefaultTask>("setupWorkspace") {
-        // File: $HOME/.gradle/gradle.properties
-        // for DOS
-        // java8="C:/Program Files/Zulu/zulu-8/bin/java.exe"
-        // java16="C:/Program Files/Zulu/zulu-16/bin/java.exe"
+    // create setup task
+    val buildToolsDir = File(rootDir, ".buildtools")
+    val buildToolsJar = File(buildToolsDir, "BuildTools.jar")
+    val buildToolsMemory = "1G"
+    val versions = sortedSetOf(reverseOrder(),
+        "1.17.1",
+        "1.17",
+        "1.16.5",
+        "1.16.4",
+        "1.16.3",
+        "1.16.2",
+        "1.16.1",
+        "1.15.2",
+        "1.15.1",
+        "1.14.4",
+        "1.14.3",
+        "1.14.2",
+        "1.14.1",
+        "1.13.2",
+        "1.13.1",
+        "1.13"
+    )
+    val home = System.getProperty("user.home")
+    val spigot = "spigot"
+    val mavenLocal = File("$home/.m2/repository/org/spigotmc/$spigot")
+    val spigotLocalRepos = mavenLocal.listFiles(FileFilter { it.isDirectory }) ?: emptyArray()
 
-        val buildToolsDir = File(rootDir, ".buildtools").also { it.mkdirs() }
-        val buildToolsJar = File(buildToolsDir, "BuildTools.jar").also { jar ->
-            buildToolsDir.listFiles()?.let { files ->
-                files.filter { it != jar }.forEach { it.deleteRecursively() }
-            }
-        }
-        val memory = "1G"
-        val versions = linkedSetOf(
-            "1.17"
-        )
+    val downloadBuildTools = register<Download>("downloadBuildTools") {
+        src("https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar")
+        dest(buildToolsJar)
+        onlyIfModified(true)
+    }
 
-        val home = System.getProperty("user.home")
-        val spigot = "spigot"
-        val mavenLocal = File("$home/.m2/repository/org/spigotmc/$spigot")
-        val repos = mavenLocal.listFiles(FileFilter { it.isDirectory }) ?: emptyArray()
-        versions.removeIf { version ->
-            repos.find { it.name.startsWith("$version-R") }?.let { repo ->
-                val artifactName = "$spigot-${repo.name}"
-                val jar = File(repo, "$artifactName.jar")
-                val pom = File(repo, "$artifactName.pom")
-
-                return@removeIf (jar.exists() && pom.exists()).also {
-                    if (it) println("Skip download version $version")
+    val buildToolsTasks = arrayListOf<TaskProvider<JavaExec>>()
+    versions.forEach { version ->
+        val mustRunAfters = buildToolsTasks.toList()
+        buildToolsTasks.add(register<JavaExec>("buildtools-$version") {
+            onlyIf {
+                spigotLocalRepos.find { it.name.startsWith("$version-R") }?.let { repo ->
+                    val artifactName = "$spigot-${repo.name}"
+                    val jar = File(repo, "$artifactName.jar")
+                    val pom = File(repo, "$artifactName.pom")
+                    return@onlyIf !(jar.exists() && pom.exists())
                 }
+                true
             }
-            false
-        }
 
-        val download by registering(de.undercouch.gradle.tasks.download.Download::class) {
-            src("https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar")
-            dest(buildToolsJar)
-            onlyIfModified(true)
-        }
-        download.get().download()
+            dependsOn(downloadBuildTools)
+            mustRunAfter(mustRunAfters)
+            javaLauncher.set(project.javaToolchains.launcherFor {
+                languageVersion.set(JavaLanguageVersion.of(if (version < "1.17") 8 else 16))
+            })
+            workingDir(buildToolsDir)
+            mainClass.set("-jar")
+            jvmArgs("-Xmx$buildToolsMemory")
+            args(buildToolsJar.name, "--rev", version, "--remapped")
+        })
+    }
 
-        fun java(name: String): String {
-            return project.properties[name]?.toString()
-                ?: throw NullPointerException("Please define $name in gradle.properties.")
-        }
+    register<DefaultTask>("buildtools") {
+        dependsOn(buildToolsTasks)
+    }
 
-        versions.forEach { version ->
-            logger.info("Download version $version")
-            val java = if (version < "1.17") java("java8") else java("java16")
-            logger.info("Use java $java")
-
-            runCatching {
-                exec {
-                    workingDir(buildToolsDir)
-                    commandLine(java, "-Xmx$memory", "-jar", buildToolsJar.name, "--rev", version, "--remapped")
-                }
-            }.onFailure {
-                logger.warn("Failed to download version $version")
-                throw it
-            }
+    val cleanBuildTools = register<DefaultTask>("cleanBuildTools") {
+        doLast {
+            buildToolsDir.deleteRecursively()
         }
+    }
+
+    clean {
+        finalizedBy(cleanBuildTools)
     }
 }
