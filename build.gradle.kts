@@ -50,12 +50,11 @@ tasks {
     // create setup task
     val buildToolsDir = File(rootDir, ".buildtools")
     val buildToolsJar = File(buildToolsDir, "BuildTools.jar")
-    val buildToolsMemory = "1G"
+    val buildToolsMemory = project.properties["buildtoolsMemory"]?.toString() ?: "1G"
     val versions = requireNotNull(project.properties["buildtools"]) { "Not found properties in buildtools" } as String
     val versionList = versions.split(',').toSortedSet(reverseOrder())
-    val home = System.getProperty("user.home")
     val spigot = "spigot"
-    val mavenLocal = File("$home/.m2/repository/org/spigotmc/$spigot")
+    val mavenLocal = File("${System.getProperty("user.home")}/.m2/repository/org/spigotmc/$spigot")
     val spigotLocalRepos = mavenLocal.listFiles(FileFilter { it.isDirectory }) ?: emptyArray()
 
     val downloadBuildTools = register<Download>("downloadBuildTools") {
