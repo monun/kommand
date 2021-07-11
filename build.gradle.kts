@@ -51,24 +51,8 @@ tasks {
     val buildToolsDir = File(rootDir, ".buildtools")
     val buildToolsJar = File(buildToolsDir, "BuildTools.jar")
     val buildToolsMemory = "1G"
-    val versions = sortedSetOf(reverseOrder(),
-        "1.17.1",
-        "1.17",
-        "1.16.5",
-        "1.16.4",
-        "1.16.3",
-        "1.16.2",
-        "1.16.1",
-        "1.15.2",
-        "1.15.1",
-        "1.14.4",
-        "1.14.3",
-        "1.14.2",
-        "1.14.1",
-        "1.13.2",
-        "1.13.1",
-        "1.13"
-    )
+    val versions = requireNotNull(project.properties["buildtools"]) { "Not found properties in buildtools" } as String
+    val versionList = versions.split(',').toSortedSet(reverseOrder())
     val home = System.getProperty("user.home")
     val spigot = "spigot"
     val mavenLocal = File("$home/.m2/repository/org/spigotmc/$spigot")
@@ -81,7 +65,7 @@ tasks {
     }
 
     val buildToolsTasks = arrayListOf<TaskProvider<JavaExec>>()
-    versions.forEach { version ->
+    versionList.forEach { version ->
         val mustRunAfters = buildToolsTasks.toList()
         buildToolsTasks.add(register<JavaExec>("buildtools-$version") {
             onlyIf {
@@ -89,7 +73,12 @@ tasks {
                     val artifactName = "$spigot-${repo.name}"
                     val jar = File(repo, "$artifactName.jar")
                     val pom = File(repo, "$artifactName.pom")
-                    return@onlyIf !(jar.exists() && pom.exists())
+                    val remapped = if (version < "1.17") true else {
+                        val mojang = File(repo, "$artifactName-remapped-mojang.jar")
+                        val obf = File(repo, "$artifactName-remapped-obf.jar")
+                        mojang.exists() && obf.exists()
+                    }
+                    return@onlyIf !(jar.exists() && pom.exists() && remapped)
                 }
                 true
             }
