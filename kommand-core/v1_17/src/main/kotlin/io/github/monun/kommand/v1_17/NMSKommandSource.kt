@@ -1,7 +1,7 @@
-package io.github.monun.kommand.v1_17_R1
+package io.github.monun.kommand.v1_17
 
 import io.github.monun.kommand.KommandSource
-import io.github.monun.kommand.v1_17_R1.wrapper.NMSEntityAnchor
+import io.github.monun.kommand.v1_17.wrapper.NMSEntityAnchor
 import io.github.monun.kommand.wrapper.EntityAnchor
 import io.github.monun.kommand.wrapper.Position3D
 import io.github.monun.kommand.wrapper.Rotation

@@ -18,7 +18,7 @@ tasks {
         archiveVersion.set("")
         archiveClassifier.set("DEBUG")
 
-        (listOf(project(":kommand-api")) + project(":kommand-core").let { listOf(it) + it.subprojects }).forEach {
+        (listOf(project(":kommand-api"), project) + project(":kommand-core").let { listOf(it) + it.subprojects }).forEach {
             from(it.sourceSets["main"].output)
         }
 

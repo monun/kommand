@@ -1,4 +1,4 @@
-package io.github.monun.kommand.v1_17_R1.wrapper
+package io.github.monun.kommand.v1_17_1.wrapper
 
 import io.github.monun.kommand.wrapper.EntityAnchor
 import io.github.monun.kommand.wrapper.WrapperSupport

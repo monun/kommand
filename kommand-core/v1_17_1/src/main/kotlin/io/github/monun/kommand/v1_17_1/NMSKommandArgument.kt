@@ -1,4 +1,4 @@
-package io.github.monun.kommand.v1_17_R1
+package io.github.monun.kommand.v1_17_1
 
 import com.destroystokyo.paper.profile.CraftPlayerProfile
 import com.destroystokyo.paper.profile.PlayerProfile

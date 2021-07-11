@@ -36,7 +36,7 @@ subprojects {
     }
 
     dependencies {
-        compileOnly("io.papermc.paper:paper-api:1.17-R0.1-SNAPSHOT")
+        compileOnly("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")
 
         implementation(kotlin("stdlib"))
 

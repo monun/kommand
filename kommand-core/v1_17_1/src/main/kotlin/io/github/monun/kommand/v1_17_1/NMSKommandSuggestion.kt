@@ -1,4 +1,4 @@
-package io.github.monun.kommand.v1_17_R1
+package io.github.monun.kommand.v1_17_1
 
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import io.github.monun.kommand.AbstractKommandSuggestion

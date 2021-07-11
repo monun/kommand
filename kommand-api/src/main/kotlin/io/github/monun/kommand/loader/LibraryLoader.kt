@@ -56,13 +56,13 @@ object LibraryLoader {
         }.toTypedArray()
 
         val candidates = ArrayList<String>(2)
-        candidates.add("$packageName.$bukkitVersion.$className")
+        candidates.add("$packageName.$libraryVersion.$className")
 
         val lastDot = packageName.lastIndexOf('.')
         if (lastDot > 0) {
             val superPackageName = packageName.substring(0, lastDot)
             val subPackageName = packageName.substring(lastDot + 1)
-            candidates.add("$superPackageName.$bukkitVersion.$subPackageName.$className")
+            candidates.add("$superPackageName.$libraryVersion.$subPackageName.$className")
         }
 
         return try {
@@ -78,7 +78,7 @@ object LibraryLoader {
             constructor.newInstance() as T
         } catch (exception: ClassNotFoundException) {
             throw UnsupportedOperationException(
-                "${type.name} does not support this version: $minecraftVersion",
+                "${type.name} does not support this version: $libraryVersion",
                 exception
             )
         } catch (exception: IllegalAccessException) {
@@ -93,7 +93,7 @@ object LibraryLoader {
         }
     }
 
-    private val bukkitVersion by lazy {
+    val bukkitVersion by lazy {
         with("v\\d+_\\d+_R\\d+".toPattern().matcher(Bukkit.getServer()::class.java.`package`.name)) {
             when {
                 find() -> group()
@@ -102,7 +102,7 @@ object LibraryLoader {
         }
     }
 
-    private val minecraftVersion by lazy {
+    val minecraftVersion by lazy {
         with("(?<=\\(MC: )[\\d.]+?(?=\\))".toPattern().matcher(Bukkit.getVersion())) {
             when {
                 find() -> group()
@@ -110,4 +110,6 @@ object LibraryLoader {
             }
         }
     }
+
+    val libraryVersion by lazy { "v${minecraftVersion.replace('.', '_')}" }
 }

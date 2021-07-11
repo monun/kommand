@@ -1,4 +1,4 @@
-package io.github.monun.kommand.v1_17_R1
+package io.github.monun.kommand.v1_17
 
 import com.mojang.brigadier.context.CommandContext
 import io.github.monun.kommand.KommandContext

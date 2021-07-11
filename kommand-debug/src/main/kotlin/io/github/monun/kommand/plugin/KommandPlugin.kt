@@ -6,6 +6,7 @@ import io.github.monun.kommand.Kommand
 import io.github.monun.kommand.KommandArgument
 import io.github.monun.kommand.StringType
 import io.github.monun.kommand.getValue
+import io.github.monun.kommand.loader.LibraryLoader
 import io.github.monun.kommand.node.KommandNode
 import io.github.monun.kommand.wrapper.BlockPosition3D
 import io.github.monun.kommand.wrapper.EntityAnchor
@@ -30,6 +31,10 @@ import java.util.EnumSet
 
 class KommandPlugin : JavaPlugin() {
     override fun onEnable() {
+        logger.info(LibraryLoader.bukkitVersion)
+        logger.info(LibraryLoader.minecraftVersion)
+        logger.info(LibraryLoader.libraryVersion)
+
         val bool = KommandArgument.bool()
         val int = KommandArgument.int()
         val word = KommandArgument.string(StringType.SINGLE_WORD)
@@ -274,7 +279,6 @@ class KommandPlugin : JavaPlugin() {
                     }
                 }
             }
-
         }
     }
 }

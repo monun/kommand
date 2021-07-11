@@ -1,4 +1,4 @@
-package io.github.monun.kommand.v1_17_R1
+package io.github.monun.kommand.v1_17_1
 
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.builder.ArgumentBuilder
