@@ -6,6 +6,10 @@ out/
 .gradle
 build/
 
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+
 # Debug server folder
 .debug-mojang/
 .debug-paper/
