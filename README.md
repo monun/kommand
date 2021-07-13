@@ -2,7 +2,7 @@
 
 ![Maven Central](https://img.shields.io/maven-central/v/io.github.monun/kommand)
 ![GitHub](https://img.shields.io/github/license/monun/kommand)
-![YouTube Channel Subscribers](https://img.shields.io/youtube/channel/subscribers/UCDrAR1OWC2MD4s0JLetN0MA?label=%EA%B0%81%EB%B3%84&style=social)
+[![YouTube Channel Subscribers](https://img.shields.io/youtube/channel/subscribers/UCDrAR1OWC2MD4s0JLetN0MA?label=%EA%B0%81%EB%B3%84&style=social)](https://www.youtube.com/channel/UCDrAR1OWC2MD4s0JLetN0MA)
 
 ### Kotlin으로 작성된 mojang brigadier library
 ---
