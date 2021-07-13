@@ -1,6 +1,5 @@
 #!/bin/bash
 
-./gradlew setupWorkspace
 ./gradlew clean debugPaperJar
 
 plugins=(
