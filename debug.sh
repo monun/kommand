@@ -1,5 +1,6 @@
 #!/bin/bash
 
+./gradlew setupWorkspace
 ./gradlew clean debugJar
 
 plugins=(
@@ -24,7 +25,7 @@ cd "$server_folder" || exit
 
 if [ ! -f "$server_config" ]; then
     cat << EOF > $server_config
-server=.
+server=$HOME/.m2/repository/io/papermc/paper/paper/1.17.1-R0.1-SNAPSHOT/paper-1.17.1-R0.1-SNAPSHOT-mojang-mapped.jar
 debug=true
 debug_port=5005
 backup=false

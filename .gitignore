@@ -6,7 +6,7 @@ out/
 .gradle
 build/
 
-# Debug
+# Debug server folder
 .debug/
 
 # BuildTools

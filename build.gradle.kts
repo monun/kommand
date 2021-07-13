@@ -1,5 +1,6 @@
-import java.io.FileFilter
 import de.undercouch.gradle.tasks.download.Download
+import org.apache.tools.ant.taskdefs.condition.Os
+import java.io.FileFilter
 
 plugins {
     kotlin("jvm") version "1.5.20"
@@ -47,46 +48,43 @@ subprojects {
 }
 
 tasks {
-    // create setup task
+    val mavenLocal = File("${System.getProperty("user.home")}/.m2/repository/")
+    val mcVersions =
+        requireNotNull(project.properties["mc_versions"]) { "Not found properties in mc_versions" } as String
+    val mcVersionList = mcVersions.split(',').toSortedSet(reverseOrder())
+
     val buildToolsDir = File(rootDir, ".buildtools")
     val buildToolsJar = File(buildToolsDir, "BuildTools.jar")
     val buildToolsMemory = project.properties["buildtoolsMemory"]?.toString() ?: "1G"
-    val versions = requireNotNull(project.properties["buildtools"]) { "Not found properties in buildtools" } as String
-    val versionList = versions.split(',').toSortedSet(reverseOrder())
-    val spigot = "spigot"
-    val mavenLocal = File("${System.getProperty("user.home")}/.m2/repository/org/spigotmc/$spigot")
-    val spigotLocalRepos = mavenLocal.listFiles(FileFilter { it.isDirectory }) ?: emptyArray()
 
-    val downloadBuildTools = register<Download>("downloadBuildTools") {
+    val downloadBuildToolsTask = register<Download>("downloadBuildTools") {
         src("https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar")
         dest(buildToolsJar)
         onlyIfModified(true)
     }
 
-    val buildToolsTasks = arrayListOf<TaskProvider<JavaExec>>()
-    versionList.forEach { version ->
-        val mustRunAfters = buildToolsTasks.toList()
-        buildToolsTasks.add(register<JavaExec>("buildtools-$version") {
+    val spigot = "spigot"
+    val spigotRepo = File(mavenLocal, "org/spigotmc/spigot/")
+    val spigotRepoVersions = spigotRepo.listFiles(FileFilter { it.isDirectory }) ?: emptyArray()
+    val spigotTasks = arrayListOf<TaskProvider<JavaExec>>()
+
+    mcVersionList.forEach { version ->
+        val mustRunAfters = spigotTasks.toList()
+        spigotTasks.add(register<JavaExec>("spigot-$version") {
             onlyIf {
-                spigotLocalRepos.find { it.name.startsWith("$version-R") }?.let { repo ->
+                spigotRepoVersions.find { it.name.startsWith("$version-") }?.let { repo ->
                     val artifactName = "$spigot-${repo.name}"
                     val jar = File(repo, "$artifactName.jar")
                     val pom = File(repo, "$artifactName.pom")
-                    val remapped = if (version < "1.17") true else {
-                        val mojang = File(repo, "$artifactName-remapped-mojang.jar")
-                        val obf = File(repo, "$artifactName-remapped-obf.jar")
-                        mojang.exists() && obf.exists()
-                    }
-                    return@onlyIf !(jar.exists() && pom.exists() && remapped)
+                    val mojang = File(repo, "$artifactName-remapped-mojang.jar")
+                    val obf = File(repo, "$artifactName-remapped-obf.jar")
+                    return@onlyIf !(jar.exists() && pom.exists() && mojang.exists() && obf.exists())
                 }
                 true
             }
 
-            dependsOn(downloadBuildTools)
+            dependsOn(downloadBuildToolsTask)
             mustRunAfter(mustRunAfters)
-            javaLauncher.set(project.javaToolchains.launcherFor {
-                languageVersion.set(JavaLanguageVersion.of(if (version < "1.17") 8 else 16))
-            })
             workingDir(buildToolsDir)
             mainClass.set("-jar")
             jvmArgs("-Xmx$buildToolsMemory")
@@ -94,17 +92,65 @@ tasks {
         })
     }
 
-    register<DefaultTask>("buildtools") {
-        dependsOn(buildToolsTasks)
+    val paperDir = File(rootDir, ".paper")
+    val paper = "paper"
+    val paperRepo = File(mavenLocal, "io/papermc/paper/$paper")
+    val paperRepoVersions = paperRepo.listFiles(FileFilter { it.isDirectory }) ?: emptyArray()
+    val paperGitInfos = mapOf(
+        "1.17.1" to ("master" to "40b34615b0027b3d059242dcf1e0bbbdd64cd985"),
+        "1.17" to ("master" to "a831634d446341efc70f027851effe02a0e7f1d3")
+    )
+    val paperTasks = arrayListOf<TaskProvider<DefaultTask>>()
+
+    mcVersionList.forEach { version ->
+        val mustRunAfters = paperTasks.toList()
+        paperTasks.add(register<DefaultTask>("paper-$version") {
+            val paperGitInfo = paperGitInfos[version] ?: error("Not found paper commit for $version")
+            onlyIf {
+                paperRepoVersions.find { it.name.startsWith("$version-") }?.let { repo ->
+                    val artifactName = "$paper-${repo.name}"
+                    val jar = File(repo, "$artifactName.jar")
+                    val pom = File(repo, "$artifactName.pom")
+                    val mojang = File(repo, "$artifactName-mojang-mapped.jar")
+                    return@onlyIf !(jar.exists() && pom.exists() && mojang.exists())
+                }
+                true
+            }
+
+            mustRunAfter(mustRunAfters)
+
+            doLast {
+                fun git(vararg args: String) = exec {
+                    workingDir(paperDir)
+                    commandLine("git")
+                    args(*args)
+                }
+
+                fun gradlew(vararg args: String) = exec {
+                    workingDir(paperDir)
+                    commandLine(if (Os.isFamily(Os.FAMILY_DOS)) "gradlew.bat" else "./gradlew")
+                    args(*args)
+                }
+
+                git("fetch", "--all")
+                git("checkout", paperGitInfo.first)
+                git("reset", "--hard", paperGitInfo.second)
+                gradlew("applyPatches")
+                gradlew("publishToMavenLocal")
+                gradlew("clean", "shadowJar")
+            }
+        })
     }
 
-    val cleanBuildTools = register<DefaultTask>("cleanBuildTools") {
-        doLast {
-            buildToolsDir.deleteRecursively()
-        }
+    val setupSpigot = register<DefaultTask>("setupSpigot") {
+        dependsOn(spigotTasks)
+    }
+    val setupPaper = register<DefaultTask>("setupPaper") {
+        dependsOn(setupSpigot)
+        dependsOn(paperTasks)
     }
 
-    clean {
-        finalizedBy(cleanBuildTools)
+    register<DefaultTask>("setupWorkspace") {
+        dependsOn(setupSpigot, setupPaper)
     }
 }
