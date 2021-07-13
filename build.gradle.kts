@@ -12,16 +12,6 @@ java {
     }
 }
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath("net.md-5:SpecialSource:1.10.0")
-    }
-}
-
 allprojects {
     repositories {
         mavenCentral()

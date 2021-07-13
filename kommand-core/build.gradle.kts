@@ -11,6 +11,16 @@ plugins {
     signing
 }
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("net.md-5:SpecialSource:1.10.0")
+    }
+}
+
 dependencies {
     implementation(project(":kommand-api"))
 }
