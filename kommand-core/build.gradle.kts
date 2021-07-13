@@ -68,7 +68,6 @@ subprojects {
                     throw IllegalStateException("Mojang and Spigot mapping should be specified for ${project.path}")
                 }
             }
-
         }
     }
 }
