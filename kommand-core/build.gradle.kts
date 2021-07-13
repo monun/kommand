@@ -21,8 +21,10 @@ buildscript {
     }
 }
 
+val api = project(":kommand-api")
+
 dependencies {
-    implementation(project(":kommand-api"))
+    implementation(api)
 }
 
 subprojects {
@@ -37,8 +39,9 @@ subprojects {
     }
 
     dependencies {
-        implementation(project(":kommand-api"))
+        implementation(api)
         implementation(requireNotNull(parent)) // kommand-core
+
     }
 
     tasks {
@@ -83,8 +86,11 @@ subprojects {
 }
 
 tasks {
+    jar {
+        archiveClassifier.set("core")
+    }
+
     create<Jar>("paperJar") {
-        from(project(":kommand-api").sourceSets["main"].output)
         from(sourceSets["main"].output)
 
         subprojects.forEach {
@@ -96,7 +102,7 @@ tasks {
 
     create<Jar>("sourcesJar") {
         archiveClassifier.set("sources")
-        from(sourceSets["main"].allSource)
+        (listOf(project) + subprojects).forEach { from(it.sourceSets["main"].allSource) }
     }
 
     create<Jar>("dokkaJar") {
@@ -114,6 +120,7 @@ publishing {
         create<MavenPublication>("kommand") {
             artifactId = "kommand"
 
+            from(components["java"])
             artifact(tasks["paperJar"])
             artifact(tasks["sourcesJar"])
             artifact(tasks["dokkaJar"])
@@ -178,6 +185,6 @@ publishing {
 
 signing {
     isRequired = true
-    sign(tasks["paperJar"], tasks["sourcesJar"], tasks["dokkaJar"])
+    sign(tasks.jar.get(), tasks["paperJar"], tasks["sourcesJar"], tasks["dokkaJar"])
     sign(publishing.publications["kommand"])
 }

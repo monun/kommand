@@ -3,7 +3,7 @@ import org.apache.tools.ant.taskdefs.condition.Os
 import java.io.FileFilter
 
 plugins {
-    kotlin("jvm") version "1.5.20"
+    kotlin("jvm") version "1.5.21"
 }
 
 java {
