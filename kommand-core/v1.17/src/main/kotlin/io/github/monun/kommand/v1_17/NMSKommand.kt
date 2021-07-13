@@ -5,6 +5,8 @@ import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import io.github.monun.kommand.internal.*
+import io.github.monun.kommand.node.KommandExecutor
+import io.github.monun.kommand.node.KommandRequirement
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.server.MinecraftServer
 import org.bukkit.Bukkit
@@ -35,12 +37,12 @@ private fun AbstractKommandNode.convert(): ArgumentBuilder<CommandSourceStack, *
     }.apply {
         requires?.let { requires ->
             requires { source ->
-                requires(NMSKommandSource(source))
+                KommandRequirement.requires(NMSKommandSource(source))
             }
         }
         executes?.let { executes ->
             executes { context ->
-                executes(NMSKommandContext(this@convert, context))
+                KommandExecutor.executes(NMSKommandContext(this@convert, context))
                 1
             }
         }

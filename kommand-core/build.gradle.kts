@@ -1,8 +1,9 @@
-import net.md_5.specialsource.provider.JointProvider
-import net.md_5.specialsource.Jar as SpecialJar
-import net.md_5.specialsource.provider.JarProvider
 import net.md_5.specialsource.JarMapping
 import net.md_5.specialsource.JarRemapper
+import net.md_5.specialsource.provider.JarProvider
+import net.md_5.specialsource.provider.JointProvider
+import org.gradle.api.tasks.bundling.Jar
+import net.md_5.specialsource.Jar as SpecialJar
 
 plugins {
     id("org.jetbrains.dokka") version "1.5.0"

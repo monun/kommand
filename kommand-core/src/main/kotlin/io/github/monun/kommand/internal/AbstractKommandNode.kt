@@ -4,9 +4,7 @@ import io.github.monun.kommand.KommandArgument
 import io.github.monun.kommand.KommandArgumentSupport
 import io.github.monun.kommand.KommandContext
 import io.github.monun.kommand.KommandSource
-import io.github.monun.kommand.node.ArgumentNode
-import io.github.monun.kommand.node.KommandNode
-import io.github.monun.kommand.node.LiteralNode
+import io.github.monun.kommand.node.*
 
 abstract class AbstractKommandNode : KommandNode, KommandArgumentSupport by KommandArgumentSupport.INSTANCE {
     lateinit var kommand: KommandDispatcherImpl
@@ -14,10 +12,10 @@ abstract class AbstractKommandNode : KommandNode, KommandArgumentSupport by Komm
 
     var parent: AbstractKommandNode? = null
 
-    var requires: ((KommandSource) -> Boolean)? = null
+    var requires: (KommandRequirement.(KommandSource) -> Boolean)? = null
         private set
 
-    var executes: ((KommandContext) -> Unit)? = null
+    var executes: (KommandExecutor.(context: KommandContext) -> Unit)? = null
         private set
 
     protected fun initialize0(kommand: KommandDispatcherImpl, name: String) {
@@ -27,13 +25,13 @@ abstract class AbstractKommandNode : KommandNode, KommandArgumentSupport by Komm
 
     val nodes = arrayListOf<AbstractKommandNode>()
 
-    override fun requires(requires: (KommandSource) -> Boolean) {
+    override fun requires(requires: KommandRequirement.(KommandSource) -> Boolean) {
         kommand.checkState()
         require(this.requires == null) { "Cannot redefine requires" }
         this.requires = requires
     }
 
-    override fun executes(executes: (context: KommandContext) -> Unit) {
+    override fun executes(executes: KommandExecutor.(context: KommandContext) -> Unit) {
         kommand.checkState()
         require(this.executes == null) { "Cannot redefine executes" }
         this.executes = executes

@@ -7,7 +7,6 @@ import io.github.monun.kommand.KommandArgument
 import io.github.monun.kommand.StringType
 import io.github.monun.kommand.getValue
 import io.github.monun.kommand.loader.LibraryLoader
-import io.github.monun.kommand.node.KommandNode
 import io.github.monun.kommand.wrapper.BlockPosition3D
 import io.github.monun.kommand.wrapper.EntityAnchor
 import io.github.monun.kommand.wrapper.Position3D
@@ -27,7 +26,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffectType
-import java.util.EnumSet
+import java.util.*
 
 class KommandPlugin : JavaPlugin() {
     override fun onEnable() {
