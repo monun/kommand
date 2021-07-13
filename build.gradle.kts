@@ -146,11 +146,12 @@ tasks {
         dependsOn(spigotTasks)
     }
     val setupPaper = register<DefaultTask>("setupPaper") {
-        dependsOn(setupSpigot)
+        mustRunAfter(setupSpigot)
         dependsOn(paperTasks)
     }
 
     register<DefaultTask>("setupWorkspace") {
-        dependsOn(setupSpigot, setupPaper)
+        dependsOn(setupSpigot)
+        dependsOn(setupPaper)
     }
 }
