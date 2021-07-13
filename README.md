@@ -4,17 +4,20 @@
 ![GitHub](https://img.shields.io/github/license/monun/kommand)
 [![YouTube Channel Subscribers](https://img.shields.io/youtube/channel/subscribers/UCDrAR1OWC2MD4s0JLetN0MA?label=%EA%B0%81%EB%B3%84&style=social)](https://www.youtube.com/channel/UCDrAR1OWC2MD4s0JLetN0MA)
 
-### Kotlin으로 작성된 mojang brigadier library
+### Command DSL for Paper (Brigadier)
+
 ---
 
 * #### Features
     * 명령어 분기 지원
     * 인수 분석(Parsing)
     * 명령어 제안 지원 (TabComplete)
-* #### 개발환경
+
+* #### Environment
     * JDK 16
     * Kotlin 1.5.20
     * Paper 1.17, 1.17.1
+
 ---
 
 Paper에는 명령어 실행을 위한 프레임워크가 없습니다.  
@@ -39,8 +42,9 @@ class CommandDispatcher : CommandExecutor {
 ...
 ```
 
-위와 같은 코드는 명령문이 적을땐 간결하지만,  
-따라붙는 인수나 상수가 늘어나면 코드가 매우 지저분해지고 디버깅에도 어려움을 겪게됩니다.  
+위와 같은 코드는 명령문이 적을땐 간결하지만,
+따라붙는 인수나 상수가 늘어나면 코드가 매우 지저분해지고 디버깅에도 어려움을 겪게됩니다.
+
 그래서 명령 처리는 신경쓰지 않고 최종 실행코드만 작성 할 수 있는 프레임워크가 필요해졌습니다.
 
 *Kommand*는 위와 같은 문제를 해결하고 명령문을 보다 직관적인 코드작성을 위한 DSL을 제공합니다.
@@ -127,11 +131,11 @@ libraries:
 
 ---
 
-### 추가정보
+### NOTE
 
 * 라이센스는 GPL-3.0이며 변경 혹은 삭제를 금합니다.
 
-### 기여자
+### Contributors
 
 * **[patrick-choe](https://github.com/patrick-choe)**
     * maven central 배포
