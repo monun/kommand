@@ -105,11 +105,8 @@ Kommand.register("user") {
 ### Gradle
 
 ```kotlin
-allprojects {
-    repositories {
-        ...
-        mavenCentral()
-    }
+repositories {
+    mavenCentral()
 }
 ```
 
