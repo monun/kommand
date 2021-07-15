@@ -41,7 +41,6 @@ subprojects {
     dependencies {
         implementation(api)
         implementation(requireNotNull(parent)) // kommand-core
-
     }
 
     tasks {
@@ -90,7 +89,7 @@ tasks {
         archiveClassifier.set("core")
     }
 
-    create<Jar>("paperJar") {
+    register<Jar>("paperJar") {
         from(sourceSets["main"].output)
 
         subprojects.forEach {
@@ -100,12 +99,12 @@ tasks {
         }
     }
 
-    create<Jar>("sourcesJar") {
+    register<Jar>("sourcesJar") {
         archiveClassifier.set("sources")
         (listOf(project) + subprojects).forEach { from(it.sourceSets["main"].allSource) }
     }
 
-    create<Jar>("dokkaJar") {
+    register<Jar>("dokkaJar") {
         archiveClassifier.set("javadoc")
         dependsOn("dokkaHtml")
 
@@ -117,7 +116,7 @@ tasks {
 
 publishing {
     publications {
-        create<MavenPublication>("kommand") {
+        register<MavenPublication>("kommand") {
             artifactId = "kommand"
 
             from(components["java"])
