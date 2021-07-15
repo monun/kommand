@@ -42,8 +42,7 @@ class CommandDispatcher : CommandExecutor {
 ...
 ```
 
-위와 같은 코드는 명령문이 적을땐 간결하지만,
-따라붙는 인수나 상수가 늘어나면 코드가 매우 지저분해지고 디버깅에도 어려움을 겪게됩니다.
+위와 같은 코드는 명령문이 적을땐 간결하지만, 따라붙는 인수나 상수가 늘어나면 코드가 매우 지저분해지고 디버깅에도 어려움을 겪게됩니다.
 
 그래서 명령 처리는 신경쓰지 않고 최종 실행코드만 작성 할 수 있는 프레임워크가 필요해졌습니다.
 
@@ -63,36 +62,37 @@ class CommandDispatcher : CommandExecutor {
 ```kotlin
 //in JavaPlugin
 kommand {
-    then("create") {
-        then("name" to string()) { //"name"이라는 이름의 String을 요청합니다.
-            executes { context ->
-                val name: String by context
-                createUser(name) //명령어 실행 함수를 통해 실행
-            }
-        }
-    }
-    then("modify") {
-        then("user" to MyUserArgument()) { //Custom 유저 인수
-            then("name") {
-                then("newName" to string()) {
-                    executes { context ->
-                        val user: User by context
-                        val newName: String = it["newName"]
-                        setUserName(user, newName)
-                    }
-                }
-            }
-            then("tag") {
-                then("newTag" to string()) {
-                    executes {
-                        //함수 인수에 의한 타입 추론
-                        setUserTag(it["user"], it["newTag"])
-                    }
+    register("user") {
+        then("create") {
+            then("name" to string()) { //"name"이라는 이름의 String을 요청합니다.
+                executes { context ->
+                    val name: String by context
+                    createUser(name) //명령어 실행 함수를 통해 실행
                 }
             }
         }
+        then("modify") {
+            then("user" to MyUserArgument()) { //Custom 유저 인수
+                then("name") {
+                    then("newName" to string()) {
+                        executes { context ->
+                            val user: User by context
+                            val newName: String = it["newName"]
+                            setUserName(user, newName)
+                        }
+                    }
+                }
+                then("tag") {
+                    then("newTag" to string()) {
+                        executes {
+                            //함수 인수에 의한 타입 추론
+                            setUserTag(it["user"], it["newTag"])
+                        }
+                    }
+                }
+            }
+        }
     }
-}
 }
 ```
 
