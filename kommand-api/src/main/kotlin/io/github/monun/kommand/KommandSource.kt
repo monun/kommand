@@ -11,6 +11,7 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 
 // 명령 발신자 정보
+@KommandDSL
 interface KommandSource {
     val displayName: Component
     val sender: CommandSender

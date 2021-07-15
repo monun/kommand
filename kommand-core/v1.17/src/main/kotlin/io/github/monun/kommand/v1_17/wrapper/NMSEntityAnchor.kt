@@ -15,6 +15,7 @@ class NMSEntityAnchor(
         get() = nms.name
 
     override fun applyTo(entity: Entity): Vector {
+
         return nms.apply((entity as CraftEntity).handle).run { Vector(x, y, z) }
     }
 

@@ -2,7 +2,6 @@ package io.github.monun.kommand.v1_17_1
 
 import com.mojang.brigadier.context.CommandContext
 import io.github.monun.kommand.KommandContext
-import io.github.monun.kommand.KommandSource
 import io.github.monun.kommand.internal.AbstractKommandNode
 import io.github.monun.kommand.internal.ArgumentNodeImpl
 import net.minecraft.commands.CommandSourceStack
@@ -11,7 +10,6 @@ class NMSKommandContext(
     private val node: AbstractKommandNode,
     private val nms: CommandContext<CommandSourceStack>
 ) : KommandContext {
-    override val source: KommandSource by lazy { NMSKommandSource(nms.source) }
     override val input: String
         get() = nms.input
 
