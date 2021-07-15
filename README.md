@@ -15,7 +15,7 @@
 
 * #### Environment
     * JDK 16
-    * Kotlin 1.5.20
+    * Kotlin 1.5.21
     * Paper 1.17, 1.17.1
 
 ---
@@ -62,7 +62,7 @@ class CommandDispatcher : CommandExecutor {
 
 ```kotlin
 //in JavaPlugin
-Kommand.register("user") {
+kommand {
     then("create") {
         then("name" to string()) { //"name"이라는 이름의 String을 요청합니다.
             executes { context ->
