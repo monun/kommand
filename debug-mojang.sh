@@ -1,43 +1,43 @@
 #!/bin/bash
 
-./gradlew clean debugMojangJar
-
+server=$HOME/.m2/repository/io/papermc/paper/paper/1.17.1-R0.1-SNAPSHOT/paper-1.17.1-R0.1-SNAPSHOT-mojang-mapped.jar
 plugins=(
+  'https://github.com/monun/auto-reloader/releases/latest/download/AutoReloader.jar'
 )
 
 script=$(basename "$0")
 server_folder=".${script%.*}"
 mkdir -p "$server_folder"
 
-server_script="server.sh"
-server_config="server.sh.conf"
+start_script="start.sh"
+start_config="$start_script.conf"
 
-if [ ! -f "$server_folder/$server_script" ]; then
-  if [ -f ".server/$server_script" ]; then
-    cp ".server/$server_script" "$server_folder/$server_script"
+if [ ! -f "$server_folder/$start_script" ]; then
+  if [ -f ".server/$start_script" ]; then
+    cp ".server/$start_script" "$server_folder/$start_script"
   else
-    curl 'https://raw.githubusercontent.com/monun/server-script/master/.server/server.sh' > "$server_folder/server.sh"
+    wget -qc -P "$server_folder" -N "https://raw.githubusercontent.com/monun/server-script/master/.server/$start_script"
+    wget -qc -P "$server_folder" -N "https://raw.githubusercontent.com/monun/server-script/master/.server/start.bat"
   fi
 fi
 
 cd "$server_folder" || exit
 
-if [ ! -f "$server_config" ]; then
-    cat << EOF > $server_config
-server=$HOME/.m2/repository/io/papermc/paper/paper/1.17.1-R0.1-SNAPSHOT/paper-1.17.1-R0.1-SNAPSHOT-mojang-mapped.jar
+if [ ! -f "$start_config" ]; then
+  cat <<EOF >$start_config
+server=$server
 debug=true
 debug_port=5005
 backup=false
-restart=false
+force_restart=false
 memory=16
 plugins=(
 EOF
-    for plugin in "${plugins[@]}"
-    do
-        echo "  \"$plugin\"" >> $server_config
-    done
-    echo ")" >> $server_config
+  for plugin in "${plugins[@]}"; do
+    echo "  \"$plugin\"" >>$start_config
+  done
+  echo ")" >>$start_config
 fi
 
-chmod +x ./$server_script
-./$server_script
+chmod +x ./$start_script
+./$start_script launch
