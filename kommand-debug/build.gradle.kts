@@ -2,6 +2,7 @@ repositories {
     mavenLocal()
 }
 
+
 dependencies {
     implementation(project(":kommand-api"))
 }
@@ -19,7 +20,10 @@ tasks {
         archiveClassifier.set("DEBUG")
         archiveAppendix.set("MOJANG")
 
-        (listOf(project(":kommand-api"), project) + project(":kommand-core").let { listOf(it) + it.subprojects }).forEach {
+        (listOf(
+            project(":kommand-api"),
+            project
+        ) + project(":kommand-core").let { listOf(it) + it.subprojects }).forEach {
             from(it.sourceSets["main"].output)
         }
 
@@ -38,7 +42,9 @@ tasks {
         archiveClassifier.set("DEBUG")
         archiveAppendix.set("PAPER")
 
-        from(project.sourceSets["main"].output)
+        (listOf(project(":kommand-api"), project)).forEach {
+            from(it.sourceSets["main"].output)
+        }
 
         (project(":kommand-core").tasks.named("paperJar").get() as Jar).let { paperJar ->
             dependsOn(paperJar)
