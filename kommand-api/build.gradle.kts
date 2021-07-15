@@ -88,6 +88,6 @@ publishing {
 
 signing {
     isRequired = true
-    sign(tasks["jar"], tasks["sourcesJar"], tasks["dokkaJar"])
+    sign(tasks.jar.get(), tasks["sourcesJar"], tasks["dokkaJar"])
     sign(publishing.publications["kommand-api"])
 }
