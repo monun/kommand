@@ -1,3 +1,10 @@
+### 2.3.0
+
+* KommandSource#feedback 함수 추가
+* custom 인수 지원
+
+---
+
 ### 2.2.0
 
 * plugin.yml의 libraries 업데이트

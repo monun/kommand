@@ -1,3 +1,21 @@
+/*
+ * Kommand
+ * Copyright (C) 2021 Monun
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package io.github.monun.kommand.v1_17_1
 
 import com.destroystokyo.paper.profile.CraftPlayerProfile
@@ -7,6 +25,7 @@ import com.google.gson.JsonParser
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.*
 import com.mojang.brigadier.context.CommandContext
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
@@ -20,7 +39,9 @@ import io.github.monun.kommand.wrapper.*
 import io.github.monun.kommand.wrapper.Rotation
 import io.papermc.paper.brigadier.PaperBrigadier
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.Component.text
 import net.minecraft.commands.CommandSourceStack
+import net.minecraft.commands.SharedSuggestionProvider
 import net.minecraft.commands.arguments.*
 import net.minecraft.commands.arguments.blocks.BlockPredicateArgument
 import net.minecraft.commands.arguments.blocks.BlockStateArgument
@@ -29,6 +50,7 @@ import net.minecraft.commands.arguments.item.FunctionArgument
 import net.minecraft.commands.arguments.item.ItemArgument
 import net.minecraft.commands.arguments.item.ItemPredicateArgument
 import net.minecraft.commands.synchronization.SuggestionProviders
+import net.minecraft.network.chat.TranslatableComponent
 import net.minecraft.world.level.block.state.pattern.BlockInWorld
 import org.bukkit.*
 import org.bukkit.advancement.Advancement
@@ -141,11 +163,7 @@ class NMSKommandArgumentSupport : KommandArgumentSupport {
     }
 
     override fun string(type: StringType): KommandArgument<String> {
-        return when (type) {
-            StringType.SINGLE_WORD -> StringArgumentType.word()
-            StringType.QUOTABLE_PHRASE -> StringArgumentType.string()
-            StringType.GREEDY_PHRASE -> StringArgumentType.greedyString()
-        } provide StringArgumentType::getString
+        return type.createType() provide StringArgumentType::getString
     }
 
     // net.minecraft.commands.arguments
@@ -437,5 +455,37 @@ class NMSKommandArgumentSupport : KommandArgumentSupport {
                 ItemPredicateArgument.getItemPredicate(context, name).test(CraftItemStack.asNMSCopy(itemStack))
             }
         }
+    }
+
+    private val invalidName = SimpleCommandExceptionType(TranslatableComponent("command.unknown.argument"))
+
+    override fun <T> custom(
+        type: StringType,
+        names: () -> Iterable<String>,
+        function: (String) -> T?
+    ): KommandArgument<T> {
+        return type.createType() to CustomSuggestionProvider(names) provide { context, name ->
+            val string = StringArgumentType.getString(context, name)
+            function(string) ?: throw invalidName.create()
+        }
+    }
+}
+
+fun StringType.createType(): StringArgumentType {
+    return when (this) {
+        StringType.SINGLE_WORD -> StringArgumentType.word()
+        StringType.QUOTABLE_PHRASE -> StringArgumentType.string()
+        StringType.GREEDY_PHRASE -> StringArgumentType.greedyString()
+    }
+}
+
+class CustomSuggestionProvider(
+    private val names: () -> Iterable<String>
+): SuggestionProvider<CommandSourceStack> {
+    override fun getSuggestions(
+        context: CommandContext<CommandSourceStack>,
+        builder: SuggestionsBuilder
+    ): CompletableFuture<Suggestions> {
+        return SharedSuggestionProvider.suggest(names(), builder)
     }
 }

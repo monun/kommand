@@ -1,3 +1,21 @@
+/*
+ * Kommand
+ * Copyright (C) 2021 Monun
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package io.github.monun.kommand.plugin
 
 import com.destroystokyo.paper.profile.PlayerProfile
@@ -9,6 +27,7 @@ import io.github.monun.kommand.wrapper.Position3D
 import io.github.monun.kommand.wrapper.Rotation
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.format.NamedTextColor
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.Axis
 import org.bukkit.Bukkit
@@ -263,7 +282,6 @@ class KommandPlugin : JavaPlugin() {
                     requires {
                         playerOrNull != null
                     }
-
                     then("predicate" to KommandArgument.itemPredicate()) {
                         executes {
                             val predicate: (ItemStack) -> Boolean by it
@@ -272,7 +290,27 @@ class KommandPlugin : JavaPlugin() {
                         }
                     }
                 }
+                then("custom") {
+                    val map = mapOf(
+                        "one" to Custom(1),
+                        "two" to Custom(2),
+                        "three" to Custom(3)
+                    )
+
+                    then("custom" to custom(map)) {
+                        executes {
+                            val custom: Custom by it
+                            feedback(text("HELLO WORLD $custom").color(NamedTextColor.RED))
+                        }
+                    }
+                }
             }
         }
+    }
+}
+
+class Custom(private val value: Int) {
+    override fun toString(): String {
+        return "Custom value = $value"
     }
 }
