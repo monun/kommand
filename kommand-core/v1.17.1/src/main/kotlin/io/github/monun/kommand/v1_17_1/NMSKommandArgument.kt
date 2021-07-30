@@ -29,19 +29,13 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
-import io.github.monun.kommand.KommandArgument
-import io.github.monun.kommand.KommandArgumentSupport
-import io.github.monun.kommand.PositionLoadType
-import io.github.monun.kommand.StringType
+import io.github.monun.kommand.*
 import io.github.monun.kommand.internal.AbstractKommandArgument
-import io.github.monun.kommand.internal.ArgumentNodeImpl
 import io.github.monun.kommand.wrapper.*
 import io.github.monun.kommand.wrapper.Rotation
 import io.papermc.paper.brigadier.PaperBrigadier
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.Component.text
 import net.minecraft.commands.CommandSourceStack
-import net.minecraft.commands.SharedSuggestionProvider
 import net.minecraft.commands.arguments.*
 import net.minecraft.commands.arguments.blocks.BlockPredicateArgument
 import net.minecraft.commands.arguments.blocks.BlockStateArgument
@@ -79,7 +73,7 @@ import java.util.concurrent.CompletableFuture
 
 open class NMSKommandArgument<T>(
     val type: ArgumentType<*>,
-    private val provider: (CommandContext<CommandSourceStack>, name: String) -> T,
+    private val provider: (NMSKommandContext, name: String) -> T,
     private val defaultSuggestionProvider: SuggestionProvider<CommandSourceStack>? = null
 ) : AbstractKommandArgument<T>() {
     private companion object {
@@ -106,37 +100,46 @@ open class NMSKommandArgument<T>(
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun from(context: CommandContext<CommandSourceStack>, name: String): T {
+    fun from(context: NMSKommandContext, name: String): T {
         return provider(context, name)
     }
 
     fun listSuggestions(
-        node: ArgumentNodeImpl,
-        context: CommandContext<CommandSourceStack>,
+        context: NMSKommandContext,
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions> {
         this.suggestionProvider?.let {
             val suggestion = NMSKommandSuggestion(builder)
-            it(suggestion, NMSKommandContext(node, context))
+            it(suggestion, context)
             if (!suggestion.suggestsDefault) return builder.buildFuture()
         }
 
-        defaultSuggestionProvider?.let { return it.getSuggestions(context, builder) }
-        if (hasOverrideSuggestion) return type.listSuggestions(context, builder)
+        defaultSuggestionProvider?.let { return it.getSuggestions(context.handle, builder) }
+        if (hasOverrideSuggestion) return type.listSuggestions(context.handle, builder)
         return builder.buildFuture()
     }
+}
+
+infix fun <T> ArgumentType<*>.provideDynamic(
+    provider: (context: NMSKommandContext, name: String) -> T
+): NMSKommandArgument<T> {
+    return NMSKommandArgument(this, provider)
 }
 
 infix fun <T> ArgumentType<*>.provide(
     provider: (context: CommandContext<CommandSourceStack>, name: String) -> T
 ): NMSKommandArgument<T> {
-    return NMSKommandArgument(this, provider)
+    return NMSKommandArgument(this, { context, name ->
+        provider(context.handle, name)
+    })
 }
 
 infix fun <T> Pair<ArgumentType<*>, SuggestionProvider<CommandSourceStack>>.provide(
     provider: (context: CommandContext<CommandSourceStack>, name: String) -> T
 ): NMSKommandArgument<T> {
-    return NMSKommandArgument(first, provider, second)
+    return NMSKommandArgument(first, { context, name ->
+        provider(context.handle, name)
+    }, defaultSuggestionProvider = second)
 }
 
 class NMSKommandArgumentSupport : KommandArgumentSupport {
@@ -457,16 +460,15 @@ class NMSKommandArgumentSupport : KommandArgumentSupport {
         }
     }
 
-    private val invalidName = SimpleCommandExceptionType(TranslatableComponent("command.unknown.argument"))
+    private val unknownArgument = SimpleCommandExceptionType(TranslatableComponent("command.unknown.argument"))
 
-    override fun <T> custom(
+    override fun <T> dynamic(
         type: StringType,
-        names: () -> Iterable<String>,
-        function: (String) -> T?
+        function: KommandSource.(context: KommandContext, input: String) -> T?
     ): KommandArgument<T> {
-        return type.createType() to CustomSuggestionProvider(names) provide { context, name ->
-            val string = StringArgumentType.getString(context, name)
-            function(string) ?: throw invalidName.create()
+        return type.createType() provideDynamic { context, name ->
+            context.source.function(context, StringArgumentType.getString(context.handle, name))
+                ?: throw unknownArgument.create()
         }
     }
 }
@@ -476,16 +478,5 @@ fun StringType.createType(): StringArgumentType {
         StringType.SINGLE_WORD -> StringArgumentType.word()
         StringType.QUOTABLE_PHRASE -> StringArgumentType.string()
         StringType.GREEDY_PHRASE -> StringArgumentType.greedyString()
-    }
-}
-
-class CustomSuggestionProvider(
-    private val names: () -> Iterable<String>
-): SuggestionProvider<CommandSourceStack> {
-    override fun getSuggestions(
-        context: CommandContext<CommandSourceStack>,
-        builder: SuggestionsBuilder
-    ): CompletableFuture<Suggestions> {
-        return SharedSuggestionProvider.suggest(names(), builder)
     }
 }

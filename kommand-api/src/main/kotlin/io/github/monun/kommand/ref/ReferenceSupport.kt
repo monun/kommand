@@ -16,26 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.monun.kommand
+package io.github.monun.kommand.ref
 
-import net.kyori.adventure.text.ComponentLike
+import java.lang.ref.WeakReference
+import kotlin.reflect.KProperty
 
-// 추천 빌더
-interface KommandSuggestion {
-    fun suggestsDefault()
+fun <T> weak(referent: T) = WeakReference(referent)
 
-    fun suggest(value: Int, tooltip: (() -> ComponentLike)? = null)
-
-    fun suggest(text: String, tooltip: (() -> ComponentLike)? = null)
-
-    fun suggest(
-        candidates: () -> Iterable<String>,
-        tooltip: ((String) -> ComponentLike)? = null
-    )
-
-    fun <T> suggest(
-        candidates: () -> Iterable<T>,
-        transform: (T) -> String = { it.toString() },
-        tooltip: ((T) -> ComponentLike)? = null
-    )
+operator fun <T> WeakReference<T>.getValue(thisRef: Any?, property: KProperty<*>): T {
+    return get() ?: error("Reference collected by garbage collector.")
 }

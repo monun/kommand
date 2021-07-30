@@ -27,6 +27,8 @@ import com.mojang.brigadier.tree.CommandNode
 import com.mojang.brigadier.tree.LiteralCommandNode
 import com.mojang.brigadier.tree.RootCommandNode
 import io.github.monun.kommand.internal.*
+import io.github.monun.kommand.v1_17_1.NMSKommandContext.Companion.wrapContext
+import io.github.monun.kommand.v1_17_1.NMSKommandSource.Companion.wrapSource
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.server.MinecraftServer
@@ -67,7 +69,7 @@ private fun AbstractKommandNode.convert(): ArgumentBuilder<CommandSourceStack, *
             val type = kommandArgument.type
             argument(name, type).apply {
                 suggests { context, suggestionsBuilder ->
-                    kommandArgument.listSuggestions(this@convert, context, suggestionsBuilder)
+                    kommandArgument.listSuggestions(wrapContext(context), suggestionsBuilder)
                 }
             }
         }
@@ -75,12 +77,12 @@ private fun AbstractKommandNode.convert(): ArgumentBuilder<CommandSourceStack, *
     }.apply {
         requires?.let { requires ->
             requires { source ->
-                NMSKommandSource(source).requires()
+                wrapSource(source).requires()
             }
         }
         executes?.let { executes ->
             executes { context ->
-                NMSKommandSource(context.source).executes(NMSKommandContext(this@convert, context))
+                wrapSource(context.source).executes(wrapContext(context))
                 1
             }
         }

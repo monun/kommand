@@ -20,14 +20,16 @@ package io.github.monun.kommand.plugin
 
 import com.destroystokyo.paper.profile.PlayerProfile
 import com.google.gson.JsonObject
-import io.github.monun.kommand.*
+import io.github.monun.kommand.KommandArgument
+import io.github.monun.kommand.StringType
+import io.github.monun.kommand.getValue
+import io.github.monun.kommand.kommand
 import io.github.monun.kommand.wrapper.BlockPosition3D
 import io.github.monun.kommand.wrapper.EntityAnchor
 import io.github.monun.kommand.wrapper.Position3D
 import io.github.monun.kommand.wrapper.Rotation
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.format.NamedTextColor
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.Axis
 import org.bukkit.Bukkit
@@ -290,17 +292,29 @@ class KommandPlugin : JavaPlugin() {
                         }
                     }
                 }
-                then("custom") {
-                    val map = mapOf(
+                then("dynamic") {
+                    val map = linkedMapOf(
                         "one" to Custom(1),
                         "two" to Custom(2),
                         "three" to Custom(3)
                     )
+                    val dynamicArgument = dynamic { _, input ->
+                        map[input]
+                    }.apply {
+                        suggests(map::keys) {
+                            text(when (it) {
+                                "one" -> "하나"
+                                "two" -> "둘"
+                                "three" -> "셋"
+                                else -> error("Unknown custom")
+                            })
+                        }
+                    }
 
-                    then("custom" to custom(map)) {
+                    then("dynamic" to dynamicArgument) {
                         executes {
-                            val custom: Custom by it
-                            feedback(text("HELLO WORLD $custom").color(NamedTextColor.RED))
+                            val dynamic: Custom by it
+                            broadcast(text("$dynamic"))
                         }
                     }
                 }

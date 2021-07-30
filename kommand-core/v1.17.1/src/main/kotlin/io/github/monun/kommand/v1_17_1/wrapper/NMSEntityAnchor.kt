@@ -26,14 +26,14 @@ import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity
 import org.bukkit.util.Vector
 
 class NMSEntityAnchor(
-    private val nms: EntityAnchorArgument.Anchor
+    private val handle: EntityAnchorArgument.Anchor
 ) : EntityAnchor {
     override val name: String
-        get() = nms.name
+        get() = handle.name
 
     override fun applyTo(entity: org.bukkit.entity.Entity): Vector {
         val nmsEntity: Entity = (entity as CraftEntity).handle
-        return nms.apply(nmsEntity).run { Vector(x, y, z) }
+        return handle.apply(nmsEntity).run { Vector(x, y, z) }
     }
 
     override fun applyTo(source: KommandSource): Vector {

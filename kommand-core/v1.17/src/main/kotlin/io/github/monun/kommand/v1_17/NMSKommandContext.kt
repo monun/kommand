@@ -20,23 +20,41 @@ package io.github.monun.kommand.v1_17
 
 import com.mojang.brigadier.context.CommandContext
 import io.github.monun.kommand.KommandContext
+import io.github.monun.kommand.KommandSource
 import io.github.monun.kommand.internal.AbstractKommandNode
 import io.github.monun.kommand.internal.ArgumentNodeImpl
+import io.github.monun.kommand.ref.getValue
+import io.github.monun.kommand.ref.weak
+import io.github.monun.kommand.v1_17.NMSKommandSource.Companion.wrapSource
 import net.minecraft.commands.CommandSourceStack
+import java.util.*
 
-class NMSKommandContext(
+class NMSKommandContext private constructor(
     private val node: AbstractKommandNode,
-    private val nms: CommandContext<CommandSourceStack>
+    handle: CommandContext<CommandSourceStack>
 ) : KommandContext {
+    companion object {
+        private val refs = WeakHashMap<CommandContext<CommandSourceStack>, NMSKommandContext>()
+
+        fun AbstractKommandNode.wrapContext(context: CommandContext<CommandSourceStack>): NMSKommandContext =
+            refs.computeIfAbsent(context) {
+                NMSKommandContext(this, context)
+            }
+    }
+
+    internal val handle by weak(handle)
+
+    override val source: KommandSource by lazy { wrapSource(handle.source) }
+
     override val input: String
-        get() = nms.input
+        get() = handle.input
 
     @Suppress("UNCHECKED_CAST")
     override fun <T> get(name: String): T {
         val argumentNode = node.findArgumentNode(name) ?: error("Not found argument node $name")
         val argument = argumentNode.argument as NMSKommandArgument<*>
 
-        return argument.from(nms, name) as T
+        return argument.from(this, name) as T
     }
 }
 

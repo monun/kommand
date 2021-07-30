@@ -55,6 +55,16 @@ interface KommandSource {
 
     fun feedback(message: ComponentLike) {
         val sender = sender
+
+        if (sender !is Entity || world.getGameRuleValue(GameRule.SEND_COMMAND_FEEDBACK) == true) {
+            sender.sendMessage(message)
+        }
+    }
+
+    fun broadcast(message: ComponentLike, isAudience: CommandSender.() -> Boolean = { isOp }) {
+        feedback(message)
+
+        val sender = sender
         val broadcast =
             text().decorate(TextDecoration.ITALIC).color(NamedTextColor.GRAY).content("[").append(displayName)
                 .append(text().content(": ")).append(
@@ -63,12 +73,15 @@ interface KommandSource {
                 ).append(text().content("]"))
 
         Bukkit.getOnlinePlayers().forEach { player ->
-            if (player.world.getGameRuleValue(GameRule.SEND_COMMAND_FEEDBACK) == true) {
-                player.sendMessage(if (player === sender) message else broadcast)
+            if (player !== sender && player.isAudience() && player.world.getGameRuleValue(GameRule.SEND_COMMAND_FEEDBACK) == true) {
+                player.sendMessage(broadcast)
             }
         }
 
-        val consoleSender = Bukkit.getConsoleSender()
-        Bukkit.getConsoleSender().sendMessage(if (consoleSender === sender) message else broadcast)
+        Bukkit.getConsoleSender().let { console ->
+            if (console !== sender && console.isAudience()) {
+                console.sendMessage(broadcast)
+            }
+        }
     }
 }

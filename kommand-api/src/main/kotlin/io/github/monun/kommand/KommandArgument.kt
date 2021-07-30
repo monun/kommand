@@ -24,6 +24,7 @@ import io.github.monun.kommand.loader.LibraryLoader
 import io.github.monun.kommand.wrapper.*
 import io.github.monun.kommand.wrapper.Rotation
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.ComponentLike
 import org.bukkit.*
 import org.bukkit.advancement.Advancement
 import org.bukkit.block.Block
@@ -44,6 +45,25 @@ interface KommandArgument<T> {
     companion object : KommandArgumentSupport by KommandArgumentSupport.INSTANCE
 
     fun suggests(provider: KommandSuggestion.(context: KommandContext) -> Unit)
+
+    fun suggests(
+        candidates: () -> Iterable<String>,
+        tooltip: ((String) -> ComponentLike)? = null
+    ) {
+        suggests {
+            suggest(candidates, tooltip)
+        }
+    }
+
+    fun suggests(
+        candidates: () -> Iterable<T>,
+        transform: (T) -> String = { it.toString() },
+        tooltip: ((T) -> ComponentLike)? = null
+    ) {
+        suggests {
+            suggest(candidates, transform, tooltip)
+        }
+    }
 }
 
 interface KommandArgumentSupport {
@@ -161,16 +181,12 @@ interface KommandArgumentSupport {
 
     fun itemPredicate(): KommandArgument<(ItemStack) -> Boolean>
 
-    // custom
+    // dynamic
 
-    fun <T> custom(type: StringType, names: () -> Iterable<String>, function: (String) -> T?): KommandArgument<T>
-
-    fun <T> custom(type: StringType, map: Map<String, T>): KommandArgument<T> = custom(type, map::keys, map::get)
-
-    fun <T> custom(names: () -> Iterable<String>, function: (String) -> T?): KommandArgument<T> =
-        custom(StringType.SINGLE_WORD, names, function)
-
-    fun <T> custom(map: Map<String, T>): KommandArgument<T> = custom(StringType.SINGLE_WORD, map::keys, map::get)
+    fun <T> dynamic(
+        type: StringType = StringType.SINGLE_WORD,
+        function: KommandSource.(context: KommandContext, input: String) -> T?
+    ): KommandArgument<T>
 }
 
 enum class StringType {

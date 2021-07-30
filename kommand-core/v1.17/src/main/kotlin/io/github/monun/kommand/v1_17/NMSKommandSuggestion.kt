@@ -20,19 +20,53 @@ package io.github.monun.kommand.v1_17
 
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import io.github.monun.kommand.AbstractKommandSuggestion
+import io.github.monun.kommand.ref.getValue
+import io.github.monun.kommand.ref.weak
 import io.papermc.paper.brigadier.PaperBrigadier
 import net.kyori.adventure.text.ComponentLike
+import net.minecraft.commands.SharedSuggestionProvider
+import java.util.*
 
 class NMSKommandSuggestion(
-    private val nms: SuggestionsBuilder
+    handle: SuggestionsBuilder
 ) : AbstractKommandSuggestion() {
+    private val handle by weak(handle)
+
     override fun suggest(value: Int, tooltip: (() -> ComponentLike)?) {
-        if (tooltip == null) nms.suggest(value)
-        else nms.suggest(value, PaperBrigadier.message(tooltip()))
+        if (tooltip == null) handle.suggest(value)
+        else handle.suggest(value, PaperBrigadier.message(tooltip()))
     }
 
     override fun suggest(text: String, tooltip: (() -> ComponentLike)?) {
-        if (tooltip == null) nms.suggest(text)
-        else nms.suggest(text, PaperBrigadier.message(tooltip()))
+        if (tooltip == null) handle.suggest(text)
+        else handle.suggest(text, PaperBrigadier.message(tooltip()))
+    }
+
+    override fun suggest(candidates: () -> Iterable<String>, tooltip: ((String) -> ComponentLike)?) {
+        val handle = handle
+        val input: String = handle.remaining.lowercase(Locale.ROOT)
+
+        candidates().forEach {
+            val candidate = it.lowercase(Locale.ROOT)
+
+            if (SharedSuggestionProvider.matchesSubStr(input, candidate)) {
+                if (tooltip == null) handle.suggest(candidate)
+                else handle.suggest(candidate, PaperBrigadier.message(tooltip(it)))
+            }
+        }
+    }
+
+    override fun <T> suggest(candidates: () -> Iterable<T>, transform: (T) -> String, tooltip: ((T) -> ComponentLike)?) {
+        val handle = handle
+        val input: String = handle.remaining.lowercase(Locale.ROOT)
+
+        candidates().forEach {
+            val candidate = transform(it).lowercase(Locale.ROOT)
+
+            if (SharedSuggestionProvider.matchesSubStr(input, candidate)) {
+                if (tooltip == null) handle.suggest(candidate)
+                else handle.suggest(candidate, PaperBrigadier.message(tooltip(it)))
+            }
+        }
     }
 }
