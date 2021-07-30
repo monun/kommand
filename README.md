@@ -62,37 +62,37 @@ class CommandDispatcher : CommandExecutor {
 ```kotlin
 //in JavaPlugin
 kommand {
-    register("user") {
-        then("create") {
-            then("name" to string()) { //"name"이라는 이름의 String을 요청합니다.
-                executes { context ->
-                    val name: String by context
-                    createUser(name) //명령어 실행 함수를 통해 실행
-                }
-            }
+  register("user") {
+    then("create") {
+      then("name" to string()) { //"name"이라는 이름의 String을 요청합니다.
+        executes { context ->
+          val name: String by context
+          createUser(name) //명령어 실행 함수를 통해 실행
         }
-        then("modify") {
-            then("user" to MyUserArgument()) { //Custom 유저 인수
-                then("name") {
-                    then("newName" to string()) {
-                        executes { context ->
-                            val user: User by context
-                            val newName: String = it["newName"]
-                            setUserName(user, newName)
-                        }
-                    }
-                }
-                then("tag") {
-                    then("newTag" to string()) {
-                        executes {
-                            //함수 인수에 의한 타입 추론
-                            setUserTag(it["user"], it["newTag"])
-                        }
-                    }
-                }
-            }
-        }
+      }
     }
+    then("modify") {
+      then("user" to dynamic { ... }) { //dynamic 유저 인수
+        then("name") {
+          then("newName" to string()) {
+            executes { context ->
+              val user: User by context
+              val newName: String = it["newName"]
+              setUserName(user, newName)
+            }
+          }
+        }
+        then("tag") {
+          then("newTag" to string()) {
+            executes {
+              //함수 인수에 의한 타입 추론
+              setUserTag(it["user"], it["newTag"])
+            }
+          }
+        }
+      }
+    }
+  }
 }
 ```
 
