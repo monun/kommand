@@ -29,5 +29,5 @@ interface KommandNode: KommandArgumentSupport {
 
     fun then(name: String, init: LiteralNode.() -> Unit)
 
-    fun then(argument: Pair<String, KommandArgument<*>>, init: ArgumentNode.() -> Unit)
+    fun then(argument: Pair<String, KommandArgument<*>>, vararg arguments: Pair<String, KommandArgument<*>>, init: ArgumentNode.() -> Unit)
 }

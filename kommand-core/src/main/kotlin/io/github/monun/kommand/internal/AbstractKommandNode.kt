@@ -22,7 +22,9 @@ import io.github.monun.kommand.KommandArgument
 import io.github.monun.kommand.KommandArgumentSupport
 import io.github.monun.kommand.KommandContext
 import io.github.monun.kommand.KommandSource
-import io.github.monun.kommand.node.*
+import io.github.monun.kommand.node.ArgumentNode
+import io.github.monun.kommand.node.KommandNode
+import io.github.monun.kommand.node.LiteralNode
 
 abstract class AbstractKommandNode : KommandNode, KommandArgumentSupport by KommandArgumentSupport.INSTANCE {
     lateinit var kommand: KommandDispatcherImpl
@@ -64,12 +66,26 @@ abstract class AbstractKommandNode : KommandNode, KommandArgumentSupport by Komm
         }
     }
 
-    override fun then(argument: Pair<String, KommandArgument<*>>, init: ArgumentNode.() -> Unit) {
+    override fun then(
+        argument: Pair<String, KommandArgument<*>>,
+        vararg arguments: Pair<String, KommandArgument<*>>,
+        init: ArgumentNode.() -> Unit
+    ) {
         kommand.checkState()
-        nodes += ArgumentNodeImpl().apply {
+
+        var tail = ArgumentNodeImpl().apply {
             parent = this@AbstractKommandNode
             initialize(this@AbstractKommandNode.kommand, argument.first, argument.second)
-            init()
+        }.also { nodes += it }
+
+        for ((subName, subArgument) in arguments) {
+            val child = ArgumentNodeImpl().apply {
+                parent = tail
+                initialize(tail.kommand, subName, subArgument)
+            }.also { tail.nodes += it }
+            tail = child
         }
+
+        tail.init()
     }
 }

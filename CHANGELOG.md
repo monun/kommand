@@ -1,15 +1,21 @@
+### 2.4.1
+
+* `KommandNode#then(argument)` 함수가 다중 인수를 지원
+
+---
 ### 2.4.0
 
 * `KommandSource#broadcast` 함수 추가
 * 함수 이름 변경 `KommandArgument#custom -> dynamic`
 * 다음 인스턴스를 약한 단일 참조로 변경
-  * CommandContext
-  * CommandSourceStack
+    * CommandContext
+    * CommandSourceStack
 * `KommandArgument#suggests` 함수 추가 (오버로드)
 * `KommandContext#source` 필드 추가 (lazy)
 * 일부 내부 함수 향상
 
 ---
+
 ### 2.3.0
 
 * `KommandSource#feedback` 함수 추가

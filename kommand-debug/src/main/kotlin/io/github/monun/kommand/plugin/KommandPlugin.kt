@@ -318,6 +318,17 @@ class KommandPlugin : JavaPlugin() {
                         }
                     }
                 }
+                then("multiple") {
+                    then("first" to int(), "second" to bool(), "third" to string()) {
+                        executes {
+                            val first: Int by it
+                            val second: Boolean by it
+                            val third: String by it
+
+                            broadcast(text("$first $second $third"))
+                        }
+                    }
+                }
             }
         }
     }
