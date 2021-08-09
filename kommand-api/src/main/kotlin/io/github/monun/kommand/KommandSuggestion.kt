@@ -21,21 +21,27 @@ package io.github.monun.kommand
 import net.kyori.adventure.text.ComponentLike
 
 // 추천 빌더
+@KommandDSL
 interface KommandSuggestion {
-    fun suggestsDefault()
+    fun suggestDefault()
 
     fun suggest(value: Int, tooltip: (() -> ComponentLike)? = null)
 
     fun suggest(text: String, tooltip: (() -> ComponentLike)? = null)
 
     fun suggest(
-        candidates: () -> Iterable<String>,
+        candidates: Iterable<String>,
         tooltip: ((String) -> ComponentLike)? = null
     )
 
     fun <T> suggest(
-        candidates: () -> Iterable<T>,
-        transform: (T) -> String = { it.toString() },
+        candidates: Iterable<T>,
+        transform: (T) -> String,
+        tooltip: ((T) -> ComponentLike)? = null
+    )
+
+    fun <T> suggest(
+        candidates: Map<String, T>,
         tooltip: ((T) -> ComponentLike)? = null
     )
 }

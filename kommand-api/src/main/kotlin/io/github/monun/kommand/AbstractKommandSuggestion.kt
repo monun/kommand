@@ -20,8 +20,9 @@ package io.github.monun.kommand
 
 abstract class AbstractKommandSuggestion : KommandSuggestion {
     var suggestsDefault = false
+        private set
 
-    override fun suggestsDefault() {
+    override fun suggestDefault() {
         suggestsDefault = true
     }
 }

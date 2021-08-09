@@ -42,30 +42,53 @@ class NMSKommandSuggestion(
         else handle.suggest(text, PaperBrigadier.message(tooltip()))
     }
 
-    override fun suggest(candidates: () -> Iterable<String>, tooltip: ((String) -> ComponentLike)?) {
+    override fun suggest(candidates: Iterable<String>, tooltip: ((String) -> ComponentLike)?) {
         val handle = handle
         val input: String = handle.remaining.lowercase(Locale.ROOT)
 
-        candidates().forEach {
+        candidates.forEach {
             val candidate = it.lowercase(Locale.ROOT)
+            val lowerCandidate = it.lowercase(Locale.ROOT)
 
-            if (SharedSuggestionProvider.matchesSubStr(input, candidate)) {
+            if (SharedSuggestionProvider.matchesSubStr(input, lowerCandidate)) {
                 if (tooltip == null) handle.suggest(candidate)
                 else handle.suggest(candidate, PaperBrigadier.message(tooltip(it)))
             }
         }
     }
 
-    override fun <T> suggest(candidates: () ->Iterable<T>, transform: (T) -> String, tooltip: ((T) -> ComponentLike)?) {
+    override fun <T> suggest(
+        candidates: Iterable<T>,
+        transform: (T) -> String,
+        tooltip: ((T) -> ComponentLike)?
+    ) {
         val handle = handle
         val input: String = handle.remaining.lowercase(Locale.ROOT)
 
-        candidates().forEach {
-            val candidate = transform(it).lowercase(Locale.ROOT)
+        candidates.forEach {
+            val candidate = transform(it)
+            val lowerCandidate = transform(it).lowercase(Locale.ROOT)
 
-            if (SharedSuggestionProvider.matchesSubStr(input, candidate)) {
+            if (SharedSuggestionProvider.matchesSubStr(input, lowerCandidate)) {
                 if (tooltip == null) handle.suggest(candidate)
                 else handle.suggest(candidate, PaperBrigadier.message(tooltip(it)))
+            }
+        }
+    }
+
+    override fun <T> suggest(
+        candidates: Map<String, T>,
+        tooltip: ((T) -> ComponentLike)?
+    ) {
+        val handle = handle
+        val input: String = handle.remaining.lowercase(Locale.ROOT)
+
+        candidates.forEach { (key, value) ->
+            val lowerCandidate = key.lowercase(Locale.ROOT)
+
+            if (SharedSuggestionProvider.matchesSubStr(input, lowerCandidate)) {
+                if (tooltip == null) handle.suggest(key)
+                else handle.suggest(key, PaperBrigadier.message(tooltip(value)))
             }
         }
     }

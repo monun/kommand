@@ -24,7 +24,7 @@ import org.bukkit.plugin.Plugin
 
 @KommandDSL
 interface Kommand {
-    companion object: Kommand by LibraryLoader.loadNMS(Kommand::class.java)
+    companion object : Kommand by LibraryLoader.loadNMS(Kommand::class.java)
 
     fun register(plugin: Plugin, name: String, vararg aliases: String, init: LiteralNode.() -> Unit)
 }

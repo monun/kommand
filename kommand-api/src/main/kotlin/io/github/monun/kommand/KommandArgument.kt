@@ -41,29 +41,11 @@ import org.bukkit.scoreboard.Team
 import java.util.*
 
 // 인수
+@KommandDSL
 interface KommandArgument<T> {
     companion object : KommandArgumentSupport by KommandArgumentSupport.INSTANCE
 
     fun suggests(provider: KommandSuggestion.(context: KommandContext) -> Unit)
-
-    fun suggests(
-        candidates: () -> Iterable<String>,
-        tooltip: ((String) -> ComponentLike)? = null
-    ) {
-        suggests {
-            suggest(candidates, tooltip)
-        }
-    }
-
-    fun suggests(
-        candidates: () -> Iterable<T>,
-        transform: (T) -> String = { it.toString() },
-        tooltip: ((T) -> ComponentLike)? = null
-    ) {
-        suggests {
-            suggest(candidates, transform, tooltip)
-        }
-    }
 }
 
 interface KommandArgumentSupport {
@@ -187,6 +169,38 @@ interface KommandArgumentSupport {
         type: StringType = StringType.SINGLE_WORD,
         function: KommandSource.(context: KommandContext, input: String) -> T?
     ): KommandArgument<T>
+
+    fun <T> dynamicByMap(
+        map: Map<String, T>,
+        type: StringType = StringType.SINGLE_WORD,
+        tooltip: ((T) -> ComponentLike)? = null
+    ): KommandArgument<T> {
+        return dynamic(type) { _, input ->
+            map[input]
+        }.apply {
+            suggests {
+                if (tooltip == null) {
+                    suggest(map.keys)
+                } else {
+                    suggest(map, tooltip)
+                }
+            }
+        }
+    }
+
+    fun <T : Enum<T>> dynamicByEnum(
+        set: EnumSet<T>,
+        tooltip: ((T) -> ComponentLike)? = null
+    ): KommandArgument<T> {
+        return dynamic(StringType.SINGLE_WORD) { _, input ->
+            println(set)
+            set.find { it.name == input }
+        }.apply {
+            suggests {
+                suggest(set, { it.name }, tooltip)
+            }
+        }
+    }
 }
 
 enum class StringType {

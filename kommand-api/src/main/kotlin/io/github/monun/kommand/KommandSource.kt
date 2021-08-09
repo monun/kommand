@@ -49,6 +49,12 @@ interface KommandSource {
     val world: World
     val location: Location
 
+    val isPlayer
+        get() = playerOrNull != null
+
+    val isConsole
+        get() = sender === Bukkit.getConsoleSender()
+
     fun hasPermission(level: Int): Boolean
 
     fun hasPermission(level: Int, bukkitPermission: String): Boolean

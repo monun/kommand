@@ -31,10 +31,7 @@ import io.github.monun.kommand.wrapper.Rotation
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import net.md_5.bungee.api.ChatColor
-import org.bukkit.Axis
-import org.bukkit.Bukkit
-import org.bukkit.NamespacedKey
-import org.bukkit.World
+import org.bukkit.*
 import org.bukkit.block.Block
 import org.bukkit.block.data.BlockData
 import org.bukkit.enchantments.Enchantment
@@ -293,28 +290,51 @@ class KommandPlugin : JavaPlugin() {
                     }
                 }
                 then("dynamic") {
-                    val map = linkedMapOf(
-                        "one" to Custom(1),
-                        "two" to Custom(2),
-                        "three" to Custom(3)
-                    )
                     val dynamicArgument = dynamic { _, input ->
-                        map[input]
+                        when (input) {
+                            "one" -> 1
+                            "two" -> 2
+                            "three" -> 3
+                            else -> null
+                        }
                     }.apply {
-                        suggests(map::keys) {
-                            text(when (it) {
-                                "one" -> "하나"
-                                "two" -> "둘"
-                                "three" -> "셋"
-                                else -> error("Unknown custom")
-                            })
+                        suggests {
+                            suggest(listOf("one", "two", "three")) {
+                                text("tooltip $it")
+                            }
                         }
                     }
 
                     then("dynamic" to dynamicArgument) {
                         executes {
-                            val dynamic: Custom by it
-                            broadcast(text("$dynamic"))
+                            val dynamic: Int by it
+                            broadcast(text(dynamic))
+                        }
+                    }
+                }
+                then("dynamicMap") {
+                    val map = mapOf(
+                        "apple" to Material.APPLE,
+                        "diamond" to Material.DIAMOND,
+                        "grass" to Material.GRASS
+                    )
+                    val mapArgument = dynamicByMap(map)
+
+                    then("dynamic" to mapArgument) {
+                        executes {
+                            val dynamic: Material by it
+                            broadcast(text(dynamic.name))
+                        }
+                    }
+                }
+                then("dynamicEnum") {
+                    val set = EnumSet.of(Material.STONE, Material.COBBLESTONE, Material.ACACIA_BOAT)
+                    val enumArgument = dynamicByEnum(set)
+
+                    then("dynamic" to enumArgument) {
+                        executes {
+                            val dynamic: Material by it
+                            broadcast(text(dynamic.name))
                         }
                     }
                 }
@@ -331,11 +351,5 @@ class KommandPlugin : JavaPlugin() {
                 }
             }
         }
-    }
-}
-
-class Custom(private val value: Int) {
-    override fun toString(): String {
-        return "Custom value = $value"
     }
 }

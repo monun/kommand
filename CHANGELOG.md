@@ -1,8 +1,24 @@
+### 2.5.0
+
+* 명령 제안이 항상 lowercase로 전달되던 버그 수정
+* 일부 기능이 1.17에서 작동하지 않던 버그 수정
+* 예외 발생시 스택트레이스를 출력
+* 사용이 모호한 함수 제거
+* `KommandSource#isPlayer` 속성 추가
+* `KommandSource#isConsole` 속성 추가
+* `KommandArgument#dynamicByMap` 함수 추가
+* `KommandArgument#dynamicByEnum` 함수 추가
+* `KommandSuggestion#suggest` 함수의 인수가 `() -> Iterable`에서 `Iterable`로 변경
+* `KommandSuggestion#suggest(map)` 함수 추가
+
+---
+
 ### 2.4.1
 
 * `KommandNode#then(argument)` 함수가 다중 인수를 지원
 
 ---
+
 ### 2.4.0
 
 * `KommandSource#broadcast` 함수 추가

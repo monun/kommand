@@ -467,7 +467,8 @@ class NMSKommandArgumentSupport : KommandArgumentSupport {
         function: KommandSource.(context: KommandContext, input: String) -> T?
     ): KommandArgument<T> {
         return type.createType() provideDynamic { context, name ->
-            context.source.function(context, name) ?: throw unknownArgument.create()
+            context.source.function(context, StringArgumentType.getString(context.handle, name))
+                ?: throw unknownArgument.create()
         }
     }
 }

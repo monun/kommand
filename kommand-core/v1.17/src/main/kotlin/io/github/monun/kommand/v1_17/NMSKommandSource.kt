@@ -47,7 +47,7 @@ class NMSKommandSource private constructor(
             }
     }
 
-    internal val handle by weak(handle)
+    private val handle by weak(handle)
 
     override val displayName: Component
         get() = PaperBrigadier.componentFromMessage(handle.displayName)
