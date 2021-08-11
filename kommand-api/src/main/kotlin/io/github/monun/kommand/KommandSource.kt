@@ -53,7 +53,7 @@ interface KommandSource {
         get() = playerOrNull != null
 
     val isConsole
-        get() = sender === Bukkit.getConsoleSender()
+        get() = sender == Bukkit.getConsoleSender()
 
     fun hasPermission(level: Int): Boolean
 

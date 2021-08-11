@@ -35,6 +35,10 @@ import net.minecraft.commands.Commands
 import net.minecraft.server.MinecraftServer
 import org.bukkit.Bukkit
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer
+import org.bukkit.craftbukkit.v1_17_R1.command.VanillaCommandWrapper
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer
+import org.bukkit.entity.Player
+
 
 class NMSKommand : AbstractKommand() {
     private val server: MinecraftServer = (Bukkit.getServer() as CraftServer).server
@@ -45,14 +49,39 @@ class NMSKommand : AbstractKommand() {
     private val children: MutableMap<String, CommandNode<CommandSourceStack>> = root["children"]
     private val literals: MutableMap<String, LiteralCommandNode<CommandSourceStack>> = root["literals"]
 
+    private val commandMap = Bukkit.getCommandMap()
+
     override fun register(dispatcher: KommandDispatcherImpl, aliases: List<String>) {
         val node = this.dispatcher.register(dispatcher.root.convert() as LiteralArgumentBuilder<CommandSourceStack>)
         aliases.forEach { this.dispatcher.register(literal(it).redirect(node)) }
+
+        /**
+         * 버킷의 바닐라 명령 실행 순서는 다음과 같음
+         * 채팅 패킷 수신 -> CommandMap -> VanillaCommandWrapper -> Brigadier
+         *
+         * 플러그인 로딩 후 CommandMap에 바닐라 명령을 VanillaCommandWrapper로 등록
+         * VanillaCommandWrapper는 바닐라 커맨드는 생성자에서 'minecraft.command.<name>'의 권한을 적용
+         * 따라서 일반적으로 OP권한이 없다면 Brigadier에 등록한 명령을 실행 할 수 없음 (requires도 호출되지 않음)
+         *
+         * bukkit에서 CommandMap에 VanillaCommandWrapper를 등록하기 전에 미리 등록
+         *
+         * 어차피 requires에서 테스트하는데 왜 추가 권한을 요구하는지 이해가 되질 않음
+         */
+        commandMap.register(
+            "minecraft",
+            VanillaCommandWrapper(vanillaCommands, node).apply {
+                permission = dispatcher.root.permission?.name
+            }
+        )
     }
 
     override fun unregister(name: String) {
         children.remove(name)
         literals.remove(name)
+    }
+
+    override fun sendCommandsPacket(player: Player) {
+        vanillaCommands.sendCommands((player as CraftPlayer).handle)
     }
 }
 
@@ -63,6 +92,8 @@ private operator fun <T> CommandNode<*>.get(name: String): T {
 }
 
 private fun AbstractKommandNode.convert(): ArgumentBuilder<CommandSourceStack, *> {
+    permission?.let { Bukkit.getPluginManager().addPermission(it) }
+
     return when (this) {
         is LiteralNodeImpl -> literal(name)
         is ArgumentNodeImpl -> {
@@ -76,15 +107,24 @@ private fun AbstractKommandNode.convert(): ArgumentBuilder<CommandSourceStack, *
         }
         else -> error("Unknown node type ${javaClass.name}")
     }.apply {
-        requires?.let { requires ->
-            requires { source ->
-                wrapSource(source).runCatching {
-                    requires()
-                }.onFailure {
-                    if (it !is CommandSyntaxException) it.printStackTrace()
-                }.getOrThrow()
-            }
+        requires { source ->
+            /**
+             * 권한 테스트 순서
+             * requirement -> permission
+             */
+            kotlin.runCatching {
+                requires?.run {
+                    if (!invoke(wrapSource(source))) return@requires false
+                }
+                permission?.let {
+                    if (!source.bukkitSender.hasPermission(it)) return@requires false
+                }
+                true
+            }.onFailure {
+                if (it !is CommandSyntaxException) it.printStackTrace()
+            }.getOrThrow()
         }
+
         executes?.let { executes ->
             executes { context ->
                 wrapSource(context.source).runCatching {

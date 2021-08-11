@@ -193,7 +193,6 @@ interface KommandArgumentSupport {
         tooltip: ((T) -> ComponentLike)? = null
     ): KommandArgument<T> {
         return dynamic(StringType.SINGLE_WORD) { _, input ->
-            println(set)
             set.find { it.name == input }
         }.apply {
             suggests {

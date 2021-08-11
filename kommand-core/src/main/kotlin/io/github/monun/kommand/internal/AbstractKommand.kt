@@ -20,13 +20,17 @@ package io.github.monun.kommand.internal
 
 import io.github.monun.kommand.Kommand
 import io.github.monun.kommand.node.LiteralNode
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.server.PluginDisableEvent
 import org.bukkit.plugin.Plugin
 
 abstract class AbstractKommand : Kommand {
+    private var registered = false
+
     override fun register(
         plugin: Plugin,
         name: String,
@@ -55,8 +59,21 @@ abstract class AbstractKommand : Kommand {
             },
             plugin
         )
+
+        if (!registered) {
+            plugin.server.pluginManager.registerEvents(PlayerListener(this), plugin)
+            registered = true
+        }
     }
 
     protected abstract fun register(dispatcher: KommandDispatcherImpl, aliases: List<String>)
     protected abstract fun unregister(name: String)
+    abstract fun sendCommandsPacket(player: Player)
+}
+
+class PlayerListener(private val kommand: AbstractKommand) : Listener {
+    @EventHandler
+    fun onPlayerJoin(event: PlayerJoinEvent) {
+        kommand.sendCommandsPacket(event.player)
+    }
 }

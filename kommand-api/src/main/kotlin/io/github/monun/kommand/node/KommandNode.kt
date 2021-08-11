@@ -19,10 +19,15 @@
 package io.github.monun.kommand.node
 
 import io.github.monun.kommand.*
+import org.bukkit.permissions.Permission
 
 // 커맨드 노드
 @KommandDSL
 interface KommandNode : KommandArgumentSupport {
+    fun permission(permission: Permission)
+
+    fun permission(permission: String) = permission(Permission(permission))
+
     fun requires(requires: KommandSource.() -> Boolean)
 
     fun executes(executes: KommandSource.(KommandContext) -> Unit)

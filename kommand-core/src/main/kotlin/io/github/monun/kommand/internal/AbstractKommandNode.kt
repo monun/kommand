@@ -25,12 +25,16 @@ import io.github.monun.kommand.KommandSource
 import io.github.monun.kommand.node.ArgumentNode
 import io.github.monun.kommand.node.KommandNode
 import io.github.monun.kommand.node.LiteralNode
+import org.bukkit.permissions.Permission
 
 abstract class AbstractKommandNode : KommandNode, KommandArgumentSupport by KommandArgumentSupport.INSTANCE {
     lateinit var kommand: KommandDispatcherImpl
     lateinit var name: String
 
     var parent: AbstractKommandNode? = null
+
+    var permission: Permission? = null
+        private set
 
     var requires: (KommandSource.() -> Boolean)? = null
         private set
@@ -44,6 +48,10 @@ abstract class AbstractKommandNode : KommandNode, KommandArgumentSupport by Komm
     }
 
     val nodes = arrayListOf<AbstractKommandNode>()
+
+    override fun permission(permission: Permission) {
+        this.permission = permission
+    }
 
     override fun requires(requires: KommandSource.() -> Boolean) {
         kommand.checkState()
