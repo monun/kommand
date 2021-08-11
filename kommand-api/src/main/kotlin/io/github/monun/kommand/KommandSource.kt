@@ -55,6 +55,9 @@ interface KommandSource {
     val isConsole
         get() = sender == Bukkit.getConsoleSender()
 
+    val isOp
+        get() = sender.isOp
+
     fun hasPermission(level: Int): Boolean
 
     fun hasPermission(level: Int, bukkitPermission: String): Boolean
