@@ -38,6 +38,7 @@ abstract class AbstractKommand : Kommand {
         init: LiteralNode.() -> Unit
     ) {
         require(plugin.isEnabled) { "Plugin disabled!" }
+        require(test(name, aliases))
 
         KommandDispatcherImpl().apply {
             initialize(name)
@@ -66,6 +67,12 @@ abstract class AbstractKommand : Kommand {
         }
     }
 
+    /**
+     * 이미 등록된 명령 이름인지 확인
+     *
+     * @return 등록이 가능하다면 true, 불가능하다면 false
+     */
+    protected abstract fun test(name: String, aliases: Array<out String>): Boolean
     protected abstract fun register(dispatcher: KommandDispatcherImpl, aliases: List<String>)
     protected abstract fun unregister(name: String)
     abstract fun sendCommandsPacket(player: Player)

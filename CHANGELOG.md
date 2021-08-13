@@ -1,3 +1,8 @@
+### 2.6.3
+
+* 명령 등록시 중복 테스트
+
+---
 ### 2.6.2
 
 * `KommandArgument#team` spigot mapping 오류 우회

@@ -51,6 +51,10 @@ class NMSKommand : AbstractKommand() {
 
     private val commandMap = Bukkit.getCommandMap()
 
+    override fun test(name: String, aliases: Array<out String>): Boolean {
+        return literals[name] == null && aliases.all { literals[it] == null }
+    }
+
     override fun register(dispatcher: KommandDispatcherImpl, aliases: List<String>) {
         val node = this.dispatcher.register(dispatcher.root.convert() as LiteralArgumentBuilder<CommandSourceStack>)
         aliases.forEach { this.dispatcher.register(literal(it).redirect(node)) }
