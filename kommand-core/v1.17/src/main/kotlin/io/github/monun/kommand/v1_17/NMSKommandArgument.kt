@@ -25,6 +25,7 @@ import com.google.gson.JsonParser
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.*
 import com.mojang.brigadier.context.CommandContext
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
@@ -350,10 +351,26 @@ class NMSKommandArgumentSupport : KommandArgumentSupport {
         }
     }
 
+    /**
+     * TeamArgument의 error
+     */
+    private val errorTeamNotFound = DynamicCommandExceptionType { `object`: Any ->
+        TranslatableComponent("team.notFound", `object`)
+    }
+
     override fun team(): KommandArgument<Team> {
         return TeamArgument.team() provide { context, name ->
-            val nms = TeamArgument.getTeam(context, name)
-            Bukkit.getScoreboardManager().mainScoreboard.getTeam(nms.name) ?: error("Team error!")
+            /**
+             * CraftTeam이 패키지 접근만 허용하여 생성불가
+             * PlayerTeam(nms) -> name -> BukkitTeam 순으로 가져와야함
+             * 하지만...
+             *
+             * val team: PlayerTeam = TeamArgument.getTeam(context, name)
+             * val teamName = team.name <-- spigot mapping에서 오류가 있음
+             * java.lang.NoSuchMethodError: 'java.lang.String net.minecraft.world.scores.ScoreboardTeam.b()'
+             */
+            val teamName: String = context.getArgument(name, String::class.java)
+            Bukkit.getScoreboardManager().mainScoreboard.getTeam(teamName) ?: throw errorTeamNotFound.create(teamName)
         }
     }
 

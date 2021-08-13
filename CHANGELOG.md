@@ -1,8 +1,15 @@
+### 2.6.2
+
+* `KommandArgument#team` spigot mapping 오류 우회
+
+---
+
 ### 2.6.1
 
 * `KommandSource#isOp` 추가
 
 ---
+
 ### 2.6.0
 
 * 명령 권한이 항상 관리자인 버그 수정

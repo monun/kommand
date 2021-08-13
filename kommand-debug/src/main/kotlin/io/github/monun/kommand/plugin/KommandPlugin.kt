@@ -40,6 +40,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffectType
+import org.bukkit.scoreboard.Team
 import java.util.*
 
 class KommandPlugin : JavaPlugin() {
@@ -349,6 +350,15 @@ class KommandPlugin : JavaPlugin() {
                             val third: String by it
 
                             broadcast(text("$first $second $third"))
+                        }
+                    }
+                }
+                then("team") {
+                    then("team" to team()) {
+                        executes {
+                            val team: Team by it
+
+                            broadcast(text("team = ${team.name}"))
                         }
                     }
                 }
