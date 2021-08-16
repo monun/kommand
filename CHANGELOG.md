@@ -1,8 +1,16 @@
+### 2.6.4
+
+* int() 이외의 다른 원시타입 매개변수에도 기본값 제공
+* doubleRange() 구현체의 minimum 값이 -Double.MAX_VALUE 가 아닌 Double.MIN_VALUE 로 되어있던 문제 해결
+
+---
+
 ### 2.6.3
 
 * 명령 등록시 중복 테스트
 
 ---
+
 ### 2.6.2
 
 * `KommandArgument#team` spigot mapping 오류 우회
