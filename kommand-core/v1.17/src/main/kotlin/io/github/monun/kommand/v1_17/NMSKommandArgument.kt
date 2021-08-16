@@ -302,12 +302,12 @@ class NMSKommandArgumentSupport : KommandArgumentSupport {
     }
 
     //float
-    override fun doubleRange(): KommandArgument<ClosedRange<Double>> {
+    override fun doubleRange(): KommandArgument<ClosedFloatingPointRange<Double>> {
         return RangeArgument.floatRange() provide { context, name ->
             val nms = RangeArgument.Floats.getRange(context, name)
-            val min = nms.min ?: Double.MIN_VALUE
+            val min = nms.min ?: -Double.MAX_VALUE
             val max = nms.max ?: Double.MAX_VALUE
-            min.rangeTo(max)
+            min..max
         }
     }
 

@@ -59,11 +59,11 @@ interface KommandArgumentSupport {
 
     fun int(minimum: Int = Int.MIN_VALUE, maximum: Int = Int.MAX_VALUE): KommandArgument<Int>
 
-    fun float(minimum: Float, maximum: Float): KommandArgument<Float>
+    fun float(minimum: Float = -Float.MAX_VALUE, maximum: Float = Float.MAX_VALUE): KommandArgument<Float>
 
-    fun double(minimum: Double, maximum: Double): KommandArgument<Double>
+    fun double(minimum: Double = -Double.MAX_VALUE, maximum: Double = Double.MAX_VALUE): KommandArgument<Double>
 
-    fun long(minimum: Long, maximum: Long): KommandArgument<Long>
+    fun long(minimum: Long = Long.MIN_VALUE, maximum: Long = Long.MAX_VALUE): KommandArgument<Long>
 
     fun string(type: StringType = StringType.SINGLE_WORD): KommandArgument<String>
 
@@ -111,7 +111,7 @@ interface KommandArgumentSupport {
 
     fun intRange(): KommandArgument<IntRange>
 
-    fun doubleRange(): KommandArgument<ClosedRange<Double>>
+    fun doubleRange(): KommandArgument<ClosedFloatingPointRange<Double>>
 
     fun advancement(): KommandArgument<Advancement>
 
