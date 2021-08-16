@@ -111,7 +111,7 @@ interface KommandArgumentSupport {
 
     fun intRange(): KommandArgument<IntRange>
 
-    fun doubleRange(): KommandArgument<ClosedRange<Double>>
+    fun doubleRange(): KommandArgument<ClosedFloatingPointRange<Double>>
 
     fun advancement(): KommandArgument<Advancement>
 
