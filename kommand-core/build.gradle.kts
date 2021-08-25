@@ -151,7 +151,7 @@ publishing {
 
             pom {
                 name.set("kommand")
-                description.set("pom description")
+                description.set("kommand-api implementation")
                 url.set("https://github.com/monun/kommand")
 
                 licenses {

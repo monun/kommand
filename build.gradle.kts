@@ -3,7 +3,7 @@ import org.apache.tools.ant.taskdefs.condition.Os
 import java.io.FileFilter
 
 plugins {
-    kotlin("jvm") version "1.5.21"
+    kotlin("jvm") version "1.5.30"
 }
 
 java {
@@ -38,13 +38,12 @@ subprojects {
 
 tasks {
     val mavenLocal = File("${System.getProperty("user.home")}/.m2/repository/")
-    val mcVersions =
-        requireNotNull(project.properties["mc_versions"]) { "Not found properties in mc_versions" } as String
-    val mcVersionList = mcVersions.split(',').toSortedSet(reverseOrder())
+    val nmsVersions = File(rootDir, "${rootProject.name}-core").listFiles { file ->
+        file.isDirectory && file.name.startsWith("v")
+    }?.map { it.name.removePrefix("v") } ?: emptyList()
 
     val buildToolsDir = File(rootDir, ".buildtools")
     val buildToolsJar = File(buildToolsDir, "BuildTools.jar")
-    val buildToolsMemory = project.properties["buildtoolsMemory"]?.toString() ?: "1G"
 
     val downloadBuildToolsTask = register<Download>("downloadBuildTools") {
         src("https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar")
@@ -57,7 +56,7 @@ tasks {
     val spigotRepoVersions = spigotRepo.listFiles(FileFilter { it.isDirectory }) ?: emptyArray()
     val spigotTasks = arrayListOf<TaskProvider<JavaExec>>()
 
-    mcVersionList.forEach { version ->
+    nmsVersions.forEach { version ->
         val mustRunAfters = spigotTasks.toList()
         spigotTasks.add(register<JavaExec>("spigot-$version") {
             onlyIf {
@@ -76,7 +75,6 @@ tasks {
             mustRunAfter(mustRunAfters)
             workingDir(buildToolsDir)
             mainClass.set("-jar")
-            jvmArgs("-Xmx$buildToolsMemory")
             args(buildToolsJar.name, "--rev", version, "--remapped")
         })
     }
@@ -86,12 +84,12 @@ tasks {
     val paperRepo = File(mavenLocal, "io/papermc/paper/$paper")
     val paperRepoVersions = paperRepo.listFiles(FileFilter { it.isDirectory }) ?: emptyArray()
     val paperGitInfos = mapOf(
-        "1.17.1" to ("master" to "80650e893678e726b0d5724031344eb2ec47a51a"),
+        "1.17.1" to ("master" to "789bc792804e74590a4243269df0eba94c166953"),
         "1.17" to ("master" to "a831634d446341efc70f027851effe02a0e7f1d3")
     )
     val paperTasks = arrayListOf<TaskProvider<DefaultTask>>()
 
-    mcVersionList.forEach { version ->
+    nmsVersions.forEach { version ->
         val mustRunAfters = paperTasks.toList()
         paperTasks.add(register<DefaultTask>("paper-$version") {
             val paperGitInfo = paperGitInfos[version] ?: error("Not found paper commit for $version")
@@ -138,8 +136,7 @@ tasks {
         mustRunAfter(setupSpigot)
         dependsOn(paperTasks)
     }
-
-    register<DefaultTask>("setupWorkspace") {
+    register<DefaultTask>("setupDependencies") {
         dependsOn(setupSpigot)
         dependsOn(setupPaper)
     }

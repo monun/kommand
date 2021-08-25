@@ -1,8 +1,11 @@
 # Kommand
 
-![Maven Central](https://img.shields.io/maven-central/v/io.github.monun/kommand)
-![GitHub](https://img.shields.io/github/license/monun/kommand)
-[![YouTube Channel Subscribers](https://img.shields.io/youtube/channel/subscribers/UCDrAR1OWC2MD4s0JLetN0MA?label=%EA%B0%81%EB%B3%84&style=social)](https://www.youtube.com/channel/UCDrAR1OWC2MD4s0JLetN0MA)
+[![Kotlin](https://img.shields.io/badge/java-16.0.2-ED8B00.svg?logo=java)](https://www.azul.com/)
+[![Kotlin](https://img.shields.io/badge/kotlin-1.5.30-585DEF.svg?logo=kotlin)](http://kotlinlang.org)
+[![Gradle](https://img.shields.io/badge/gradle-7.2-02303A.svg?logo=gradle)](https://gradle.org)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.monun/kommand)](https://search.maven.org/artifact/io.github.monun/kommand)
+[![GitHub](https://img.shields.io/github/license/monun/kommand)](https://www.gnu.org/licenses/gpl-3.0.html)
+[![Kotlin](https://img.shields.io/badge/youtube-각별-red.svg?logo=youtube)](https://www.youtube.com/channel/UCDrAR1OWC2MD4s0JLetN0MA)
 
 ### Command DSL for Paper (Brigadier)
 
@@ -12,11 +15,6 @@
     * 명령어 분기 지원
     * 인수 분석(Parsing)
     * 명령어 제안 지원 (TabComplete)
-
-* #### Environment
-    * JDK 16
-    * Kotlin 1.5.21
-    * Paper 1.17, 1.17.1
 
 ---
 
@@ -62,37 +60,37 @@ class CommandDispatcher : CommandExecutor {
 ```kotlin
 //in JavaPlugin
 kommand {
-  register("user") {
-    then("create") {
-      then("name" to string()) { //"name"이라는 이름의 String을 요청합니다.
-        executes { context ->
-          val name: String by context
-          createUser(name) //명령어 실행 함수를 통해 실행
-        }
-      }
-    }
-    then("modify") {
-      then("user" to dynamic { ... }) { //dynamic 유저 인수
-        then("name") {
-          then("newName" to string()) {
-            executes { context ->
-              val user: User by context
-              val newName: String = it["newName"]
-              setUserName(user, newName)
+    register("user") {
+        then("create") {
+            then("name" to string()) { //"name"이라는 이름의 String을 요청합니다.
+                executes { context ->
+                    val name: String by context
+                    createUser(name) //명령어 실행 함수를 통해 실행
+                }
             }
-          }
         }
-        then("tag") {
-          then("newTag" to string()) {
-            executes {
-              //함수 인수에 의한 타입 추론
-              setUserTag(it["user"], it["newTag"])
+        then("modify") {
+            then("user" to dynamic { ... }) { //dynamic 유저 인수
+                then("name") {
+                    then("newName" to string()) {
+                        executes { context ->
+                            val user: User by context
+                            val newName: String = it["newName"]
+                            setUserName(user, newName)
+                        }
+                    }
+                }
+                then("tag") {
+                    then("newTag" to string()) {
+                        executes {
+                            //함수 인수에 의한 타입 추론
+                            setUserTag(it["user"], it["newTag"])
+                        }
+                    }
+                }
             }
-          }
         }
-      }
     }
-  }
 }
 ```
 
@@ -116,7 +114,7 @@ dependencies {
 }
 ```
 
-### plugins.yml
+### plugin.yml
 
 ```yaml
 name: ...
