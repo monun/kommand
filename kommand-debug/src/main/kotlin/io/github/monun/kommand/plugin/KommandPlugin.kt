@@ -52,12 +52,10 @@ class KommandPlugin : JavaPlugin() {
 
         kommand {
             register("my", "myalias") {
-                permission("my.commands")
+//                permission("my.commands")
 
                 then("age") {
                     then("age" to int) {
-                        permission("my.age")
-
                         executes {
                             val age: Int by it
                             Bukkit.broadcast(text("내 나이는 $age 살입니다."))

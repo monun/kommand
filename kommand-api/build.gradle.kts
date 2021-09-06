@@ -21,37 +21,42 @@ tasks {
 }
 
 publishing {
+    repositories {
+        mavenLocal()
+
+        maven {
+            name = "debug"
+            url = rootProject.uri(".debug-paper/libraries")
+        }
+
+        maven {
+            name = "central"
+
+            credentials.runCatching {
+                val nexusUsername: String by project
+                val nexusPassword: String by project
+                username = nexusUsername
+                password = nexusPassword
+            }.onFailure {
+                logger.warn("Failed to load nexus credentials, Check the gradle.properties")
+            }
+
+            url = uri(
+                if ("SNAPSHOT" in version as String) {
+                    "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+                } else {
+                    "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                }
+            )
+        }
+    }
+
     publications {
         create<MavenPublication>("kommand-api") {
             artifactId = "kommand-api"
             from(components["java"])
             artifact(tasks["sourcesJar"])
             artifact(tasks["dokkaJar"])
-
-            repositories {
-                mavenLocal()
-
-                maven {
-                    name = "central"
-
-                    credentials.runCatching {
-                        val nexusUsername: String by project
-                        val nexusPassword: String by project
-                        username = nexusUsername
-                        password = nexusPassword
-                    }.onFailure {
-                        logger.warn("Failed to load nexus credentials, Check the gradle.properties")
-                    }
-
-                    url = uri(
-                        if ("SNAPSHOT" in version) {
-                            "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-                        } else {
-                            "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-                        }
-                    )
-                }
-            }
 
             pom {
                 name.set("kommand-api")

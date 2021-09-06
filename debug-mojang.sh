@@ -2,6 +2,7 @@
 
 server=$HOME/.m2/repository/io/papermc/paper/paper/1.17.1-R0.1-SNAPSHOT/paper-1.17.1-R0.1-SNAPSHOT-mojang-mapped.jar
 plugins=(
+  'https://github.com/monun/auto-reloader/releases/latest/download/AutoReloader.jar'
 )
 
 script=$(basename "$0")
@@ -26,7 +27,7 @@ if [ ! -f "$start_config" ]; then
   cat <<EOF >$start_config
 server=$server
 debug=true
-debug_port=25564
+debug_port=5005
 backup=false
 force_restart=false
 memory=16

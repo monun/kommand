@@ -75,6 +75,7 @@ class NMSKommand : AbstractKommand() {
             "minecraft",
             VanillaCommandWrapper(vanillaCommands, node).apply {
                 permission = dispatcher.root.permission?.name
+                setAliases(aliases.toList())
             }
         )
     }

@@ -1,7 +1,7 @@
 # Kommand
 
 [![Kotlin](https://img.shields.io/badge/java-16.0.2-ED8B00.svg?logo=java)](https://www.azul.com/)
-[![Kotlin](https://img.shields.io/badge/kotlin-1.5.30-585DEF.svg?logo=kotlin)](http://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/kotlin-1.5.21-585DEF.svg?logo=kotlin)](http://kotlinlang.org)
 [![Gradle](https://img.shields.io/badge/gradle-7.2-02303A.svg?logo=gradle)](https://gradle.org)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.monun/kommand)](https://search.maven.org/artifact/io.github.monun/kommand)
 [![GitHub](https://img.shields.io/github/license/monun/kommand)](https://www.gnu.org/licenses/gpl-3.0.html)

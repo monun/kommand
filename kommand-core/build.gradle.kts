@@ -11,15 +11,6 @@ plugins {
     signing
 }
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath("net.md-5:SpecialSource:1.10.0")
-    }
-}
 
 val api = project(":kommand-api")
 
@@ -40,7 +31,22 @@ subprojects {
 
     dependencies {
         implementation(api)
-        implementation(requireNotNull(parent)) // kommand-core
+        implementation(requireNotNull(parent)) // core
+
+        if (project.name.startsWith("v")) {
+            compileOnly("com.mojang:brigadier:1.0.18")
+
+            val nmsVersion = project.name.removePrefix("v")
+
+            // source
+            compileOnly("io.papermc.paper:paper-api:$nmsVersion-R0.1-SNAPSHOT")
+            compileOnly("io.papermc.paper:paper-mojangapi:$nmsVersion-R0.1-SNAPSHOT")
+
+            // binary
+            compileOnly("io.papermc.paper:paper:$nmsVersion-R0.1-SNAPSHOT:mojang-mapped")
+            mojangMapping("org.spigotmc:minecraft-server:$nmsVersion-R0.1-SNAPSHOT:maps-mojang@txt")
+            spigotMapping("org.spigotmc:minecraft-server:$nmsVersion-R0.1-SNAPSHOT:maps-spigot@csrg")
+        }
     }
 
     tasks {
@@ -115,6 +121,36 @@ tasks {
 }
 
 publishing {
+    repositories {
+        mavenLocal()
+
+        maven {
+            name = "debug"
+            url = rootProject.uri(".debug-paper/libraries")
+        }
+
+        maven {
+            name = "central"
+
+            credentials.runCatching {
+                val nexusUsername: String by project
+                val nexusPassword: String by project
+                username = nexusUsername
+                password = nexusPassword
+            }.onFailure {
+                logger.warn("Failed to load nexus credentials, Check the gradle.properties")
+            }
+
+            url = uri(
+                if ("SNAPSHOT" in version as String) {
+                    "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+                } else {
+                    "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                }
+            )
+        }
+    }
+
     publications {
         register<MavenPublication>("kommand") {
             artifactId = "kommand"
@@ -123,31 +159,6 @@ publishing {
             artifact(tasks["paperJar"])
             artifact(tasks["sourcesJar"])
             artifact(tasks["dokkaJar"])
-
-            repositories {
-                mavenLocal()
-
-                maven {
-                    name = "central"
-
-                    credentials.runCatching {
-                        val nexusUsername: String by project
-                        val nexusPassword: String by project
-                        username = nexusUsername
-                        password = nexusPassword
-                    }.onFailure {
-                        logger.warn("Failed to load nexus credentials, Check the gradle.properties")
-                    }
-
-                    url = uri(
-                        if ("SNAPSHOT" in version) {
-                            "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-                        } else {
-                            "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-                        }
-                    )
-                }
-            }
 
             pom {
                 name.set("kommand")

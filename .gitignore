@@ -14,5 +14,5 @@ build/
 .debug-mojang/
 .debug-paper/
 
-# BuildTools
-.buildtools/
+# Paper strap
+.paperstrap/
