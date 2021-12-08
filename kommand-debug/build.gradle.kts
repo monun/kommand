@@ -27,7 +27,7 @@ tasks {
      *
      * 빠른 디버그를 위해서 모든 모듈을 jar안에 포함
      */
-    create<Jar>("mojangJar") {
+    /*create<Jar>("mojangJar") {
         archiveBaseName.set(pluginName)
         archiveVersion.set("")
         archiveClassifier.set("MOJANG")
@@ -47,7 +47,7 @@ tasks {
                 into(if (File(plugins, archiveFileName.get()).exists()) File(plugins, "update") else plugins)
             }
         }
-    }
+    }*/
 
     /**
      * spigot mapping jar
@@ -55,7 +55,7 @@ tasks {
      * 실제 환경 테스트를 위해서 서버에 모듈을 배포
      * jar 파일에는 debug 모듈만 포함
      */
-    create<Jar>("paperJar") {
+    create<Jar>("debugJar") {
         dependsOn(projectAPI.tasks.named("publishAllPublicationsToDebugRepository"))
         dependsOn(projectCore.tasks.named("publishAllPublicationsToDebugRepository"))
 
@@ -70,7 +70,7 @@ tasks {
         doLast {
             copy {
                 from(archiveFile)
-                val plugins = File(rootDir, ".debug-paper/plugins/")
+                val plugins = File(rootDir, ".debug/plugins/")
                 into(if (File(plugins, archiveFileName.get()).exists()) File(plugins, "update") else plugins)
             }
         }

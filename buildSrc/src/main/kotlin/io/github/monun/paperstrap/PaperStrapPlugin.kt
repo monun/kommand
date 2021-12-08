@@ -68,7 +68,7 @@ class PaperStrapPlugin : Plugin<Project> {
 
         val clonePaper = project.task("setupPaperClone") {
             doLast {
-                paperDir.git("clone", "https://github.com/PaperMC/Paper.git", ".")
+                if (!File(paperDir, ".git").exists()) paperDir.git("clone", "https://github.com/PaperMC/Paper.git", ".")
             }
         }
 
@@ -95,24 +95,37 @@ class PaperStrapPlugin : Plugin<Project> {
                     val commit = PaperAPI.commit(version, PaperAPI.latestBuild(version))
 
                     paperDir.git("fetch", "--all", "--quiet")
-                    paperDir.git("checkout", commit, "--quiet")
+                    paperDir.git("checkout", "-f", commit, "--quiet")
                     paperDir.gradle("applyPatches")
                     paperDir.gradle("publishToMavenLocal")
                     paperDir.gradle("clean")
                 }
-
                 finalizedBy(cleanPaperStrap)
             }
 
-            spigots += project.task("setupSpigot$version") {
+            spigots += project.task("setupSpigot-$version") {
                 dependsOn(downloadBuildTools)
 
                 doLast {
                     println(buildToolsJar.name)
-                    spigotDir.java(buildToolsJar.name, "--rev", version)
+                    spigotDir.java(buildToolsJar.name, "--rev", version, "--remapped")
                 }
-
                 finalizedBy(cleanPaperStrap)
+            }
+
+            project.task("setupServer-$version") {
+                doLast {
+                    dependsOn(clonePaper)
+
+                    doLast {
+                        val commit = PaperAPI.commit(version, PaperAPI.latestBuild(version))
+
+                        paperDir.git("fetch", "--all", "--quiet")
+                        paperDir.git("checkout", "-f", commit, "--quiet")
+                        paperDir.gradle("applyPatches")
+                        paperDir.gradle("applyPatches")
+                    }
+                }
             }
         }
 

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.monun.kommand.v1_17_1
+package io.github.monun.kommand.v1_18
 
 import com.destroystokyo.paper.profile.CraftPlayerProfile
 import com.destroystokyo.paper.profile.PlayerProfile
@@ -51,14 +51,14 @@ import org.bukkit.*
 import org.bukkit.advancement.Advancement
 import org.bukkit.block.Block
 import org.bukkit.block.data.BlockData
-import org.bukkit.craftbukkit.v1_17_R1.CraftParticle
-import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlock
-import org.bukkit.craftbukkit.v1_17_R1.block.data.CraftBlockData
-import org.bukkit.craftbukkit.v1_17_R1.enchantments.CraftEnchantment
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack
-import org.bukkit.craftbukkit.v1_17_R1.potion.CraftPotionEffectType
-import org.bukkit.craftbukkit.v1_17_R1.util.CraftChatMessage
-import org.bukkit.craftbukkit.v1_17_R1.util.CraftNamespacedKey
+import org.bukkit.craftbukkit.v1_18_R1.CraftParticle
+import org.bukkit.craftbukkit.v1_18_R1.block.CraftBlock
+import org.bukkit.craftbukkit.v1_18_R1.block.data.CraftBlockData
+import org.bukkit.craftbukkit.v1_18_R1.enchantments.CraftEnchantment
+import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_18_R1.potion.CraftPotionEffectType
+import org.bukkit.craftbukkit.v1_18_R1.util.CraftChatMessage
+import org.bukkit.craftbukkit.v1_18_R1.util.CraftNamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player

@@ -1,11 +1,12 @@
 rootProject.name = "kommand"
 
-val core = "kommand-core"
+val prefix = "kommand"
+val core = "$prefix-core"
 
 include(
-    "kommand-api",
-    "kommand-core",
-    "kommand-debug"
+    "$prefix-api",
+    core,
+    "$prefix-debug"
 )
 
 // load nms

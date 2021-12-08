@@ -43,7 +43,12 @@ subprojects {
             compileOnly("io.papermc.paper:paper-mojangapi:$nmsVersion-R0.1-SNAPSHOT")
 
             // binary
-            compileOnly("io.papermc.paper:paper:$nmsVersion-R0.1-SNAPSHOT:mojang-mapped")
+            // compileOnly("org.spigotmc:spigot:$nmsVersion-R0.1-SNAPSHOT:remapped-mojang")
+            if (nmsVersion.startsWith("1.18")) {
+                compileOnly("io.papermc.paper:paper-server:$nmsVersion-R0.1-SNAPSHOT:mojang-mapped")
+                compileOnly("org.spigotmc:spigot:$nmsVersion-R0.1-SNAPSHOT:remapped-mojang")
+            }
+            else compileOnly("io.papermc.paper:paper:$nmsVersion-R0.1-SNAPSHOT:mojang-mapped")
             mojangMapping("org.spigotmc:minecraft-server:$nmsVersion-R0.1-SNAPSHOT:maps-mojang@txt")
             spigotMapping("org.spigotmc:minecraft-server:$nmsVersion-R0.1-SNAPSHOT:maps-spigot@csrg")
         }
@@ -126,7 +131,7 @@ publishing {
 
         maven {
             name = "debug"
-            url = rootProject.uri(".debug-paper/libraries")
+            url = rootProject.uri(".debug/libraries")
         }
 
         maven {

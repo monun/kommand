@@ -1,13 +1,13 @@
 import io.github.monun.paperstrap.paperstrap
 
 plugins {
-    kotlin("jvm") version "1.5.21"
+    kotlin("jvm") version "1.6.0"
     id("io.github.monun.paperstrap") //buildSrc
 }
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(16))
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
@@ -33,14 +33,6 @@ allprojects {
     repositories {
         mavenCentral()
     }
-
-    tasks {
-        withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-            kotlinOptions {
-                jvmTarget = "16"
-            }
-        }
-    }
 }
 
 subprojects {
@@ -51,7 +43,7 @@ subprojects {
     }
 
     dependencies {
-        compileOnly("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")
+        compileOnly("io.papermc.paper:paper-api:1.17-R0.1-SNAPSHOT")
 
         implementation(kotlin("stdlib"))
 

@@ -229,7 +229,7 @@ class KommandPlugin : JavaPlugin() {
                     then("position" to KommandArgument.blockPosition()) {
                         executes {
                             val position: BlockPosition3D by it
-                            Bukkit.broadcast(text(position.toBlock(player.world).type.translationKey()))
+                            Bukkit.broadcast(text(position.toBlock(player.world).type.translationKey))
                         }
                     }
                 }

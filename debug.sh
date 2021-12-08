@@ -1,6 +1,5 @@
 #!/bin/bash
 
-server=$HOME/.m2/repository/io/papermc/paper/paper/1.17.1-R0.1-SNAPSHOT/paper-1.17.1-R0.1-SNAPSHOT-mojang-mapped.jar
 plugins=(
   'https://github.com/monun/auto-reloader/releases/latest/download/AutoReloader.jar'
 )
@@ -16,8 +15,7 @@ if [ ! -f "$server_folder/$start_script" ]; then
   if [ -f ".server/$start_script" ]; then
     cp ".server/$start_script" "$server_folder/$start_script"
   else
-    wget -qc -P "$server_folder" -N "https://raw.githubusercontent.com/monun/server-script/master/.server/$start_script"
-    wget -qc -P "$server_folder" -N "https://raw.githubusercontent.com/monun/server-script/master/.server/start.bat"
+    wget -qc -P "$server_folder" -N "https://raw.githubusercontent.com/monun/server-script/paper/.server/$start_script"
   fi
 fi
 
@@ -25,7 +23,8 @@ cd "$server_folder" || exit
 
 if [ ! -f "$start_config" ]; then
   cat <<EOF >$start_config
-server=$server
+version=1.18
+build=latest
 debug=true
 debug_port=5005
 backup=false

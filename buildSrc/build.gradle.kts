@@ -20,11 +20,3 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.8")
     implementation("de.undercouch:gradle-download-task:4.1.2")
 }
-
-tasks {
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "16"
-        }
-    }
-}
