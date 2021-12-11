@@ -23,7 +23,7 @@ cd "$server_folder" || exit
 
 if [ ! -f "$start_config" ]; then
   cat <<EOF >$start_config
-version=1.18
+version=1.18.1
 build=latest
 debug=true
 debug_port=5005

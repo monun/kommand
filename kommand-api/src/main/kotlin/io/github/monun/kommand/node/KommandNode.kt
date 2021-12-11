@@ -32,11 +32,15 @@ interface KommandNode : KommandArgumentSupport {
 
     fun executes(executes: KommandSource.(KommandContext) -> Unit)
 
-    fun then(name: String, init: LiteralNode.() -> Unit)
-
     fun then(
         argument: Pair<String, KommandArgument<*>>,
         vararg arguments: Pair<String, KommandArgument<*>>,
-        init: ArgumentNode.() -> Unit
+        init: KommandNode.() -> Unit
+    )
+
+    fun then(
+        name: String,
+        vararg arguments: Pair<String, KommandArgument<*>>,
+        init: KommandNode.() -> Unit
     )
 }

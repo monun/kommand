@@ -22,9 +22,7 @@ import io.github.monun.kommand.KommandArgument
 import io.github.monun.kommand.KommandArgumentSupport
 import io.github.monun.kommand.KommandContext
 import io.github.monun.kommand.KommandSource
-import io.github.monun.kommand.node.ArgumentNode
 import io.github.monun.kommand.node.KommandNode
-import io.github.monun.kommand.node.LiteralNode
 import org.bukkit.permissions.Permission
 
 abstract class AbstractKommandNode : KommandNode, KommandArgumentSupport by KommandArgumentSupport.INSTANCE {
@@ -65,26 +63,38 @@ abstract class AbstractKommandNode : KommandNode, KommandArgumentSupport by Komm
         this.executes = executes
     }
 
-    override fun then(name: String, init: LiteralNode.() -> Unit) {
-        nodes += LiteralNodeImpl().apply {
+    override fun then(name: String, vararg arguments: Pair<String, KommandArgument<*>>, init: KommandNode.() -> Unit) {
+        kommand.checkState()
+
+        then(LiteralNodeImpl().apply {
             parent = this@AbstractKommandNode
             initialize(this@AbstractKommandNode.kommand, name)
-            init()
-
-        }
+        }.also {
+            nodes += it
+        }, arguments, init)
     }
 
     override fun then(
         argument: Pair<String, KommandArgument<*>>,
         vararg arguments: Pair<String, KommandArgument<*>>,
-        init: ArgumentNode.() -> Unit
+        init: KommandNode.() -> Unit
     ) {
         kommand.checkState()
 
-        var tail = ArgumentNodeImpl().apply {
+        then(ArgumentNodeImpl().apply {
             parent = this@AbstractKommandNode
             initialize(this@AbstractKommandNode.kommand, argument.first, argument.second)
-        }.also { nodes += it }
+        }.also {
+            nodes += it
+        }, arguments, init)
+    }
+
+    private fun then(
+        node: AbstractKommandNode,
+        arguments: Array<out Pair<String, KommandArgument<*>>>,
+        init: KommandNode.() -> Unit
+    ) {
+        var tail = node
 
         for ((subName, subArgument) in arguments) {
             val child = ArgumentNodeImpl().apply {
