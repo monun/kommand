@@ -45,7 +45,9 @@ import net.minecraft.commands.arguments.item.FunctionArgument
 import net.minecraft.commands.arguments.item.ItemArgument
 import net.minecraft.commands.arguments.item.ItemPredicateArgument
 import net.minecraft.commands.synchronization.SuggestionProviders
+import net.minecraft.core.Vec3i
 import net.minecraft.network.chat.TranslatableComponent
+import net.minecraft.server.level.ColumnPos
 import net.minecraft.world.level.block.state.pattern.BlockInWorld
 import org.bukkit.*
 import org.bukkit.advancement.Advancement
@@ -406,18 +408,31 @@ class NMSKommandArgumentSupport : KommandArgumentSupport {
     // net.minecraft.commands.arguments.coordinates
 
     override fun blockPosition(type: PositionLoadType): KommandArgument<BlockPosition3D> {
+        /**
+         * Issue [https://github.com/monun/kommand/issues/18]
+         *
+         * mojang mapping -> spigot mapping 변환시 상속된 타입의 메서드 이름 or 필드 이름을 잘 감지하지 못함
+         * 변수의 타입을 메서드, 필드가 선언된 타입으로 정확히 선언해야함
+         * [net.minecraft.core.BlockPos]의 경우 [net.minecraft.core.Vec3i]를 상속받아 상위의 메서드를 가지고 있음
+         * BlockPos#getX <- 실패
+         * Vec3i#getX <- 성공
+         *
+         * 아마 remapping 작업이 다음과 같은 바이트 코드만 감지하는듯
+         * invokeVirtual 'Vec3i#getX'
+         */
         return BlockPosArgument.blockPos() provide { context, name ->
-            val blockPosition = when (type) {
+            val blockPosition: Vec3i = when (type) {
                 PositionLoadType.LOADED -> BlockPosArgument.getLoadedBlockPos(context, name)
                 PositionLoadType.SPAWNABLE -> BlockPosArgument.getSpawnablePos(context, name)
             }
+
             BlockPosition3D(blockPosition.x, blockPosition.y, blockPosition.z)
         }
     }
 
     override fun blockPosition2D(): KommandArgument<BlockPosition2D> {
         return ColumnPosArgument.columnPos() provide { context, name ->
-            val columnPosition = ColumnPosArgument.getColumnPos(context, name)
+            val columnPosition: ColumnPos = ColumnPosArgument.getColumnPos(context, name)
             BlockPosition2D(columnPosition.x, columnPosition.z)
         }
     }
