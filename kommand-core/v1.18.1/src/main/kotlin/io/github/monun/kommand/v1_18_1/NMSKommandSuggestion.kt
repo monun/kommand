@@ -46,13 +46,12 @@ class NMSKommandSuggestion(
         val handle = handle
         val input: String = handle.remaining.lowercase(Locale.ROOT)
 
-        candidates.forEach {
-            val candidate = it.lowercase(Locale.ROOT)
-            val lowerCandidate = it.lowercase(Locale.ROOT)
+        candidates.forEach { candidate ->
+            val lowerCandidate = candidate.lowercase(Locale.ROOT)
 
             if (SharedSuggestionProvider.matchesSubStr(input, lowerCandidate)) {
                 if (tooltip == null) handle.suggest(candidate)
-                else handle.suggest(candidate, PaperBrigadier.message(tooltip(it)))
+                else handle.suggest(candidate, PaperBrigadier.message(tooltip(candidate)))
             }
         }
     }
