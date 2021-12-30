@@ -23,33 +23,6 @@ tasks {
     }
 
     /**
-     * mojang mapping jar
-     *
-     * 빠른 디버그를 위해서 모든 모듈을 jar안에 포함
-     */
-    /*create<Jar>("mojangJar") {
-        archiveBaseName.set(pluginName)
-        archiveVersion.set("")
-        archiveClassifier.set("MOJANG")
-
-        (listOf(projectAPI, project, projectCore) + projectCore.subprojects).forEach {
-            from(it.sourceSets["main"].output)
-        }
-
-        from(project.sourceSets["main"].output)
-        exclude("paper-plugin.yml")
-        rename("mojang-plugin.yml", "plugin.yml")
-
-        doLast {
-            copy {
-                from(archiveFile)
-                val plugins = File(rootDir, ".debug-mojang/plugins/")
-                into(if (File(plugins, archiveFileName.get()).exists()) File(plugins, "update") else plugins)
-            }
-        }
-    }*/
-
-    /**
      * spigot mapping jar
      *
      * 실제 환경 테스트를 위해서 서버에 모듈을 배포

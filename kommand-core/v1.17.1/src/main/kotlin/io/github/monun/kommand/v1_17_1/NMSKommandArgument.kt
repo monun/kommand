@@ -45,6 +45,7 @@ import net.minecraft.commands.arguments.item.FunctionArgument
 import net.minecraft.commands.arguments.item.ItemArgument
 import net.minecraft.commands.arguments.item.ItemPredicateArgument
 import net.minecraft.commands.synchronization.SuggestionProviders
+import net.minecraft.core.Vec3i
 import net.minecraft.network.chat.TranslatableComponent
 import net.minecraft.world.level.block.state.pattern.BlockInWorld
 import org.bukkit.*
@@ -407,10 +408,11 @@ class NMSKommandArgumentSupport : KommandArgumentSupport {
 
     override fun blockPosition(type: PositionLoadType): KommandArgument<BlockPosition3D> {
         return BlockPosArgument.blockPos() provide { context, name ->
-            val blockPosition = when (type) {
+            val blockPosition: Vec3i = when (type) {
                 PositionLoadType.LOADED -> BlockPosArgument.getLoadedBlockPos(context, name)
                 PositionLoadType.SPAWNABLE -> BlockPosArgument.getSpawnablePos(context, name)
             }
+
             BlockPosition3D(blockPosition.x, blockPosition.y, blockPosition.z)
         }
     }
