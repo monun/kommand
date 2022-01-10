@@ -1,17 +1,24 @@
 rootProject.name = "kommand"
 
-val prefix = "kommand"
-val core = "$prefix-core"
+val api = "${rootProject.name}-api"
+val core = "${rootProject.name}-core"
+val debug = "${rootProject.name}-plugin"
 
-include(
-    "$prefix-api",
-    core,
-    "$prefix-debug"
-)
+include(api, core, debug)
 
+val dongle = "${rootProject.name}-dongle"
+val dongleFile = file(dongle)
+include(dongle)
 // load nms
-file(core).listFiles()?.filter {
+dongleFile.listFiles()?.filter {
     it.isDirectory && it.name.startsWith("v")
 }?.forEach { file ->
-    include(":$core:${file.name}")
+    include(":$dongle:${file.name}")
 }
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven("https://papermc.io/repo/repository/maven-public/")
+    }
+}
+include("${rootProject.name}-publish")

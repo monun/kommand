@@ -1,7 +1,0 @@
-name: ${pluginName}
-version: ${version}
-main: ${group}.${packageName}.plugin.${pluginName}Plugin
-api-version: 1.17
-libraries:
-  - org.jetbrains.kotlin:kotlin-stdlib:1.5.21
-  - org.jetbrains.kotlin:kotlin-reflect:1.5.21

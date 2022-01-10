@@ -1,21 +1,29 @@
 plugins {
-    id("org.jetbrains.dokka") version "1.5.0"
     `maven-publish`
     signing
 }
 
-tasks {
-    create<Jar>("sourcesJar") {
-        archiveClassifier.set("sources")
-        from(sourceSets["main"].allSource)
+val projectAPI = project(":${rootProject.name}-api")
+val projectCORE = project(":${rootProject.name}-core")
+val projectDONGLE = findProject(":${rootProject.name}-dongle")
+
+if (projectDONGLE != null) {
+    projectCORE.tasks {
+        jar {
+            archiveClassifier.set("origin")
+        }
     }
 
-    create<Jar>("dokkaJar") {
-        archiveClassifier.set("javadoc")
-        dependsOn("dokkaHtml")
+    tasks {
+        create<Jar>("coreDongleJar") {
+            archiveBaseName.set(projectCORE.name)
 
-        from("$buildDir/dokka/html/") {
-            include("**")
+            from(projectCORE.sourceSets["main"].output)
+
+            val dongleJar = projectDONGLE.tasks.jar
+
+            dependsOn(dongleJar)
+            from(zipTree(dongleJar.get().archiveFile))
         }
     }
 }
@@ -52,16 +60,16 @@ publishing {
     }
 
     publications {
-        create<MavenPublication>("kommand-api") {
-            artifactId = "kommand-api"
-            from(components["java"])
-            artifact(tasks["sourcesJar"])
-            artifact(tasks["dokkaJar"])
+        fun MavenPublication.setup(target: Project) {
+            artifactId = target.name
+            from(target.components["java"])
+            artifact(target.tasks["sourcesJar"])
+            artifact(target.tasks["dokkaJar"])
 
             pom {
-                name.set("kommand-api")
-                description.set("Command dsl for paper server")
-                url.set("https://github.com/monun/kommand")
+                name.set(target.name)
+                description.set("Kommand DSL for PaperMC Plugin")
+                url.set("https://github.com/monun/${rootProject.name}")
 
                 licenses {
                     license {
@@ -82,17 +90,26 @@ publishing {
                 }
 
                 scm {
-                    connection.set("scm:git:git://github.com/monun/kommand.git")
-                    developerConnection.set("scm:git:ssh://github.com:monun/kommand.git")
-                    url.set("https://github.com/monun/kommand")
+                    connection.set("scm:git:git://github.com/monun/${rootProject.name}.git")
+                    developerConnection.set("scm:git:ssh://github.com:monun/${rootProject.name}.git")
+                    url.set("https://github.com/monun/${rootProject.name}")
                 }
             }
+        }
+
+        create<MavenPublication>("api") {
+            setup(projectAPI)
+        }
+
+        create<MavenPublication>("core") {
+            setup(projectCORE)
+
+            if (projectDONGLE != null) artifact(tasks["coreDongleJar"])
         }
     }
 }
 
 signing {
     isRequired = true
-    sign(tasks.jar.get(), tasks["sourcesJar"], tasks["dokkaJar"])
-    sign(publishing.publications["kommand-api"])
+    sign(publishing.publications["api"], publishing.publications["core"])
 }

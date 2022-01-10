@@ -1,31 +1,11 @@
-import io.github.monun.paperstrap.paperstrap
-
 plugins {
-    kotlin("jvm") version "1.6.0"
-    id("io.github.monun.paperstrap") //buildSrc
+    kotlin("jvm") version "1.6.10"
+    id("org.jetbrains.dokka") version "1.6.10" apply false
 }
 
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
-    }
-}
-
-paperstrap {
-    File(rootDir, "${rootProject.name}-core").listFiles { file ->
-        file.isDirectory && file.name.startsWith("v")
-    }?.map { it.name.removePrefix("v") }?.forEach { version ->
-        include(version)
-    }
-}
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath("net.md-5:SpecialSource:1.10.0")
     }
 }
 
@@ -46,22 +26,28 @@ subprojects {
         compileOnly("io.papermc.paper:paper-api:1.17-R0.1-SNAPSHOT")
 
         implementation(kotlin("stdlib"))
-
-        testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
-        testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.2")
-        testImplementation("org.mockito:mockito-core:3.6.28")
-    }
-
-    tasks {
-        test {
-            useJUnitPlatform()
-        }
+        implementation(kotlin("reflect"))
     }
 }
 
-project(":${rootProject.name}-core") {
-    configurations {
-        create("mojangMapping")
-        create("spigotMapping")
+listOf("api", "core").forEach { projectName ->
+    project(":${rootProject.name}-$projectName") {
+        apply(plugin = "org.jetbrains.dokka")
+
+        tasks {
+            create<Jar>("sourcesJar") {
+                archiveClassifier.set("sources")
+                from(sourceSets["main"].allSource)
+            }
+
+            create<Jar>("dokkaJar") {
+                archiveClassifier.set("javadoc")
+                dependsOn("dokkaHtml")
+
+                from("$buildDir/dokka/html/") {
+                    include("**")
+                }
+            }
+        }
     }
 }
