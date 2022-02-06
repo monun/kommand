@@ -22,10 +22,8 @@ import io.github.monun.kommand.Kommand
 import io.github.monun.kommand.node.LiteralNode
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
-import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.server.PluginDisableEvent
 import org.bukkit.plugin.Plugin
 
 abstract class AbstractKommand : Kommand {
@@ -37,6 +35,11 @@ abstract class AbstractKommand : Kommand {
         vararg aliases: String,
         init: LiteralNode.() -> Unit
     ) {
+        plugin.onDisable().apply {
+            unregister(name)
+            aliases.forEach { unregister(it) }
+        }
+
         require(plugin.isEnabled) { "Plugin disabled!" }
         require(test(name, aliases))
 
@@ -47,19 +50,6 @@ abstract class AbstractKommand : Kommand {
         }.let {
             register(it, aliases.toList())
         }
-
-        plugin.server.pluginManager.registerEvents(
-            object : Listener {
-                @EventHandler(priority = EventPriority.LOWEST)
-                fun onPluginDisable(event: PluginDisableEvent) {
-                    if (event.plugin === plugin) {
-                        unregister(name)
-                        aliases.forEach { unregister(it) }
-                    }
-                }
-            },
-            plugin
-        )
 
         if (!registered) {
             plugin.server.pluginManager.registerEvents(PlayerListener(this), plugin)
