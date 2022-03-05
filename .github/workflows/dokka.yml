@@ -20,7 +20,7 @@ jobs:
           chmod +x gradlew
           ./gradlew dokkaJar
       - name: Github Pages 업로드
-        uses: JamesIves/github-pages-deploy-action@4.2.5
+        uses: JamesIves/github-pages-deploy-action@v4.2.5
         with:
           branch: gh-pages
           folder: kommand-api/build/dokka/html
