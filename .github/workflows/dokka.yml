@@ -1,0 +1,26 @@
+name: 문서 빌드
+on:
+  push:
+    branches: [master]
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: JDK 셋업
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - run: sudo apt-get install dos2unix
+      - name: 문서 빌드
+        run: |
+          dos2unix gradlew
+          chmod +x gradlew
+          ./gradlew dokkaJar
+      - name: Github Pages 업로드
+        uses: JamesIves/github-pages-deploy-action@v4.2.5
+        with:
+          branch: gh-pages
+          folder: kommand-api/build/dokka/html
