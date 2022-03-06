@@ -29,7 +29,7 @@ debug=true
 debug_port=5005
 backup=false
 force_restart=false
-memory=16
+memory=2
 plugins=(
 EOF
   for plugin in "${plugins[@]}"; do
