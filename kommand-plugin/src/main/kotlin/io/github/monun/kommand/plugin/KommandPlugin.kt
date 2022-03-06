@@ -45,7 +45,7 @@ import java.util.*
 class KommandPlugin : JavaPlugin() {
     override fun onEnable() {
         val bool = KommandArgument.bool()
-        val int = KommandArgument.int()
+        val intArgument = KommandArgument.int()
         val word = KommandArgument.string(StringType.SINGLE_WORD)
         val string = KommandArgument.string(StringType.QUOTABLE_PHRASE)
         val greedy = KommandArgument.string(StringType.GREEDY_PHRASE)
@@ -54,11 +54,19 @@ class KommandPlugin : JavaPlugin() {
             register("my", "myalias") {
 //                permission("my.commands")
 
-                then("age") {
-                    then("age" to int) {
+                then("int") {
+                    then("int" to intArgument) {
                         executes {
-                            val age: Int by it
-                            Bukkit.broadcast(text("내 나이는 $age 살입니다."))
+                            val int: Int by it
+                            Bukkit.broadcast(text("int = $int"))
+                        }
+                    }
+                }
+                then("intrange") {
+                    then("intrange" to intRange()) {
+                        executes {
+                            val intrange: IntRange by it
+                            Bukkit.broadcast( text("intrange = $intrange"))
                         }
                     }
                 }

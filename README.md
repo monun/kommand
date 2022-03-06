@@ -138,4 +138,5 @@ libraries:
     * mojang map 이용 환경 구축
 * **[Jhyub](https://github.com/Jhyub)**
     * DslMarker를 이용한 DSL 규칙 향상
-    
+* **[pikokr](https://github.com/pikokr)**
+    * 1.18.2 지원
