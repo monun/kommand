@@ -11,7 +11,7 @@ build/
 !gradle-wrapper.properties
 
 # Debug server folder
-.debug/
+.debug-server/
 
 # Paper strap
 .paperstrap/

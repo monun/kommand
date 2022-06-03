@@ -1,5 +1,5 @@
 plugins {
-    id("io.papermc.paperweight.userdev") version "1.3.3-SNAPSHOT" apply false
+    id("io.papermc.paperweight.userdev") version "1.3.6" apply false
 }
 
 val projectAPI = project(":${rootProject.name}-api")

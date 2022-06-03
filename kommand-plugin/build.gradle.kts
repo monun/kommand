@@ -31,7 +31,7 @@ tasks {
         doLast {
             copy {
                 from(archiveFile)
-                val plugins = File(rootDir, ".debug/plugins/")
+                val plugins = File(rootDir, ".debug-server/plugins/")
                 into(if (File(plugins, archiveFileName.get()).exists()) File(plugins, "update") else plugins)
             }
         }

@@ -34,7 +34,7 @@ publishing {
 
         maven {
             name = "debug"
-            url = rootProject.uri(".debug/libraries")
+            url = rootProject.uri(".debug-server/libraries")
         }
 
         maven {
