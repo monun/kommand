@@ -162,12 +162,12 @@ $dokka.location:io.github.monun.kommand/KommandSuggestion/suggest/#kotlin.collec
 $dokka.location:io.github.monun.kommand/KommandSuggestion/suggestDefault/#/PointingToDeclaration/kommand-api/io.github.monun.kommand/-kommand-suggestion/suggest-default.html
 $dokka.location:io.github.monun.kommand/PluginKommand///PointingToDeclaration/kommand-api/io.github.monun.kommand/-plugin-kommand/index.html
 $dokka.location:io.github.monun.kommand/PluginKommand/register/#kotlin.String#kotlin.Array[kotlin.String]#kotlin.Function1[io.github.monun.kommand.node.LiteralNode,kotlin.Unit]/PointingToDeclaration/kommand-api/io.github.monun.kommand/-plugin-kommand/register.html
-$dokka.location:io.github.monun.kommand/PositionLoadType.LOADED///PointingToDeclaration/kommand-api/io.github.monun.kommand/-position-load-type/-l-o-a-d-e-d/index.html
-$dokka.location:io.github.monun.kommand/PositionLoadType.SPAWNABLE///PointingToDeclaration/kommand-api/io.github.monun.kommand/-position-load-type/-s-p-a-w-n-a-b-l-e/index.html
+$dokka.location:io.github.monun.kommand/PositionLoadType.LOADED///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kommand-api/io.github.monun.kommand/-position-load-type/-l-o-a-d-e-d/index.html
+$dokka.location:io.github.monun.kommand/PositionLoadType.SPAWNABLE///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kommand-api/io.github.monun.kommand/-position-load-type/-s-p-a-w-n-a-b-l-e/index.html
 $dokka.location:io.github.monun.kommand/PositionLoadType///PointingToDeclaration/kommand-api/io.github.monun.kommand/-position-load-type/index.html
-$dokka.location:io.github.monun.kommand/StringType.GREEDY_PHRASE///PointingToDeclaration/kommand-api/io.github.monun.kommand/-string-type/-g-r-e-e-d-y_-p-h-r-a-s-e/index.html
-$dokka.location:io.github.monun.kommand/StringType.QUOTABLE_PHRASE///PointingToDeclaration/kommand-api/io.github.monun.kommand/-string-type/-q-u-o-t-a-b-l-e_-p-h-r-a-s-e/index.html
-$dokka.location:io.github.monun.kommand/StringType.SINGLE_WORD///PointingToDeclaration/kommand-api/io.github.monun.kommand/-string-type/-s-i-n-g-l-e_-w-o-r-d/index.html
+$dokka.location:io.github.monun.kommand/StringType.GREEDY_PHRASE///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kommand-api/io.github.monun.kommand/-string-type/-g-r-e-e-d-y_-p-h-r-a-s-e/index.html
+$dokka.location:io.github.monun.kommand/StringType.QUOTABLE_PHRASE///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kommand-api/io.github.monun.kommand/-string-type/-q-u-o-t-a-b-l-e_-p-h-r-a-s-e/index.html
+$dokka.location:io.github.monun.kommand/StringType.SINGLE_WORD///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kommand-api/io.github.monun.kommand/-string-type/-s-i-n-g-l-e_-w-o-r-d/index.html
 $dokka.location:io.github.monun.kommand/StringType///PointingToDeclaration/kommand-api/io.github.monun.kommand/-string-type/index.html
 io.github.monun.kommand
 io.github.monun.kommand.loader
