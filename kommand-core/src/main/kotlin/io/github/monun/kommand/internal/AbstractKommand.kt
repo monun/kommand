@@ -67,14 +67,23 @@ abstract class AbstractKommand : Kommand {
         }
     }
 
+    override fun unregister(name: String, vararg aliases: String) {
+        if (registered) {
+            unregister(name)
+            aliases.forEach { unregister(it) }
+        }
+    }
+
     /**
      * 이미 등록된 명령 이름인지 확인
      *
      * @return 등록이 가능하다면 true, 불가능하다면 false
      */
     protected abstract fun test(name: String, aliases: Array<out String>): Boolean
+
     protected abstract fun register(dispatcher: KommandDispatcherImpl, aliases: List<String>)
     protected abstract fun unregister(name: String)
+
     abstract fun sendCommandsPacket(player: Player)
 }
 

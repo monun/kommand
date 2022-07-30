@@ -1,0 +1,60 @@
+#!/bin/bash
+
+classifier="dev"
+[[ $1 == "reobf" ]] && classifier="reobf"
+[[ $1 == "clip" ]] && classifier="clip"
+
+####################################################################
+########################## Configurations ##########################
+# Server directory name
+DIR=".server"
+# Server type (local path or type[vanilla, spigot, paper]-version[1.xx.x, unspecified]-build[latest, unspecified, xx]-[dev])
+SERVER="paper-1.19-latest-$classifier"
+# Server memory (GB)
+MEMORY=4
+# When the server shuts down, use tar to back up.
+BACKUP=false
+# The server will always restart.
+RESTART=false
+
+####################################################################
+################## Spigot or Paper Configurations ##################
+# The maximum amount of players that the server will allow, this will bypass the max-players= value in server.properties file.
+PLAYERS=100
+# This parameter allows you to manually define the plugins directory to use for the server.
+PLUGINS="plugins-$classifier"
+# This parameter will put all worlds your server uses into a specific directory, it's useful if you have many folders inside in the main server directory.
+WORLDS="worlds"
+# Server port, default value from server.properties (25565)
+PORT=-1
+# jdwp port, Enable debug mode when 0 or higher (5005)
+DEBUG_PORT=5005
+# Preinstallation plugins (url)
+DEFAULT_PLUGINS=(
+   'https://github.com/monun/auto-reloader/releases/download/0.0.5/auto-reloader-0.0.5.jar'
+)
+
+#####################################################################
+
+# Build testJar
+[[ ! -d "$DIR/$PLUGINS" ]] && ./gradlew clean "test${classifier^}Jar"
+
+# Export variables for start.sh
+export SERVER
+export MEMORY
+export BACKUP
+export RESTART
+
+export PLAYERS
+export PLUGINS
+export WORLDS
+export PORT
+export DEBUG_PORT
+
+mkdir -p "$DIR" && cd "$DIR" || exit
+
+[[ -f ../startSetup ]] && cp ../startSetup .
+[[ ! -f startSetup ]] && wget -q -c --content-disposition -P . -N "https://raw.githubusercontent.com/monun/minecraft-server-launcher/master/startSetup"
+
+chmod +x ./startSetup
+./startSetup "${DEFAULT_PLUGINS[@]}"

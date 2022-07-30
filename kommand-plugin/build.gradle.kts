@@ -1,14 +1,15 @@
-val projectAPI = project(":${rootProject.name}-api")
-val projectCORE = project(":${rootProject.name}-core")
+import org.gradle.configurationcache.extensions.capitalized
 
 dependencies {
-    implementation(projectAPI)
+    implementation(projectApi)
 }
 
-val pluginName = "Kommand"
-val packageName = "kommand"
-extra.set("pluginName", pluginName)
-extra.set("packageName", packageName)
+extra.apply {
+    set("pluginName", rootProject.name.split('-').joinToString("") { it.capitalize() })
+    set("packageName", rootProject.name.replace("-", ""))
+    set("kotlinVersion", Dependency.Kotlin.Version)
+    set("paperVersion", Dependency.Paper.Version)
+}
 
 tasks {
     processResources {
@@ -18,45 +19,47 @@ tasks {
         }
     }
 
-    fun registerPluginJar(name: String, vararg outputs: Project, configuration: Jar.() -> Unit) = register<Jar>(name) {
-        archiveBaseName.set(pluginName)
-        archiveVersion.set("")
+    fun registerJar(
+        classifier: String,
+        bundleProject: Project? = null,
+        bundleTask: TaskProvider<org.gradle.jvm.tasks.Jar>? = null
+    ) = register<Jar>("${classifier}Jar") {
+        archiveBaseName.set(rootProject.name)
+        archiveClassifier.set(classifier)
 
-        outputs.forEach { project ->
-            from(project.sourceSets["main"].output)
+        from(sourceSets["main"].output)
+
+        if (bundleProject != null) from(bundleProject.sourceSets["main"].output)
+
+        if (bundleTask != null) {
+            bundleTask.let { bundleJar ->
+                dependsOn(bundleJar)
+                from(zipTree(bundleJar.get().archiveFile))
+            }
+            exclude("clip.yml")
+            rename("bundle.yml", "plugin.yml")
+        } else {
+            exclude("bundle.yml")
+            rename("clip.yml", "plugin.yml")
         }
+    }.also { jar ->
+        register<Copy>("test${classifier.capitalized()}Jar") {
+            val prefix = project.name
+            val plugins = rootProject.file(".server/plugins-$classifier")
+            val update = File(plugins, "update")
+            val regex = Regex("($prefix).*(.jar)")
 
-        configuration()
+            from(jar)
+            into(if (plugins.listFiles { _, it -> it.matches(regex) }?.isNotEmpty() == true) update else plugins)
 
-        doLast {
-            copy {
-                from(archiveFile)
-                val plugins = File(rootDir, ".debug-server/plugins/")
-                into(if (File(plugins, archiveFileName.get()).exists()) File(plugins, "update") else plugins)
+            doLast {
+                update.mkdirs()
+                File(update, "RELOAD").delete()
             }
         }
     }
 
-    registerPluginJar("pluginJar", projectAPI, projectCORE, project) {
-        findProject(":${rootProject.name}-dongle")?.let { dongleProject ->
-            val dongleJar = dongleProject.tasks.jar
-
-            dependsOn(dongleJar)
-            from(zipTree(dongleJar.get().archiveFile))
-        }
-
-        exclude("test.yml")
-    }
-
-    project(":${rootProject.name}-publish").let { publish ->
-        registerPluginJar("testJar", project) {
-            exclude("plugin.yml")
-            rename("test.yml", "plugin.yml")
-
-            publish.tasks.let { tasks ->
-                dependsOn(tasks.named("publishApiPublicationToDebugRepository"))
-                dependsOn(tasks.named("publishCorePublicationToDebugRepository"))
-            }
-        }
-    }
+    registerJar("dev", projectApi, coreDevJar)
+    registerJar("reobf", projectApi, coreReobfJar)
+    registerJar("clip")
 }

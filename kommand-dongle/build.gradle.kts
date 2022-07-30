@@ -1,37 +1,33 @@
+import io.papermc.paperweight.tasks.RemapJar
+
 plugins {
-    id("io.papermc.paperweight.userdev") version "1.3.7" apply false
+    id("io.papermc.paperweight.userdev") version "1.3.8" apply false
 }
 
-val projectAPI = project(":${rootProject.name}-api")
-val projectCORE = project(":${rootProject.name}-core")
-
 subprojects {
-    // net.minecraft.server 프로젝트의 이름은 v로 시작
-    if (name[0] != 'v') return@subprojects
-
+    // net.minecraft.server 프로젝트의 이름은 반드시 v로 시작 [v1.19]
     apply(plugin = "io.papermc.paperweight.userdev")
-
     dependencies {
-        implementation(projectAPI)
-        implementation(projectCORE)
+        implementation(projectApi)
+        implementation(projectCore)
         paperDevBundle("${name.substring(1)}-R0.1-SNAPSHOT")
     }
 }
 
-tasks {
-    jar {
-        also { dongleJar ->
-            subprojects.filter { it.name[0] == 'v' }.forEach { subproject ->
-                subproject.tasks.named("reobfJar") {
-                    dongleJar.dependsOn(this)
-                    dongleJar.from(zipTree((this as io.papermc.paperweight.tasks.RemapJar).outputJar))
-                }
-            }
-        }
+// upstream
+
+coreDevJar {
+    from(subprojects.map { it.sourceSets["main"].output })
+}
+
+coreReobfJar {
+    subprojects.map { it.tasks.named("reobfJar").get() as RemapJar }.onEach {
+        from(zipTree(it.outputJar))
+    }.let {
+        dependsOn(it)
     }
 }
 
-
-
-
-
+coreSourcesJar {
+    from(subprojects.map { it.sourceSets["main"].allSource })
+}
