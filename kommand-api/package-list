@@ -72,6 +72,7 @@ $dokka.location:io.github.monun.kommand/AbstractKommandSuggestion/suggestsDefaul
 $dokka.location:io.github.monun.kommand/Kommand.Companion///PointingToDeclaration/kommand-api/io.github.monun.kommand/-kommand/-companion/index.html
 $dokka.location:io.github.monun.kommand/Kommand///PointingToDeclaration/kommand-api/io.github.monun.kommand/-kommand/index.html
 $dokka.location:io.github.monun.kommand/Kommand/register/#org.bukkit.plugin.Plugin#kotlin.String#kotlin.Array[kotlin.String]#kotlin.Function1[io.github.monun.kommand.node.LiteralNode,kotlin.Unit]/PointingToDeclaration/kommand-api/io.github.monun.kommand/-kommand/register.html
+$dokka.location:io.github.monun.kommand/Kommand/unregister/#kotlin.String#kotlin.Array[kotlin.String]/PointingToDeclaration/kommand-api/io.github.monun.kommand/-kommand/unregister.html
 $dokka.location:io.github.monun.kommand/KommandArgument.Companion///PointingToDeclaration/kommand-api/io.github.monun.kommand/-kommand-argument/-companion/index.html
 $dokka.location:io.github.monun.kommand/KommandArgument///PointingToDeclaration/kommand-api/io.github.monun.kommand/-kommand-argument/index.html
 $dokka.location:io.github.monun.kommand/KommandArgument/suggests/#kotlin.Function2[io.github.monun.kommand.KommandSuggestion,io.github.monun.kommand.KommandContext,kotlin.Unit]/PointingToDeclaration/kommand-api/io.github.monun.kommand/-kommand-argument/suggests.html
