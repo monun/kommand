@@ -3,29 +3,9 @@ plugins {
     signing
 }
 
-val projectAPI = project(":${rootProject.name}-api")
-val projectCORE = project(":${rootProject.name}-core")
-val projectDONGLE = findProject(":${rootProject.name}-dongle")
-
-if (projectDONGLE != null) {
-    projectCORE.tasks {
-        jar {
-            archiveClassifier.set("origin")
-        }
-    }
-
-    tasks {
-        create<Jar>("coreDongleJar") {
-            archiveBaseName.set(projectCORE.name)
-
-            from(projectCORE.sourceSets["main"].output)
-
-            val dongleJar = projectDONGLE.tasks.jar
-
-            dependsOn(dongleJar)
-            from(zipTree(dongleJar.get().archiveFile))
-        }
-    }
+projectPlugin.tasks.named("clipJar") {
+    dependsOn(tasks.named("publishApiPublicationToServerRepository"))
+    dependsOn(tasks.named("publishCorePublicationToServerRepository"))
 }
 
 publishing {
@@ -33,8 +13,8 @@ publishing {
         mavenLocal()
 
         maven {
-            name = "debug"
-            url = rootProject.uri(".debug-server/libraries")
+            name = "server"
+            url = rootProject.uri(".server/libraries")
         }
 
         maven {
@@ -68,7 +48,6 @@ publishing {
 
             pom {
                 name.set(target.name)
-                description.set("Kommand DSL for PaperMC Plugin")
                 url.set("https://github.com/monun/${rootProject.name}")
 
                 licenses {
@@ -98,14 +77,14 @@ publishing {
         }
 
         create<MavenPublication>("api") {
-            setup(projectAPI)
+            setup(projectApi)
         }
 
         create<MavenPublication>("core") {
-            setup(projectCORE)
-
-            if (projectDONGLE != null) artifact(tasks["coreDongleJar"])
+            setup(projectCore)
+            artifact(coreReobfJar)
         }
+
     }
 }
 

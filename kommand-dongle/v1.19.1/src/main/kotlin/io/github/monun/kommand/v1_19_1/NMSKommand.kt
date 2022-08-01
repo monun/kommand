@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.monun.kommand.v1_18_2
+package io.github.monun.kommand.v1_19_1
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.ArgumentType
@@ -28,15 +28,15 @@ import com.mojang.brigadier.tree.CommandNode
 import com.mojang.brigadier.tree.LiteralCommandNode
 import com.mojang.brigadier.tree.RootCommandNode
 import io.github.monun.kommand.internal.*
-import io.github.monun.kommand.v1_18_2.NMSKommandContext.Companion.wrapContext
-import io.github.monun.kommand.v1_18_2.NMSKommandSource.Companion.wrapSource
+import io.github.monun.kommand.v1_19_1.NMSKommandContext.Companion.wrapContext
+import io.github.monun.kommand.v1_19_1.NMSKommandSource.Companion.wrapSource
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.server.MinecraftServer
 import org.bukkit.Bukkit
-import org.bukkit.craftbukkit.v1_18_R2.CraftServer
-import org.bukkit.craftbukkit.v1_18_R2.command.VanillaCommandWrapper
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer
+import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer
+import org.bukkit.craftbukkit.v1_19_R1.CraftServer
+import org.bukkit.craftbukkit.v1_19_R1.command.VanillaCommandWrapper
 import org.bukkit.entity.Player
 
 

@@ -18,7 +18,6 @@
 
 package io.github.monun.kommand.loader
 
-import org.apache.commons.lang.reflect.ConstructorUtils
 import org.bukkit.Bukkit
 import java.lang.reflect.InvocationTargetException
 
@@ -32,9 +31,11 @@ object LibraryLoader {
         return try {
             val internalClass =
                 Class.forName("$packageName.internal.$className", true, type.classLoader).asSubclass(type)
-            val constructor = ConstructorUtils.getMatchingAccessibleConstructor(internalClass, parameterTypes)
-                ?: throw UnsupportedOperationException("${type.name} does not have Constructor for [${parameterTypes.joinToString()}]")
-            constructor.newInstance() as T
+
+            val constructor = kotlin.runCatching {
+                internalClass.getConstructor(*parameterTypes)
+            }.getOrNull() ?: throw UnsupportedOperationException("${type.name} does not have Constructor for [${parameterTypes.joinToString()}]")
+            constructor.newInstance(*initArgs) as T
         } catch (exception: ClassNotFoundException) {
             throw UnsupportedOperationException("${type.name} a does not have implement", exception)
         } catch (exception: IllegalAccessException) {
@@ -75,9 +76,10 @@ object LibraryLoader {
                     null
                 }
             }.firstOrNull() ?: throw ClassNotFoundException("Not found nms library class: $candidates")
-            val constructor = ConstructorUtils.getMatchingAccessibleConstructor(nmsClass, parameterTypes)
-                ?: throw UnsupportedOperationException("${type.name} does not have Constructor for [${parameterTypes.joinToString()}]")
-            constructor.newInstance() as T
+            val constructor = kotlin.runCatching {
+                nmsClass.getConstructor(*parameterTypes)
+            }.getOrNull() ?: throw UnsupportedOperationException("${type.name} does not have Constructor for [${parameterTypes.joinToString()}]")
+            constructor.newInstance(*initArgs) as T
         } catch (exception: ClassNotFoundException) {
             throw UnsupportedOperationException(
                 "${type.name} does not support this version: $libraryVersion",
