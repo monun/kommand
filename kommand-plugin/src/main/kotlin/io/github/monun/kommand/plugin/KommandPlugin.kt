@@ -20,7 +20,6 @@ package io.github.monun.kommand.plugin
 
 import com.destroystokyo.paper.profile.PlayerProfile
 import com.google.gson.JsonObject
-import io.github.monun.kommand.Kommand.Companion.unregister
 import io.github.monun.kommand.KommandArgument
 import io.github.monun.kommand.StringType
 import io.github.monun.kommand.getValue
@@ -52,6 +51,7 @@ class KommandPlugin : JavaPlugin() {
         val greedy = KommandArgument.string(StringType.GREEDY_PHRASE)
 
         kommand {
+
             register("my", "myalias") {
 //                permission("my.commands")
 
@@ -238,7 +238,7 @@ class KommandPlugin : JavaPlugin() {
                     then("position" to KommandArgument.blockPosition()) {
                         executes {
                             val position: BlockPosition3D by it
-                            Bukkit.broadcast(text(position.toBlock(player.world).type.translationKey()))
+                            Bukkit.broadcast(text(position.toBlock(player.world).type.translationKey))
                         }
                     }
                 }
@@ -365,13 +365,6 @@ class KommandPlugin : JavaPlugin() {
                             val team: Team by it
 
                             broadcast(text("team = ${team.name}"))
-                        }
-                    }
-                }
-                then("unregister") {
-                    executes {
-                        this@KommandPlugin.kommand {
-                            unregister("my", "myalias")
                         }
                     }
                 }

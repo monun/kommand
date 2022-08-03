@@ -83,8 +83,6 @@ class NMSKommand : AbstractKommand() {
     override fun unregister(name: String) {
         children.remove(name)
         literals.remove(name)
-
-        Bukkit.getServer().onlinePlayers.forEach { sendCommandsPacket(it) }
     }
 
     override fun sendCommandsPacket(player: Player) {

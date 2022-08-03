@@ -28,7 +28,6 @@ interface Kommand {
 
     fun register(plugin: Plugin, name: String, vararg aliases: String, init: LiteralNode.() -> Unit)
 
-    fun unregister(name: String, vararg aliases: String)
 }
 
 @DslMarker
