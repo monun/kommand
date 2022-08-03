@@ -48,6 +48,7 @@ publishing {
 
             pom {
                 name.set(target.name)
+                description.set("Kotlin DSL for PaperMC commands")
                 url.set("https://github.com/monun/${rootProject.name}")
 
                 licenses {
