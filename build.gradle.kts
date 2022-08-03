@@ -1,7 +1,7 @@
 plugins {
     idea
-    kotlin("jvm") version "1.6.21"
-    id("org.jetbrains.dokka") version "1.6.21" apply false
+    kotlin("jvm") version Dependency.Kotlin.Version
+    id("org.jetbrains.dokka") version Dependency.Kotlin.Version apply false
 }
 
 java {

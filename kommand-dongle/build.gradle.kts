@@ -15,7 +15,6 @@ subprojects {
 }
 
 // upstream
-
 coreDevJar {
     from(subprojects.map { it.sourceSets["main"].output })
 }
