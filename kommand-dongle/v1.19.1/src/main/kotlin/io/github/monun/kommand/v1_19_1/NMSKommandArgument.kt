@@ -32,6 +32,7 @@ import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import io.github.monun.kommand.*
 import io.github.monun.kommand.internal.AbstractKommandArgument
+import io.github.monun.kommand.internal.ReflectionSupport
 import io.github.monun.kommand.wrapper.*
 import io.github.monun.kommand.wrapper.Rotation
 import io.papermc.paper.brigadier.PaperBrigadier
@@ -396,9 +397,11 @@ class NMSKommandArgumentSupport : KommandArgumentSupport {
     }
 
     companion object {
-        private val commandBuildContext: CommandBuildContext = ReloadableServerResources::class.java.getDeclaredField("c").apply {
-            isAccessible = true
-        }.get(MinecraftServer.getServer().resources.managers) as CommandBuildContext
+        private val commandBuildContext: CommandBuildContext = ReflectionSupport.getFieldInstance(
+            MinecraftServer.getServer().resources.managers,
+            "commandBuildContext",
+            "c"
+        )
     }
 
     // net.minecraft.commands.arguments.blocks
