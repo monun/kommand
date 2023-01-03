@@ -31,8 +31,8 @@ class Rotation(
 fun Rotation.toDirection(): Vector {
     val vector = Vector()
 
-    val rotX: Double = yaw.toDouble()
-    val rotY: Double = pitch.toDouble()
+    val rotX: Double = pitch.toDouble()
+    val rotY: Double = yaw.toDouble()
 
     vector.y = -sin(toRadians(rotY))
 
