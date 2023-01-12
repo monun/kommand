@@ -144,3 +144,7 @@ libraries:
     * DslMarker를 이용한 DSL 규칙 향상
 * **[pikokr](https://github.com/pikokr)**
     * 1.18.2 지원
+* **[pikokr](https://github.com/pikokr)**
+    * 1.18.2 지원
+* **[qogusdn1017](https://github.com/qogusdn1017)**
+    * 1.19.3 지원
