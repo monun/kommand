@@ -16,14 +16,15 @@
     * 인수 분석(Parsing)
     * 명령어 제안 지원 (TabComplete)
 * #### Supported minecraft versions
-  * 1.17.1
-  * 1.18
-  * 1.18.1
-  * 1.18.2
-  * 1.19
-  * 1.19.1
-  * 1.19.2
-  * 1.19.3
+    * 1.17.1
+    * 1.18
+    * 1.18.1
+    * 1.18.2
+    * 1.19
+    * 1.19.1
+    * 1.19.2
+    * 1.19.3
+
 ---
 
 Paper에는 명령어 실행을 위한 프레임워크가 없습니다.  
@@ -77,7 +78,7 @@ kommand {
                 }
             }
         }
-        then("modify") {
+        "modify" { // 빠른 명령 작성 - then 함수와 동일
             then("user" to dynamic { ... }) { //dynamic 유저 인수
                 then("name") {
                     then("newName" to string()) {
