@@ -38,6 +38,8 @@ class PluginKommand internal constructor(private val plugin: Plugin) {
     fun register(name: String, vararg aliases: String, init: LiteralNode.() -> Unit) {
         Kommand.register(plugin, name, *aliases) { init() }
     }
+
+    operator fun String.invoke(vararg aliases: String, init: LiteralNode.() -> Unit) = register(this, *aliases, init = init)
 }
 
 fun Plugin.kommand(init: PluginKommand.() -> Unit) {

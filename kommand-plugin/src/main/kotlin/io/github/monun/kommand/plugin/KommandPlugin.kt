@@ -51,6 +51,15 @@ class KommandPlugin : JavaPlugin() {
         val greedy = KommandArgument.string(StringType.GREEDY_PHRASE)
 
         kommand {
+            // 빠른 명령 작성
+            "manuel" {
+                "gasgasgas"("word" to string(StringType.SINGLE_WORD)) {
+                    executes {
+                        val word: String by it
+                        Bukkit.broadcast(text("Gas Gas Gas $word"))
+                    }
+                }
+            }
 
             register("my", "myalias") {
 //                permission("my.commands")

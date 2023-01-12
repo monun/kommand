@@ -43,4 +43,7 @@ interface KommandNode : KommandArgumentSupport {
         vararg arguments: Pair<String, KommandArgument<*>>,
         init: KommandNode.() -> Unit
     )
+
+    operator fun String.invoke(vararg arguments: Pair<String, KommandArgument<*>>, init: KommandNode.() -> Unit) =
+        then(this, *arguments, init = init)
 }
