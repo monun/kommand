@@ -78,24 +78,19 @@ kommand {
                 }
             }
         }
-        "modify" { // 빠른 명령 작성 - then 함수와 동일
-            then("user" to dynamic { ... }) { //dynamic 유저 인수
-                then("name") {
-                    then("newName" to string()) {
-                        executes { context ->
-                            val user: User by context
-                            val newName: String = it["newName"]
-                            setUserName(user, newName)
-                        }
-                    }
+        // 빠른 명령 작성 - then 함수와 동일
+        "modify"("user" to dynamic { ... }) { // 동적 인수를 요청합니다.
+            "name"("newName" to string()) {
+                executes { context ->
+                    val user: User by context
+                    val newName: String = it["newName"]
+                    setUserName(user, newName)
                 }
-                then("tag") {
-                    then("newTag" to string()) {
-                        executes {
-                            //함수 인수에 의한 타입 추론
-                            setUserTag(it["user"], it["newTag"])
-                        }
-                    }
+            }
+            "tag"("newTag" to string()) {
+                executes {
+                    //함수 인수에 의한 타입 추론
+                    setUserTag(it["user"], it["newTag"])
                 }
             }
         }
