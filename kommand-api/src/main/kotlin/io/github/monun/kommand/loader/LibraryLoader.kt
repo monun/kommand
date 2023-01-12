@@ -69,13 +69,13 @@ object LibraryLoader {
         }
 
         return try {
-            val nmsClass = candidates.mapNotNull { candidate ->
+            val nmsClass = candidates.firstNotNullOfOrNull { candidate ->
                 try {
                     Class.forName(candidate, true, type.classLoader).asSubclass(type)
                 } catch (exception: ClassNotFoundException) {
                     null
                 }
-            }.firstOrNull() ?: throw ClassNotFoundException("Not found nms library class: $candidates")
+            } ?: throw ClassNotFoundException("Not found nms library class: $candidates")
             val constructor = kotlin.runCatching {
                 nmsClass.getConstructor(*parameterTypes)
             }.getOrNull() ?: throw UnsupportedOperationException("${type.name} does not have Constructor for [${parameterTypes.joinToString()}]")

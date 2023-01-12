@@ -1,7 +1,7 @@
 import io.papermc.paperweight.tasks.RemapJar
 
 plugins {
-    id("io.papermc.paperweight.userdev") version "1.3.8" apply false
+    id("io.papermc.paperweight.userdev") version "1.4.1" apply false
 }
 
 subprojects {
