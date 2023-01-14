@@ -23,7 +23,24 @@ import io.github.monun.kommand.KommandDSL
 // 상수 문자열 노드
 @KommandDSL
 interface RootNode : KommandNode {
+    /**
+     * 명령의 접두사
+     *
+     * 기본값 = <플러그인의 이름>
+     */
     var fallbackPrefix: String
+
+    /**
+     * 명령의 설명
+     *
+     * 기본값 = A <플러그인의 이름> provided command
+     */
     var description: String
+
+    /**
+     * 명령어 사용법
+     *
+     * 기본값 = /<명령>
+     */
     var usage: String
 }
