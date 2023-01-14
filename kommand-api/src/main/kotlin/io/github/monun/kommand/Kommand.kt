@@ -19,14 +19,14 @@
 package io.github.monun.kommand
 
 import io.github.monun.kommand.loader.LibraryLoader
-import io.github.monun.kommand.node.LiteralNode
+import io.github.monun.kommand.node.RootNode
 import org.bukkit.plugin.Plugin
 
 @KommandDSL
 interface Kommand {
     companion object : Kommand by LibraryLoader.loadNMS(Kommand::class.java)
 
-    fun register(plugin: Plugin, name: String, vararg aliases: String, init: LiteralNode.() -> Unit)
+    fun register(plugin: Plugin, name: String, vararg aliases: String, init: RootNode.() -> Unit)
 
 }
 
@@ -35,11 +35,11 @@ annotation class KommandDSL
 
 @KommandDSL
 class PluginKommand internal constructor(private val plugin: Plugin) {
-    fun register(name: String, vararg aliases: String, init: LiteralNode.() -> Unit) {
+    fun register(name: String, vararg aliases: String, init: RootNode.() -> Unit) {
         Kommand.register(plugin, name, *aliases) { init() }
     }
 
-    operator fun String.invoke(vararg aliases: String, init: LiteralNode.() -> Unit) = register(this, *aliases, init = init)
+    operator fun String.invoke(vararg aliases: String, init: RootNode.() -> Unit) = register(this, *aliases, init = init)
 }
 
 fun Plugin.kommand(init: PluginKommand.() -> Unit) {

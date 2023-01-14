@@ -16,26 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.monun.kommand.internal
+package io.github.monun.kommand.node
 
-import io.github.monun.kommand.KommandDispatcher
-import org.bukkit.plugin.Plugin
+import io.github.monun.kommand.KommandDSL
 
-class KommandDispatcherImpl : KommandDispatcher {
-    internal var isMutable = true
-
-    lateinit var root: RootNodeImpl
-        private set
-
-    internal fun initialize(name: String, plugin: Plugin) {
-        root = RootNodeImpl().apply {
-            initialize(this@KommandDispatcherImpl, name, plugin.name, "A ${plugin.name} provided command")
-        }
-    }
-
-    fun checkState() {
-        require(isMutable) { "DSL Error!" }
-    }
+// 상수 문자열 노드
+@KommandDSL
+interface RootNode : KommandNode {
+    var fallbackPrefix: String
+    var description: String
+    var usage: String
 }
-
-

@@ -24,9 +24,8 @@ import org.bukkit.permissions.Permission
 // 커맨드 노드
 @KommandDSL
 interface KommandNode : KommandArgumentSupport {
-    fun permission(permission: Permission)
 
-    fun permission(permission: String) = permission(Permission(permission))
+    var permission: Permission?
 
     fun requires(requires: KommandSource.() -> Boolean)
 

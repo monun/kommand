@@ -18,24 +18,23 @@
 
 package io.github.monun.kommand.internal
 
-import io.github.monun.kommand.KommandDispatcher
-import org.bukkit.plugin.Plugin
+import io.github.monun.kommand.node.RootNode
 
-class KommandDispatcherImpl : KommandDispatcher {
-    internal var isMutable = true
+class RootNodeImpl : AbstractKommandNode(), RootNode {
+    override var fallbackPrefix: String by kommandField("")
+    override var description: String by kommandField("")
+    override var usage: String by kommandField("")
 
-    lateinit var root: RootNodeImpl
-        private set
+    internal fun initialize(
+        dispatcher: KommandDispatcherImpl,
+        name: String,
+        fallbackPrefix: String,
+        description: String
+    ) {
+        super.initialize0(dispatcher, name)
 
-    internal fun initialize(name: String, plugin: Plugin) {
-        root = RootNodeImpl().apply {
-            initialize(this@KommandDispatcherImpl, name, plugin.name, "A ${plugin.name} provided command")
-        }
-    }
-
-    fun checkState() {
-        require(isMutable) { "DSL Error!" }
+        this.fallbackPrefix = fallbackPrefix
+        this.description = description
+        this.usage = "/$name"
     }
 }
-
-

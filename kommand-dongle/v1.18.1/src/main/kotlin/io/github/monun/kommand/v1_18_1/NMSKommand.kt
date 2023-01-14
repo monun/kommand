@@ -71,14 +71,17 @@ class NMSKommand : AbstractKommand() {
          *
          * 어차피 requires에서 테스트하는데 왜 추가 권한을 요구하는지 이해가 되질 않음
          */
+        val root = dispatcher.root
         commandMap.register(
-            "minecraft",
+            root.fallbackPrefix,
             VanillaCommandWrapper(vanillaCommands, node).apply {
-                permission = dispatcher.root.permission?.name
+                root.permission?.let { permission = permission }
+                description = root.description
+                usage = root.usage
+
                 setAliases(aliases.toList())
             }
-        )
-    }
+        )    }
 
     override fun unregister(name: String) {
         children.remove(name)
@@ -100,7 +103,7 @@ private fun AbstractKommandNode.convert(): ArgumentBuilder<CommandSourceStack, *
     permission?.let { Bukkit.getPluginManager().addPermission(it) }
 
     return when (this) {
-        is LiteralNodeImpl -> literal(name)
+        is RootNodeImpl, is LiteralNodeImpl-> literal(name)
         is ArgumentNodeImpl -> {
             val kommandArgument = argument as NMSKommandArgument<*>
             val type = kommandArgument.type

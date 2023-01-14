@@ -24,15 +24,28 @@ import io.github.monun.kommand.KommandContext
 import io.github.monun.kommand.KommandSource
 import io.github.monun.kommand.node.KommandNode
 import org.bukkit.permissions.Permission
+import kotlin.properties.ObservableProperty
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
 abstract class AbstractKommandNode : KommandNode, KommandArgumentSupport by KommandArgumentSupport.INSTANCE {
+    protected fun <T> kommandField(initialValue: T): ReadWriteProperty<Any?, T> =
+            object : ObservableProperty<T>(initialValue) {
+                private var initialized = false
+
+                override fun beforeChange(property: KProperty<*>, oldValue: T, newValue: T): Boolean {
+                    require(!initialized) { "Cannot redefine ${property.name} after registration" }
+
+                    return true;
+                }
+            }
+
     lateinit var kommand: KommandDispatcherImpl
     lateinit var name: String
 
     var parent: AbstractKommandNode? = null
 
-    var permission: Permission? = null
-        private set
+    override var permission: Permission? by kommandField(null)
 
     var requires: (KommandSource.() -> Boolean)? = null
         private set
@@ -46,10 +59,6 @@ abstract class AbstractKommandNode : KommandNode, KommandArgumentSupport by Komm
     }
 
     val nodes = arrayListOf<AbstractKommandNode>()
-
-    override fun permission(permission: Permission) {
-        this.permission = permission
-    }
 
     override fun requires(requires: KommandSource.() -> Boolean) {
         kommand.checkState()

@@ -19,7 +19,7 @@
 package io.github.monun.kommand.internal
 
 import io.github.monun.kommand.Kommand
-import io.github.monun.kommand.node.LiteralNode
+import io.github.monun.kommand.node.RootNode
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -35,13 +35,13 @@ abstract class AbstractKommand : Kommand {
         plugin: Plugin,
         name: String,
         vararg aliases: String,
-        init: LiteralNode.() -> Unit
+        init: RootNode.() -> Unit
     ) {
         require(plugin.isEnabled) { "Plugin disabled!" }
         require(test(name, aliases))
 
         KommandDispatcherImpl().apply {
-            initialize(name)
+            initialize(name, plugin)
             root.init()
             isMutable = false
         }.let {
