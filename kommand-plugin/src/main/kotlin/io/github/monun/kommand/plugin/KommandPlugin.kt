@@ -37,6 +37,7 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.bukkit.permissions.Permission
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scoreboard.Team
@@ -51,17 +52,16 @@ class KommandPlugin : JavaPlugin() {
         val greedy = KommandArgument.string(StringType.GREEDY_PHRASE)
 
         kommand {
-            // 빠른 명령 작성
-            "manuel" {
-                "gasgasgas"("word" to string(StringType.SINGLE_WORD)) {
-                    executes {
-                        val word: String by it
-                        Bukkit.broadcast(text("Gas Gas Gas $word"))
-                    }
+            "simple" {
+                permission = Permission("simple.dimple")
+                description = "Hello world!"
+
+                executes {
+                    sender.sendMessage("dimple")
                 }
             }
 
-            register("my", "myalias") {
+            register("kommand", "kmd") {
 //                permission("my.commands")
 
                 then("int") {
