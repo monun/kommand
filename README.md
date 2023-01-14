@@ -43,7 +43,7 @@ class CommandDispatcher : CommandExecutor {
         } else {
             // Error
         }
-        //when 문으로도 구현 가능
+        // when 문으로도 구현 가능
     }
 }
 ...
@@ -67,14 +67,14 @@ class CommandDispatcher : CommandExecutor {
 다음 코드는 Kommand의 DSL을 사용한 코드입니다.
 
 ```kotlin
-//in JavaPlugin
+// in JavaPlugin
 kommand {
     register("user") {
         then("create") {
-            then("name" to string()) { //"name"이라는 이름의 String을 요청합니다.
+            then("name" to string()) { // "name"이라는 이름의 String을 요청합니다.
                 executes { context ->
                     val name: String by context
-                    createUser(name) //명령어 실행 함수를 통해 실행
+                    createUser(name) // 명령어 실행 함수를 통해 실행
                 }
             }
         }
@@ -89,7 +89,7 @@ kommand {
             }
             "tag"("newTag" to string()) {
                 executes {
-                    //함수 인수에 의한 타입 추론
+                    // 함수 인수에 의한 타입 추론
                     setUserTag(it["user"], it["newTag"])
                 }
             }
