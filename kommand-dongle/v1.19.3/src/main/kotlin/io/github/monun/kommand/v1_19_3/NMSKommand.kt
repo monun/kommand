@@ -37,6 +37,7 @@ import org.bukkit.craftbukkit.v1_19_R2.CraftServer
 import org.bukkit.craftbukkit.v1_19_R2.command.VanillaCommandWrapper
 import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer
 import org.bukkit.entity.Player
+import org.bukkit.permissions.Permission
 
 
 class NMSKommand : AbstractKommand() {
@@ -74,7 +75,7 @@ class NMSKommand : AbstractKommand() {
         commandMap.register(
             root.fallbackPrefix,
             VanillaCommandWrapper(vanillaCommands, node).apply {
-                root.permission?.let { permission = permission }
+                root.permission?.let { permission = it.name }
                 description = root.description
                 usage = root.usage
 
@@ -100,14 +101,6 @@ private operator fun <T> CommandNode<*>.get(name: String): T {
 }
 
 private fun AbstractKommandNode.convert(): ArgumentBuilder<CommandSourceStack, *> {
-    permission?.let {
-        val pluginManager = Bukkit.getPluginManager()
-
-        if (pluginManager.getPermission(it.name) == null) {
-            pluginManager.addPermission(it)
-        }
-    }
-
     return when (this) {
         is RootNodeImpl, is LiteralNodeImpl -> literal(name)
         is ArgumentNodeImpl -> {

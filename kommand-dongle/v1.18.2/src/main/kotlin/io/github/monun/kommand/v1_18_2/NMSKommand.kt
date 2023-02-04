@@ -75,7 +75,7 @@ class NMSKommand : AbstractKommand() {
         commandMap.register(
             root.fallbackPrefix,
             VanillaCommandWrapper(vanillaCommands, node).apply {
-                root.permission?.let { permission = permission }
+                root.permission?.let { permission = it.name }
                 description = root.description
                 usage = root.usage
 
@@ -100,8 +100,6 @@ private operator fun <T> CommandNode<*>.get(name: String): T {
 }
 
 private fun AbstractKommandNode.convert(): ArgumentBuilder<CommandSourceStack, *> {
-    permission?.let { Bukkit.getPluginManager().addPermission(it) }
-
     return when (this) {
         is RootNodeImpl, is LiteralNodeImpl-> literal(name)
         is ArgumentNodeImpl -> {
