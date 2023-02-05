@@ -37,7 +37,6 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.permissions.Permission
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scoreboard.Team
@@ -52,17 +51,9 @@ class KommandPlugin : JavaPlugin() {
         val greedy = KommandArgument.string(StringType.GREEDY_PHRASE)
 
         kommand {
-            "simple" {
-                permission = Permission("simple.dimple")
-                description = "Hello world!"
+            register("kommand") {
 
-                executes {
-                    sender.sendMessage("dimple")
-                }
-            }
-
-            register("kommand", "kmd") {
-//                permission("my.commands")
+                permission = "kommand.kommands"
 
                 then("int") {
                     then("int" to intArgument) {
@@ -76,7 +67,7 @@ class KommandPlugin : JavaPlugin() {
                     then("intrange" to intRange()) {
                         executes {
                             val intrange: IntRange by it
-                            Bukkit.broadcast( text("intrange = $intrange"))
+                            Bukkit.broadcast(text("intrange = $intrange"))
                         }
                     }
                 }

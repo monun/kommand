@@ -43,4 +43,12 @@ interface RootNode : KommandNode {
      * 기본값 = /<명령>
      */
     var usage: String
+
+    /**
+     * 명령 최상위 권한
+     *
+     * 기본값 = null
+     */
+    var permission: String?
+
 }

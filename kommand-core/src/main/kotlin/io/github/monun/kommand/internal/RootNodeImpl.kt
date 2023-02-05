@@ -24,6 +24,7 @@ class RootNodeImpl : AbstractKommandNode(), RootNode {
     override var fallbackPrefix: String by kommandField("")
     override var description: String by kommandField("")
     override var usage: String by kommandField("")
+    override var permission: String? by kommandField(null)
 
     internal fun initialize(
         dispatcher: KommandDispatcherImpl,

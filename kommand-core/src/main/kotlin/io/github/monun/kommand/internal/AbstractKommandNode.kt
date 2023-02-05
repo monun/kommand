@@ -23,34 +23,36 @@ import io.github.monun.kommand.KommandArgumentSupport
 import io.github.monun.kommand.KommandContext
 import io.github.monun.kommand.KommandSource
 import io.github.monun.kommand.node.KommandNode
-import org.bukkit.permissions.Permission
 import kotlin.properties.ObservableProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 abstract class AbstractKommandNode : KommandNode, KommandArgumentSupport by KommandArgumentSupport.INSTANCE {
     protected fun <T> kommandField(initialValue: T): ReadWriteProperty<Any?, T> =
-            object : ObservableProperty<T>(initialValue) {
-                private var initialized = false
+        object : ObservableProperty<T>(initialValue) {
+            private var initialized = false
 
-                override fun beforeChange(property: KProperty<*>, oldValue: T, newValue: T): Boolean {
-                    require(!initialized) { "Cannot redefine ${property.name} after registration" }
+            override fun beforeChange(property: KProperty<*>, oldValue: T, newValue: T): Boolean {
+                require(!kommand.immutable) { "Cannot redefine ${property.name} after registration" }
+                require(!initialized) { "Cannot redefine ${property.name} after initialization" }
 
-                    return true;
-                }
+                return true;
             }
+
+            override fun afterChange(property: KProperty<*>, oldValue: T, newValue: T) {
+                initialized = true
+            }
+        }
 
     lateinit var kommand: KommandDispatcherImpl
     lateinit var name: String
 
     var parent: AbstractKommandNode? = null
 
-    override var permission: Permission? by kommandField(null)
-
-    var requires: (KommandSource.() -> Boolean)? = null
+    var requires: (KommandSource.() -> Boolean) by kommandField { true }
         private set
 
-    var executes: (KommandSource.(context: KommandContext) -> Unit)? = null
+    var executes: (KommandSource.(context: KommandContext) -> Unit)? by kommandField(null)
         private set
 
     protected fun initialize0(kommand: KommandDispatcherImpl, name: String) {
@@ -61,14 +63,10 @@ abstract class AbstractKommandNode : KommandNode, KommandArgumentSupport by Komm
     val nodes = arrayListOf<AbstractKommandNode>()
 
     override fun requires(requires: KommandSource.() -> Boolean) {
-        kommand.checkState()
-        require(this.requires == null) { "Cannot redefine requires" }
         this.requires = requires
     }
 
     override fun executes(executes: KommandSource.(context: KommandContext) -> Unit) {
-        kommand.checkState()
-        require(this.executes == null) { "Cannot redefine executes" }
         this.executes = executes
     }
 

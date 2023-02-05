@@ -75,13 +75,14 @@ class NMSKommand : AbstractKommand() {
         commandMap.register(
             root.fallbackPrefix,
             VanillaCommandWrapper(vanillaCommands, node).apply {
-                root.permission?.let { permission = it.name }
                 description = root.description
                 usage = root.usage
+                permission = root.permission
 
                 setAliases(aliases.toList())
             }
-        )    }
+        )
+    }
 
     override fun unregister(name: String) {
         children.remove(name)
@@ -101,7 +102,7 @@ private operator fun <T> CommandNode<*>.get(name: String): T {
 
 private fun AbstractKommandNode.convert(): ArgumentBuilder<CommandSourceStack, *> {
     return when (this) {
-        is RootNodeImpl, is LiteralNodeImpl-> literal(name)
+        is RootNodeImpl, is LiteralNodeImpl -> literal(name)
         is ArgumentNodeImpl -> {
             val kommandArgument = argument as NMSKommandArgument<*>
             val type = kommandArgument.type
@@ -111,6 +112,7 @@ private fun AbstractKommandNode.convert(): ArgumentBuilder<CommandSourceStack, *
                 }
             }
         }
+
         else -> error("Unknown node type ${javaClass.name}")
     }.apply {
         requires { source ->
@@ -119,13 +121,7 @@ private fun AbstractKommandNode.convert(): ArgumentBuilder<CommandSourceStack, *
              * requirement -> permission
              */
             kotlin.runCatching {
-                requires?.run {
-                    if (!invoke(wrapSource(source))) return@requires false
-                }
-                permission?.let {
-                    if (!source.bukkitSender.hasPermission(it)) return@requires false
-                }
-                true
+                requires(wrapSource(source))
             }.onFailure {
                 if (it !is CommandSyntaxException) it.printStackTrace()
             }.getOrThrow()

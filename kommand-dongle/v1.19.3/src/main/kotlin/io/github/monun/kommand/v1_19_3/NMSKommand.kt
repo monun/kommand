@@ -37,7 +37,6 @@ import org.bukkit.craftbukkit.v1_19_R2.CraftServer
 import org.bukkit.craftbukkit.v1_19_R2.command.VanillaCommandWrapper
 import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer
 import org.bukkit.entity.Player
-import org.bukkit.permissions.Permission
 
 
 class NMSKommand : AbstractKommand() {
@@ -75,9 +74,9 @@ class NMSKommand : AbstractKommand() {
         commandMap.register(
             root.fallbackPrefix,
             VanillaCommandWrapper(vanillaCommands, node).apply {
-                root.permission?.let { permission = it.name }
                 description = root.description
                 usage = root.usage
+                permission = root.permission
 
                 setAliases(aliases.toList())
             }
@@ -116,18 +115,8 @@ private fun AbstractKommandNode.convert(): ArgumentBuilder<CommandSourceStack, *
         else -> error("Unknown node type ${javaClass.name}")
     }.apply {
         requires { source ->
-            /**
-             * 권한 테스트 순서
-             * requirement -> permission
-             */
             kotlin.runCatching {
-                requires?.run {
-                    if (!invoke(wrapSource(source))) return@requires false
-                }
-                permission?.let {
-                    if (!source.bukkitSender.hasPermission(it)) return@requires false
-                }
-                true
+                requires(wrapSource(source))
             }.onFailure {
                 if (it !is CommandSyntaxException) it.printStackTrace()
             }.getOrThrow()

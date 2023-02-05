@@ -22,20 +22,18 @@ import io.github.monun.kommand.KommandDispatcher
 import org.bukkit.plugin.Plugin
 
 class KommandDispatcherImpl : KommandDispatcher {
-    internal var isMutable = true
+    internal var immutable = false
 
     lateinit var root: RootNodeImpl
         private set
 
-    internal fun initialize(name: String, plugin: Plugin) {
-        root = RootNodeImpl().apply {
-            initialize(this@KommandDispatcherImpl, name, plugin.name, "A ${plugin.name} provided command")
+    internal fun initialize(plugin: Plugin, name: String) {
+        this.root = RootNodeImpl().apply {
+            initialize(this@KommandDispatcherImpl, name, plugin.name, "A ${plugin.name} provided kommand")
         }
     }
 
     fun checkState() {
-        require(isMutable) { "DSL Error!" }
+        require(!immutable) { "DSL Error!" }
     }
 }
-
-

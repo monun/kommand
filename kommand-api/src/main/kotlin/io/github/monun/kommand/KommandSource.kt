@@ -62,6 +62,8 @@ interface KommandSource {
 
     fun hasPermission(level: Int, bukkitPermission: String): Boolean
 
+    fun hasPermission(bukkitPermission: String) = player.hasPermission(bukkitPermission)
+
     fun feedback(message: ComponentLike) {
         val sender = sender
 

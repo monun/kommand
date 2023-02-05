@@ -19,6 +19,7 @@
 package io.github.monun.kommand.internal
 
 import io.github.monun.kommand.Kommand
+import io.github.monun.kommand.KommandDispatcher
 import io.github.monun.kommand.node.RootNode
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -36,34 +37,34 @@ abstract class AbstractKommand : Kommand {
         name: String,
         vararg aliases: String,
         init: RootNode.() -> Unit
-    ) {
+    ): KommandDispatcher {
         require(plugin.isEnabled) { "Plugin disabled!" }
         require(test(name, aliases))
 
-        KommandDispatcherImpl().apply {
-            initialize(name, plugin)
+        return KommandDispatcherImpl().apply {
+            initialize(plugin, name)
             root.init()
-            isMutable = false
-        }.let {
-            register(it, aliases.toList())
-        }
+            immutable = true
+        }.also { dispatcher ->
+            register(dispatcher, aliases.toList())
 
-        plugin.server.pluginManager.registerEvents(
-            object : Listener {
-                @EventHandler(priority = EventPriority.LOWEST)
-                fun onPluginDisable(event: PluginDisableEvent) {
-                    if (event.plugin === plugin) {
-                        unregister(name)
-                        aliases.forEach { unregister(it) }
+            plugin.server.pluginManager.registerEvents(
+                object : Listener {
+                    @EventHandler(priority = EventPriority.LOWEST)
+                    fun onPluginDisable(event: PluginDisableEvent) {
+                        if (event.plugin === plugin) {
+                            unregister(name)
+                            aliases.forEach { unregister(it) }
+                        }
                     }
-                }
-            },
-            plugin
-        )
+                },
+                plugin
+            )
 
-        if (!registered) {
-            plugin.server.pluginManager.registerEvents(PlayerListener(this), plugin)
-            registered = true
+            if (!registered) {
+                plugin.server.pluginManager.registerEvents(PlayerListener(this), plugin)
+                registered = true
+            }
         }
     }
 

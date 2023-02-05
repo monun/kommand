@@ -19,22 +19,14 @@
 package io.github.monun.kommand.node
 
 import io.github.monun.kommand.*
-import org.bukkit.Bukkit
-import org.bukkit.permissions.Permission
 
 // 커맨드 노드
 @KommandDSL
 interface KommandNode : KommandArgumentSupport {
 
-    var permission: Permission?
-
-    fun permission(name: String, init: Permission.() -> Unit = {}) {
-        val pm = Bukkit.getPluginManager()
-        val perm = pm.getPermission(name) ?: Permission(name).also(pm::addPermission)
-        this.permission = perm.apply(init)
-    }
-
     fun requires(requires: KommandSource.() -> Boolean)
+
+    fun requires(permission: String) = requires { hasPermission(permission) }
 
     fun executes(executes: KommandSource.(KommandContext) -> Unit)
 
