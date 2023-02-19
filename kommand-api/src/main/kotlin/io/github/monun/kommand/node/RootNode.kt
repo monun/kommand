@@ -19,6 +19,7 @@
 package io.github.monun.kommand.node
 
 import io.github.monun.kommand.KommandDSL
+import io.github.monun.kommand.KommandSource
 
 // 상수 문자열 노드
 @KommandDSL
@@ -44,11 +45,32 @@ interface RootNode : KommandNode {
      */
     var usage: String
 
+
     /**
-     * 명령 최상위 권한
+     * 명령 실행에 필요한 권한을 체크합니다.
      *
-     * 기본값 = null
+     * 이 함수는 모든 하위 노드에 영향을 줍니다.
+     *
+     * ```kotlin
+     * kommand {
+     *   register("mycmd") {
+     *   requires { hasPermission(4) }
+     *     then("first") { // mycmd first
+     *       executes {
+     *       // 4 레벨 권한이 있어야 실행됨
+     *       }
+     *       then("second") { // /mycmd first second
+     *         executes {
+     *         // 4 레벨 권한이 있어야 실행됨
+     *         }
+     *       }
+     *     }
+     *   }
+     * }
+     * ```
+     *
+     * @see KommandNode.requires
      */
-    var permission: String?
+    override fun requires(requires: KommandSource.() -> Boolean)
 
 }

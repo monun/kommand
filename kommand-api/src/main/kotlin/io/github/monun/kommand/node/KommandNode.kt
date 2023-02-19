@@ -24,9 +24,31 @@ import io.github.monun.kommand.*
 @KommandDSL
 interface KommandNode : KommandArgumentSupport {
 
+    /**
+     * 명령 실행에 필요한 권한을 체크합니다.
+     *
+     * 이 함수는 개별 명령에만 적용되며 하위 노드에 영향을 주지 않습니다.
+     *
+     * ```kotlin
+     * kommand {
+     *   register("mycmd") {
+     *     then("first") { // mycmd first
+     *       requires { hasPermission(4) }
+     *       executes {
+     *       // 4 레벨 권한이 있어야 실행됨
+     *       }
+     *       then("second") { // /mycmd first second
+     *         executes {
+     *         // 권한 필요 없음
+     *       }
+     *     }
+     *   }
+     * }
+     * ```
+     *
+     * @see RootNode.requires
+     */
     fun requires(requires: KommandSource.() -> Boolean)
-
-    fun requires(permission: String) = requires { hasPermission(permission) }
 
     fun executes(executes: KommandSource.(KommandContext) -> Unit)
 

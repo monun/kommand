@@ -51,9 +51,8 @@ class KommandPlugin : JavaPlugin() {
         val greedy = KommandArgument.string(StringType.GREEDY_PHRASE)
 
         kommand {
-            register("kommand") {
-
-                permission = "kommand.kommands"
+            register("kommand", "kmd", "kmd2") {
+                requires { hasPermission(4) }
 
                 then("int") {
                     then("int" to intArgument) {

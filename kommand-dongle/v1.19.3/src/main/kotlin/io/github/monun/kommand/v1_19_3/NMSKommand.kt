@@ -58,25 +58,13 @@ class NMSKommand : AbstractKommand() {
         val node = this.dispatcher.register(dispatcher.root.convert() as LiteralArgumentBuilder<CommandSourceStack>)
         aliases.forEach { this.dispatcher.register(literal(it).redirect(node)) }
 
-        /**
-         * 버킷의 바닐라 명령 실행 순서는 다음과 같음
-         * 채팅 패킷 수신 -> CommandMap -> VanillaCommandWrapper -> Brigadier
-         *
-         * 플러그인 로딩 후 CommandMap에 바닐라 명령을 VanillaCommandWrapper로 등록
-         * VanillaCommandWrapper는 바닐라 커맨드는 생성자에서 'minecraft.command.<name>'의 권한을 적용
-         * 따라서 일반적으로 OP권한이 없다면 Brigadier에 등록한 명령을 실행 할 수 없음 (requires도 호출되지 않음)
-         *
-         * bukkit에서 CommandMap에 VanillaCommandWrapper를 등록하기 전에 미리 등록
-         *
-         * 어차피 requires에서 테스트하는데 왜 추가 권한을 요구하는지 이해가 되질 않음
-         */
         val root = dispatcher.root
         commandMap.register(
             root.fallbackPrefix,
             VanillaCommandWrapper(vanillaCommands, node).apply {
                 description = root.description
                 usage = root.usage
-                permission = root.permission
+                permission = null
 
                 setAliases(aliases.toList())
             }

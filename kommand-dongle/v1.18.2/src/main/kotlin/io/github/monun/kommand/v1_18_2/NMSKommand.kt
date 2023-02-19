@@ -77,7 +77,7 @@ class NMSKommand : AbstractKommand() {
             VanillaCommandWrapper(vanillaCommands, node).apply {
                 description = root.description
                 usage = root.usage
-                permission = root.permission
+                permission = null
 
                 setAliases(aliases.toList())
             }
