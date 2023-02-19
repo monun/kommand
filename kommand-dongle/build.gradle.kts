@@ -1,7 +1,7 @@
 import io.papermc.paperweight.tasks.RemapJar
 
 plugins {
-    id("io.papermc.paperweight.userdev") version "1.4.1" apply false
+    id("io.papermc.paperweight.userdev") version "1.5.1" apply false
 }
 
 subprojects {
@@ -10,7 +10,10 @@ subprojects {
     dependencies {
         implementation(projectApi)
         implementation(projectCore)
-        paperDevBundle("${name.substring(1)}-R0.1-SNAPSHOT")
+
+        val paperweight = (this as ExtensionAware).extensions.getByName("paperweight")
+                as io.papermc.paperweight.userdev.PaperweightUserDependenciesExtension
+        paperweight.paperDevBundle("${name.substring(1)}-R0.1-SNAPSHOT")
     }
 }
 

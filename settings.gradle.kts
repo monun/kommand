@@ -14,13 +14,6 @@ if (dongleFile.exists()) {
     }?.forEach { file ->
         include(":$dongle:${file.name}")
     }
-
-    pluginManagement {
-        repositories {
-            gradlePluginPortal()
-            maven("https://papermc.io/repo/repository/maven-public/")
-        }
-    }
 }
 
 val publish = "$prefix-publish"
