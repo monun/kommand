@@ -50,7 +50,7 @@ DEBUG_PORT=5005
 
 # Preinstallation plugins (url)
 DEFAULT_PLUGINS=(
-   'https://github.com/monun/auto-reloader/releases/download/0.0.5/auto-reloader-0.0.5.jar'
+   'https://github.com/monun/auto-reloader/releases/download/0.0.6/auto-reloader-0.0.6.jar'
 )
 
 # Uncomment to enable OpenJ9 performance tuning for VMs
