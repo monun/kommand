@@ -21,7 +21,7 @@ REPO_DEPLOY="$REPO_ROOT/deploy"
 DIR=".server"
 
 ## Server type (local path or type[vanilla, spigot, paper]-version[1.xx.x, unspecified]-build[latest, unspecified, xx]-[dev])
-SERVER="paper-1.19.3-latest-$classifier"
+SERVER="paper-1.19.4-latest-$classifier"
 
 ## Server memory (GB)
 MEMORY=4
