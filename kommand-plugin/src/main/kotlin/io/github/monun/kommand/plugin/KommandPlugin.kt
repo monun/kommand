@@ -30,6 +30,7 @@ import io.github.monun.kommand.wrapper.Position3D
 import io.github.monun.kommand.wrapper.Rotation
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.format.TextColor
 import org.bukkit.*
 import org.bukkit.block.Block
 import org.bukkit.block.data.BlockData
@@ -105,8 +106,8 @@ class KommandPlugin : JavaPlugin() {
                 then("color") {
                     then("color" to KommandArgument.color()) {
                         executes {
-                            val color: ChatColor by it
-                            Bukkit.broadcast(text("$color color"))
+                            val color: TextColor by it
+                            Bukkit.broadcast(text().content(color.value().toString(16)).color(color).build())
                         }
                     }
                 }

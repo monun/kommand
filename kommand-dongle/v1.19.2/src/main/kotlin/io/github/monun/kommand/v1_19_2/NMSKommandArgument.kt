@@ -37,6 +37,8 @@ import io.github.monun.kommand.wrapper.*
 import io.github.monun.kommand.wrapper.Rotation
 import io.papermc.paper.brigadier.PaperBrigadier
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextColor
 import net.minecraft.commands.CommandBuildContext
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.arguments.*
@@ -180,9 +182,11 @@ class NMSKommandArgumentSupport : KommandArgumentSupport {
         return AngleArgument.angle() provide AngleArgument::getAngle
     }
 
-    override fun color(): KommandArgument<ChatColor> {
+    override fun color(): KommandArgument<TextColor> {
         return ColorArgument.color() provide { context, name ->
-            CraftChatMessage.getColor(ColorArgument.getColor(context, name))
+            ColorArgument.getColor(context, name).color?.let { color ->
+                NamedTextColor.namedColor(color) ?: TextColor.color(color)
+            } ?: NamedTextColor.WHITE
         }
     }
 
