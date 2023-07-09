@@ -33,7 +33,10 @@ abstract class AbstractKommandNode : KommandNode, KommandArgumentSupport by Komm
             private var initialized = false
 
             override fun beforeChange(property: KProperty<*>, oldValue: T, newValue: T): Boolean {
+                val propertyName = property.getter.property.name
                 require(!kommand.immutable) { "Cannot redefine ${property.name} after registration" }
+
+                if (propertyName !in listOf("fallbackPrefix", "description", "usage"))
                 require(!initialized) { "Cannot redefine ${property.name} after initialization" }
 
                 return true;
