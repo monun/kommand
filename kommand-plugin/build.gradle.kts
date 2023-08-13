@@ -1,7 +1,6 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import java.util.*
-import kotlin.collections.LinkedHashSet
 
 plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
