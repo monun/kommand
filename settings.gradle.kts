@@ -2,19 +2,15 @@ rootProject.name = "kommand"
 
 val prefix = rootProject.name
 
-include("$prefix-api", "$prefix-core", "$prefix-plugin")
+include("$prefix-api")
 
-val dongle = "$prefix-dongle"
-val dongleFile = file(dongle)
-if (dongleFile.exists()) {
-    include(dongle)
-    // load nms
-    dongleFile.listFiles()?.filter {
-        it.isDirectory && it.name.startsWith("v")
-    }?.forEach { file ->
-        include(":$dongle:${file.name}")
-    }
+val core = "$prefix-core"
+include(core)
+file(core).listFiles()?.filter {
+    it.isDirectory && it.name.startsWith("v")
+}?.forEach { file ->
+    include(":$core:${file.name}")
 }
 
-val publish = "$prefix-publish"
-if (file(publish).exists()) include(publish)
+include("$prefix-plugin")
+include("$prefix-publish")

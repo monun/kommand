@@ -3,11 +3,6 @@ plugins {
     signing
 }
 
-projectPlugin.tasks.named("clipJar") {
-    dependsOn(tasks.named("publishApiPublicationToServerRepository"))
-    dependsOn(tasks.named("publishCorePublicationToServerRepository"))
-}
-
 publishing {
     repositories {
         mavenLocal()
@@ -83,7 +78,14 @@ publishing {
 
         create<MavenPublication>("core") {
             setup(projectCore)
-            artifact(coreReobfJar)
+
+            artifact(projectCore.tasks["reobfJar"]) {
+                classifier = null
+            }
+
+            if (hasProperty("dev")) {
+                artifact(projectCore.tasks["devJar"])
+            }
         }
 
     }

@@ -1,4 +1,4 @@
-object Dependency {
+object Libraries {
     object Kotlin {
         const val Version = "1.8.22"
     }
@@ -8,6 +8,6 @@ object Dependency {
     }
 
     object Paper {
-        const val Version = "1.17"
+        const val Version = "1.20.1"
     }
 }

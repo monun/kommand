@@ -1,14 +1,45 @@
-import org.gradle.configurationcache.extensions.capitalized
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
+import java.util.*
+import kotlin.collections.LinkedHashSet
+
+plugins {
+    id("com.github.johnrengelman.shadow") version "7.1.2"
+}
 
 dependencies {
     implementation(projectApi)
 }
 
 extra.apply {
-    set("pluginName", rootProject.name.split('-').joinToString("") { it.capitalize() })
+    set("pluginName", rootProject.name.split('-').joinToString("") {
+        it.replaceFirstChar { char ->
+            if (char.isLowerCase()) char.titlecase(Locale.getDefault()) else char.toString()
+        }
+    })
     set("packageName", rootProject.name.replace("-", ""))
-    set("kotlinVersion", Dependency.Kotlin.Version)
-    set("paperVersion", Dependency.Paper.Version)
+    set("kotlinVersion", Libraries.Kotlin.Version)
+    set("paperVersion", Libraries.Paper.Version.split('.').take(2).joinToString("."))
+
+    val pluginLibraries = LinkedHashSet<String>()
+
+    configurations.findByName("implementation")?.allDependencies?.forEach { dependency ->
+        val group = dependency.group ?: error("group is null")
+        var name = dependency.name ?: error("name is null")
+        var version = dependency.version
+
+        if (group == "org.jetbrains.kotlin" && version == null) {
+            version = getKotlinPluginVersion()
+        } else if (dependency is ProjectDependency && dependency.dependencyProject == projectApi) {
+            name = projectCore.name
+        }
+
+        requireNotNull(version) { "version is null" }
+        require(version != "latest.release") { "version is latest.release" }
+
+        pluginLibraries += "$group:$name:$version"
+        set("pluginLibraries", pluginLibraries.joinToString("\n  ") { "- $it" })
+    }
 }
 
 tasks {
@@ -19,52 +50,49 @@ tasks {
         }
     }
 
-    fun registerJar(
-        classifier: String,
-        bundleProject: Project? = null,
-        bundleTask: TaskProvider<org.gradle.jvm.tasks.Jar>? = null
-    ) = register<Jar>("${classifier}Jar") {
-        archiveBaseName.set(rootProject.name)
-        archiveClassifier.set(classifier)
+    fun registerJar(name: String, bundle: Boolean) {
+        val taskName = name + "Jar"
 
-        from(sourceSets["main"].output)
+        register<ShadowJar>(taskName) {
+            archiveClassifier.set(name)
+            archiveAppendix.set(if (bundle) "bundle" else "clip")
 
-        if (bundleProject != null) from(bundleProject.sourceSets["main"].output)
+            from(sourceSets["main"].output)
 
-        if (bundleTask != null) {
-            bundleTask.let { bundleJar ->
-                dependsOn(bundleJar)
-                from(zipTree(bundleJar.get().archiveFile))
-            }
-            exclude("clip.yml")
-            rename("bundle.yml", "plugin.yml")
-        } else {
-            exclude("bundle.yml")
-            rename("clip.yml", "plugin.yml")
-        }
-    }.also { jar ->
-        register<Copy>("test${classifier.capitalized()}Jar") {
-            val prefix = rootProject.name
-            val plugins = rootProject.file(".server/plugins-$classifier")
-            val update = File(plugins, "update")
-            val regex = Regex("($prefix)(.*)(\\.jar)")
+            if (bundle) {
+                from(projectCore.tasks[taskName])
+                configurations = listOf(
+                    project.configurations.runtimeClasspath.get(),
+                    projectCore.configurations.runtimeClasspath.get()
+                )
+                exclude { it.file in projectCore.tasks.jar.get().outputs.files }
 
-            from(jar)
-
-            if (plugins.list()?.any { regex.matches(it) } == true) {
-                into(update)
+                exclude("clip-plugin.yml")
+                rename("bundle-plugin.yml", "plugin.yml")
             } else {
-                into(plugins)
+                exclude("bundle-plugin.yml")
+                rename("clip-plugin.yml", "plugin.yml")
             }
 
             doLast {
-                update.mkdirs()
-                File(update, "RELOAD").delete()
+                val plugins = rootProject.file(".server/plugins-$name")
+                val update = plugins.resolve("update")
+
+                copy {
+                    from(archiveFile)
+
+                    if (plugins.resolve(archiveFileName.get()).exists())
+                        into(update)
+                    else
+                        into(plugins)
+                }
+
+                update.resolve("UPDATE").deleteOnExit()
             }
         }
     }
 
-    registerJar("dev", projectApi, coreDevJar)
-    registerJar("reobf", projectApi, coreReobfJar)
-    registerJar("clip")
+    registerJar("dev", true)
+    registerJar("reobf", true)
+    registerJar("clip", false)
 }
