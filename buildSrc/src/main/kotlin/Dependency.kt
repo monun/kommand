@@ -1,13 +1,13 @@
 object Libraries {
     object Kotlin {
-        const val Version = "1.8.22"
+        const val VERSION = "1.8.22"
     }
 
     object Dokka {
-        const val Version = "1.8.20"
+        const val VERSION = "1.8.20"
     }
 
     object Paper {
-        const val Version = "1.20.1"
+        const val VERSION = "1.17.1"
     }
 }

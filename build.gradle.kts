@@ -1,7 +1,7 @@
 plugins {
     idea
-    kotlin("jvm") version Libraries.Kotlin.Version
-    id("org.jetbrains.dokka") version Libraries.Dokka.Version apply false
+    kotlin("jvm") version Libraries.Kotlin.VERSION
+    id("org.jetbrains.dokka") version Libraries.Dokka.VERSION apply false
 }
 
 java {
@@ -24,7 +24,7 @@ subprojects {
     }
 
     dependencies {
-        compileOnly("io.papermc.paper:paper-api:${Libraries.Paper.Version}-R0.1-SNAPSHOT")
+        compileOnly("io.papermc.paper:paper-api:${Libraries.Paper.VERSION}-R0.1-SNAPSHOT")
 
         implementation(kotlin("stdlib"))
         implementation(kotlin("reflect"))

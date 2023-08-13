@@ -17,8 +17,8 @@ extra.apply {
         }
     })
     set("packageName", rootProject.name.replace("-", ""))
-    set("kotlinVersion", Libraries.Kotlin.Version)
-    set("paperVersion", Libraries.Paper.Version.split('.').take(2).joinToString("."))
+    set("kotlinVersion", Libraries.Kotlin.VERSION)
+    set("paperVersion", Libraries.Paper.VERSION.split('.').take(2).joinToString("."))
 
     val pluginLibraries = LinkedHashSet<String>()
 
