@@ -1,12 +1,5 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
-$dokka.location:io.github.monun.kommand.loader////PointingToDeclaration/kommand-api/io.github.monun.kommand.loader/index.html
-$dokka.location:io.github.monun.kommand.loader/LibraryLoader///PointingToDeclaration/kommand-api/io.github.monun.kommand.loader/-library-loader/index.html
-$dokka.location:io.github.monun.kommand.loader/LibraryLoader/bukkitVersion/#/PointingToDeclaration/kommand-api/io.github.monun.kommand.loader/-library-loader/bukkit-version.html
-$dokka.location:io.github.monun.kommand.loader/LibraryLoader/libraryVersion/#/PointingToDeclaration/kommand-api/io.github.monun.kommand.loader/-library-loader/library-version.html
-$dokka.location:io.github.monun.kommand.loader/LibraryLoader/loadImplement/#java.lang.Class[TypeParam(bounds=[kotlin.Any?])]#kotlin.Array[kotlin.Any?]/PointingToDeclaration/kommand-api/io.github.monun.kommand.loader/-library-loader/load-implement.html
-$dokka.location:io.github.monun.kommand.loader/LibraryLoader/loadNMS/#java.lang.Class[TypeParam(bounds=[kotlin.Any?])]#kotlin.Array[kotlin.Any?]/PointingToDeclaration/kommand-api/io.github.monun.kommand.loader/-library-loader/load-n-m-s.html
-$dokka.location:io.github.monun.kommand.loader/LibraryLoader/minecraftVersion/#/PointingToDeclaration/kommand-api/io.github.monun.kommand.loader/-library-loader/minecraft-version.html
 $dokka.location:io.github.monun.kommand.node////PointingToDeclaration/kommand-api/io.github.monun.kommand.node/index.html
 $dokka.location:io.github.monun.kommand.node/ArgumentNode///PointingToDeclaration/kommand-api/io.github.monun.kommand.node/-argument-node/index.html
 $dokka.location:io.github.monun.kommand.node/KommandNode///PointingToDeclaration/kommand-api/io.github.monun.kommand.node/-kommand-node/index.html
@@ -179,7 +172,6 @@ $dokka.location:io.github.monun.kommand/StringType///PointingToDeclaration/komm
 $dokka.location:io.github.monun.kommand/StringType/valueOf/#kotlin.String/PointingToDeclaration/kommand-api/io.github.monun.kommand/-string-type/value-of.html
 $dokka.location:io.github.monun.kommand/StringType/values/#/PointingToDeclaration/kommand-api/io.github.monun.kommand/-string-type/values.html
 io.github.monun.kommand
-io.github.monun.kommand.loader
 io.github.monun.kommand.node
 io.github.monun.kommand.ref
 io.github.monun.kommand.wrapper
