@@ -7,6 +7,3 @@ val Project.projectApi
 
 val Project.projectCore
     get() = subproject("core")
-
-val Project.projectPlugin
-    get() = subproject("plugin")

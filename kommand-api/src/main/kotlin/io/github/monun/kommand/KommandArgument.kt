@@ -20,7 +20,7 @@ package io.github.monun.kommand
 
 import com.destroystokyo.paper.profile.PlayerProfile
 import com.google.gson.JsonObject
-import io.github.monun.kommand.loader.LibraryLoader
+import io.github.monun.kommand.loader.KommandLoader
 import io.github.monun.kommand.wrapper.*
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.ComponentLike
@@ -53,7 +53,7 @@ interface KommandArgument<T> {
 
 interface KommandArgumentSupport {
     companion object {
-        val INSTANCE = LibraryLoader.loadNMS(KommandArgumentSupport::class.java)
+        val INSTANCE = KommandLoader.loadCompat(KommandArgumentSupport::class.java)
     }
 
     // com.mojang.brigadier.arguments

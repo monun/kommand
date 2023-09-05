@@ -18,13 +18,13 @@
 
 package io.github.monun.kommand
 
-import io.github.monun.kommand.loader.LibraryLoader
+import io.github.monun.kommand.loader.KommandLoader
 import io.github.monun.kommand.node.RootNode
 import org.bukkit.plugin.Plugin
 
 @KommandDSL
 interface Kommand {
-    companion object : Kommand by LibraryLoader.loadNMS(Kommand::class.java)
+    companion object : Kommand by KommandLoader.loadCompat(Kommand::class.java)
 
     fun register(
         plugin: Plugin,

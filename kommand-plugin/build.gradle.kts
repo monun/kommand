@@ -1,9 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
-import java.util.*
 
 plugins {
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    alias(libs.plugins.shadow)
 }
 
 dependencies {
@@ -11,34 +9,8 @@ dependencies {
 }
 
 extra.apply {
-    set("pluginName", rootProject.name.split('-').joinToString("") {
-        it.replaceFirstChar { char ->
-            if (char.isLowerCase()) char.titlecase(Locale.getDefault()) else char.toString()
-        }
-    })
-    set("packageName", rootProject.name.replace("-", ""))
-    set("kotlinVersion", Libraries.Kotlin.VERSION)
-    set("paperVersion", Libraries.Paper.VERSION.split('.').take(2).joinToString("."))
-
-    val pluginLibraries = LinkedHashSet<String>()
-
-    configurations.findByName("implementation")?.allDependencies?.forEach { dependency ->
-        val group = dependency.group ?: error("group is null")
-        var name = dependency.name ?: error("name is null")
-        var version = dependency.version
-
-        if (group == "org.jetbrains.kotlin" && version == null) {
-            version = getKotlinPluginVersion()
-        } else if (dependency is ProjectDependency && dependency.dependencyProject == projectApi) {
-            name = projectCore.name
-        }
-
-        requireNotNull(version) { "version is null" }
-        require(version != "latest.release") { "version is latest.release" }
-
-        pluginLibraries += "$group:$name:$version"
-        set("pluginLibraries", pluginLibraries.joinToString("\n  ") { "- $it" })
-    }
+    set("kotlinVersion", libs.versions.kotlin)
+    set("paperVersion", libs.versions.paper.get().split('.').take(2).joinToString(separator = "."))
 }
 
 tasks {
@@ -49,49 +21,49 @@ tasks {
         }
     }
 
-    fun registerJar(name: String, bundle: Boolean) {
-        val taskName = name + "Jar"
+    fun Jar.copyToServer(suffix: String) = doLast {
+        val pluginsFolder = rootProject.file(".server/plugins-$suffix")
+        val updateFolder = pluginsFolder.resolve("update")
 
-        register<ShadowJar>(taskName) {
-            archiveClassifier.set(name)
-            archiveAppendix.set(if (bundle) "bundle" else "clip")
+        copy {
+            from(archiveFile)
 
-            from(sourceSets["main"].output)
-
-            if (bundle) {
-                from(projectCore.tasks[taskName])
-                configurations = listOf(
-                    project.configurations.runtimeClasspath.get(),
-                    projectCore.configurations.runtimeClasspath.get()
-                )
-                exclude { it.file in projectCore.tasks.jar.get().outputs.files }
-
-                exclude("clip-plugin.yml")
-                rename("bundle-plugin.yml", "plugin.yml")
+            // archiveBaseName 으로 시작하는 파일이 존재하면 update 폴더에 복사
+            if (pluginsFolder.listFiles()?.any { it.name.startsWith(archiveBaseName.get()) } == true) {
+                into(pluginsFolder.resolve("update"))
             } else {
-                exclude("bundle-plugin.yml")
-                rename("clip-plugin.yml", "plugin.yml")
-            }
-
-            doLast {
-                val plugins = rootProject.file(".server/plugins-$name")
-                val update = plugins.resolve("update")
-
-                copy {
-                    from(archiveFile)
-
-                    if (plugins.resolve(archiveFileName.get()).exists())
-                        into(update)
-                    else
-                        into(plugins)
-                }
-
-                update.resolve("UPDATE").deleteOnExit()
+                into(pluginsFolder)
             }
         }
+
+        updateFolder.resolve("RELOAD").delete()
     }
 
-    registerJar("dev", true)
-    registerJar("reobf", true)
-    registerJar("clip", false)
+    register<Jar>("clipPluginJar") {
+        archiveAppendix.set("clip")
+
+        from(sourceSets["main"].output)
+
+        copyToServer("clip")
+    }
+
+    register<ShadowJar>("devBundlePluginJar") {
+        archiveAppendix.set("bundle")
+        archiveClassifier.set("dev")
+
+        configurations += projectApi.configurations.runtimeClasspath.get()
+
+        from(sourceSets["main"].output)
+        from(projectApi.sourceSets["main"].output)
+        from(projectCore.sourceSets["main"].output)
+
+        projectCore.subprojects.forEach { compat ->
+            val reobfJar = compat.tasks["reobfJar"]
+            dependsOn(reobfJar)
+
+            from(compat.sourceSets["main"].output)
+        }
+
+        copyToServer("bundle")
+    }
 }

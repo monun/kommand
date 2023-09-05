@@ -1,7 +1,6 @@
 plugins {
     idea
-    kotlin("jvm") version Libraries.Kotlin.VERSION
-    id("org.jetbrains.dokka") version Libraries.Dokka.VERSION apply false
+    alias(libs.plugins.kotlin)
 }
 
 java {
@@ -17,39 +16,17 @@ allprojects {
 }
 
 subprojects {
-    apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply(plugin = rootProject.libs.plugins.kotlin.get().pluginId)
 
     repositories {
         maven("https://papermc.io/repo/repository/maven-public/")
     }
 
     dependencies {
-        compileOnly("io.papermc.paper:paper-api:${Libraries.Paper.VERSION}-R0.1-SNAPSHOT")
+        compileOnly(rootProject.libs.paper)
 
         implementation(kotlin("stdlib"))
         implementation(kotlin("reflect"))
-    }
-}
-
-listOf("api", "core").forEach { projectName ->
-    project(":${rootProject.name}-$projectName") {
-        apply(plugin = "org.jetbrains.dokka")
-
-        tasks {
-            create<Jar>("sourcesJar") {
-                archiveClassifier.set("sources")
-                from(sourceSets["main"].allSource)
-            }
-
-            create<Jar>("dokkaJar") {
-                archiveClassifier.set("javadoc")
-                dependsOn("dokkaHtml")
-
-                from("$buildDir/dokka/html/") {
-                    include("**")
-                }
-            }
-        }
     }
 }
 

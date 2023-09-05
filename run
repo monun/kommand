@@ -1,8 +1,10 @@
 #!/bin/bash
 
-classifier="dev"
-[[ $1 == "reobf" ]] && classifier="reobf"
-[[ $1 == "clip" ]] && classifier="clip"
+[[ $1 == "devBundle" ]] && paper_classifier="dev" && plugin_classifier="bundle"
+[[ $1 == "devClip" ]] && paper_classifier="dev" && plugin_classifier="clip"
+[[ $1 == "reobfClip" ]] && paper_classifier="reobf" && plugin_classifier="clip"
+
+[[ -z $paper_classifier ]] && echo "Usage: $0 [devBundle|devClip|reobfClip]" && exit 1
 
 ####################### Configuration Section #####################
 
@@ -21,7 +23,7 @@ REPO_DEPLOY="$REPO_ROOT/deploy"
 DIR=".server"
 
 ## Server type (local path or type[vanilla, spigot, paper]-version[1.xx.x, unspecified]-build[latest, unspecified, xx]-[dev])
-SERVER="paper-1.20.1-latest-$classifier"
+SERVER="paper-1.20.1-unspecified-$paper_classifier"
 
 ## Server memory (GB)
 MEMORY=4
@@ -37,7 +39,7 @@ RESTART=false
 PLAYERS=100
 
 ## This parameter allows you to manually define the plugins directory to use for the server.
-PLUGINS="plugins-$classifier"
+PLUGINS="plugins-$plugin_classifier"
 
 ## This parameter will put all worlds your server uses into a specific directory, it's useful if you have many folders inside in the main server directory.
 WORLDS="worlds"

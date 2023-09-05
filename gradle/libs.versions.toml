@@ -1,0 +1,15 @@
+[versions]
+kotlin = "1.8.22"
+dokka = "1.8.20"
+shadow = "7.1.2"
+paper = "1.20.1-R0.1-SNAPSHOT"
+paperweight = "1.5.5"
+
+[libraries]
+paper = { group = "io.papermc.paper", name = "paper-api", version.ref = "paper" }
+
+[plugins]
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+paperweight = { id = "io.papermc.paperweight.userdev", version.ref = "paperweight" }
+shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadow" }
