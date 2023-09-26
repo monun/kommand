@@ -40,6 +40,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffectType
+import org.bukkit.scoreboard.DisplaySlot
 import org.bukkit.scoreboard.Team
 import java.util.*
 
@@ -365,6 +366,24 @@ class KommandPlugin : JavaPlugin() {
                             val team: Team by it
 
                             broadcast(text("team = ${team.name}"))
+                        }
+                    }
+                }
+                then("particle") {
+                    then("particle" to particle()) {
+                        executes {
+                            val particle: Particle by it
+
+                            broadcast(text("particle: $particle"))
+                        }
+                    }
+                }
+                then("displaySlot") {
+                    then("displaySlot" to displaySlot()) {
+                        executes {
+                            val displaySlot: DisplaySlot by it
+
+                            broadcast(text("displaySlot: $displaySlot"))
                         }
                     }
                 }
