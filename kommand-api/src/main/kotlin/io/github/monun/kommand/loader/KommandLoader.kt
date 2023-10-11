@@ -23,12 +23,7 @@ import java.lang.reflect.InvocationTargetException
 
 internal object KommandLoader {
     private val compatVersion by lazy {
-        "v" + with("(?<=\\(MC: )[\\d.]+?(?=\\))".toPattern().matcher(Bukkit.getVersion())) {
-            when {
-                find() -> group()
-                else -> throw NoSuchElementException("No such minecraft version exists")
-            }
-        }.replace('.', '_')
+        "v" + Bukkit.getServer().minecraftVersion.replace('.', '_')
     }
 
     @Suppress("UNCHECKED_CAST")
