@@ -130,7 +130,10 @@ main: ...
 libraries:
   - io.github.monun:kommand-core:<version>
 ```
+#### !!주의!!
 
+* `Gradle`과 `plugin.yml`의 의존성 패키지가 다르므로 주의해주세요.
+* 모든 코드는 ShadowJar를 고려하여 작성되지 않았습니다.
 ---
 
 ### NOTE
